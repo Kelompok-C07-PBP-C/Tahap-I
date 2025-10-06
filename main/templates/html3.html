@@ -1,0 +1,18 @@
+{% extends "base.html" %}{% load static %} {% block meta %}
+<link rel="stylesheet" href="{% static 'css/landing.css' %}" />
+<link
+  href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&family=Monoton&family=MuseoModerno:ital,wght@0,100..900;1,100..900&display=swap"
+  rel="stylesheet" />
+<title>Landing</title>
+{% endblock meta %} {% block content %}
+<div style="position: relative">
+  <h1 class="welcome">GraviFit</h1>
+  <img src="{% static 'image/h.png' %}" class="decorate" />
+</div>
+<div class="subtitle">
+  A training simulator (VR/AR or even a specialized gym chamber) where athletes experience drills in reduced or zero
+  gravity conditions, inspired by
+  space physics
+</div>
+<div class="button">Explore More</div>
+{% endblock content %}

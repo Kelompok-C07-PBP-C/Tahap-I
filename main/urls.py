@@ -1,0 +1,9 @@
+from django.contrib import admin
+from django.urls import path, include
+from main.views import *
+
+urlpatterns = [
+    path('login/', show_login, name="login"),
+    path('register/', show_register, name="register"),
+    path('', show_landing, name="landing")
+]
