@@ -10,14 +10,15 @@
   --c9: #1e6091;
   --c10: #184e77;
 }
-body {
-  flex-direction: column;
-  background-color: black;
-  height: 100vh;
-  width: 100vw;
+.section{
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 100vw;
+  height: 100vh;
+}
+#first{
   background: url('/static/image/f.png'),
     linear-gradient(
       to bottom,
@@ -27,13 +28,26 @@ body {
       /* #34A0A4 */ rgba(26, 117, 159, 0.6),
       /* #1A759F */ rgba(24, 78, 119, 0.6) /* #184E77 */
     );
-  background-repeat: no-repeat;
+    background-repeat: no-repeat;
   background-size: cover;
-  overflow-x: hidden;
   background-blend-mode: overlay;
+}
+body {
+  flex-direction: column;
+  background-color: black;
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  
+  overflow-x: hidden;
+  
   padding: 0;
   margin: 0;
   font-family: 'Geologica', sans-serif;
+  position: relative;
 }
 .subtitle {
   color: hsl(189, 28%, 95%, 1);
@@ -42,6 +56,7 @@ body {
   font-family: 'MuseoModerno', sans-serif;
   mix-blend-mode: overlay;
   font-size: 1.1rem;
+  margin-top: -20px;
 }
 .welcome {
   line-height: 0rem;
@@ -55,6 +70,12 @@ body {
 }
 .decorate {
   position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  mix-blend-mode: color-burn;
+  opacity: 0.2;
+  filter: blur(1px);
 }
 .button {
   margin-top: 1rem;
@@ -71,4 +92,8 @@ body {
   font-size: 1rem;
   transition: 0.2s ease-in-out;
   cursor: pointer;
+}
+.button:hover {
+  filter: brightness(80%);
+  color: hsl(189, 28%, 75%);
 }

@@ -1,6 +1,9 @@
 {% extends 'base.html' %}{% load static %} {% block meta %}
 <title>Register</title>
 <link rel="stylesheet" href="{% static "css/css.css" %}" />
+<link
+  href="https://fonts.googleapis.com/css2?family=Bowlby+One+SC&family=Monoton&family=MuseoModerno:ital,wght@0,100..900;1,100..900&display=swap"
+  rel="stylesheet" />
 <style>
   input {
     border: 1px solid rgba(255, 255, 255, 0.4);
@@ -8,7 +11,7 @@
 
   body {
     background-position: top;
-    background: url({% static 'image/d.png' %}),
+    background: url('/static/image/d.png'),
       linear-gradient(
         180deg,
         rgba(217, 237, 146, 0.6) 0%,
@@ -27,9 +30,13 @@
   .icon {
     color: hsl(189, 28%, 70%, 0.9);
   }
+  input{
+    border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  }
 </style>
 
 {% endblock meta%} {% block content %}
+<img src="{% static 'image/h.gif' %}" class="decorate" alt="">
 <div class="card">
   <div class="icon-container">
     <div class="inner">
@@ -40,33 +47,60 @@
     <h3 class="title">Register to Our Website</h3>
     <div class="subtitle">Step into the ultimate arena for football fans where passion meets performance</div>
   </div>
-  <div style="margin-top: 2rem"></div>
-  <div class="input-group" style="flex-direction: row; gap: 0.5rem">
-    <div class="input-group">
-      <input type="text" placeholder="First Name" name="" id="" />
-      <i class="fa icon fa-user" style="left: 13%" aria-hidden="true"></i>
-    </div>
-    <div class="input-group">
-      <input type="text" placeholder="Last Name" name="" id="" />
-      <i class="fa icon fa-user" style="left: 13%" aria-hidden="true"></i>
-    </div>
+  <div style="margin-top: 2rem; display:flex; flex-direction: column; gap: 0.8rem; width:100%;overflow:hidden">
+    {% if form.errors %}
+          {% for field, errors in form.errors.items %}
+            {% if field != '__all__' %}
+              {% for error in errors %}
+                <div class="alert">
+                  <strong>{{ field|title }}:</strong> {{ error }}
+                </div>
+              {% endfor %}
+            {% endif %}
+          {% endfor %}
+    {% endif %}
+     {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+              <div class="alert alert-warning ">
+                {{ error }}
+              </div>
+            {% endfor %}
+      {% endif %}
   </div>
-  <div class="input-group">
-    <input type="text" placeholder="Enter Your Email" name="" id="" />
-    <i class="icon fa fa-envelope" aria-hidden="true"></i>
-  </div>
-  <div class="input-group">
-    <input type="password" placeholder="Enter Your Password" name="" id="" />
-    <i class="fa icon fa-key" aria-hidden="true"></i>
-  </div>
-  <div class="input-group">
-    <input type="password" placeholder="Confirm Your Password" name="" id="" />
-    <i class="fa icon fa-lock" aria-hidden="true"></i>
-  </div>
+  <form action="" method="post" style="display: flex;flex-direction: column;gap: 1.8rem;margin-top:1.7rem" onsubmit="((e) => e.preventDefault())()" id="form">
+    {%  csrf_token %}
+    <div class="input-group" style="flex-direction: row; gap: 0.5rem">
+      <div class="input-group">
+        <label for="">First Name</label>
+        <input type="text" placeholder="First Name" name="first_name" id="" />
+        <i class="fa icon fa-user" style="left: 13%" aria-hidden="true"></i>
+        </div>
+        <div class="input-group">
+        <label for="">Last Name</label>
+        <input type="text" placeholder="Last Name" name="last_name" id="" />
+        <i class="fa icon fa-user" style="left: 13%" aria-hidden="true"></i>
+        </div>
+        </div>
+        <div class="input-group">
+      <label for="">Username</label>
+      <input type="text" placeholder="Enter Your Username" name="username" id="" />
+      <i class="icon fa fa-envelope" aria-hidden="true"></i>
+      </div>
+      <div class="input-group">
+      <label for="">Password</label>
+      <input type="password" placeholder="Enter Your Password" name="password1" id="" />
+      <i class="fa icon fa-key" aria-hidden="true"></i>
+      </div>
+      <div class="input-group">
+      <label for="">Confirm Password</label>
+      <input type="password" placeholder="Confirm Your Password" name="password2" id="" />
+      <i class="fa icon fa-lock" aria-hidden="true"></i>
+      </div>
 
-  <div class="buttons" style="flex-direction: column; gap: 0">
-    <div class="button">Register</div>
-  </div>
+    <div class="buttons" style="flex-direction: column; gap: 0">
+      <button class="button" style="font-family: inherit;" type="submit" form="form">Register</button>
+      </div>
+  </form>
 
   <div class="alternative">
     <div class="line"></div>
@@ -74,7 +108,7 @@
     <div class="line"></div>
   </div>
   <div class="buttons">
-    <div class="button" style="background-color: hsl(45, 97%, 50%, 0.2)">Sign In</div>
+    <a class="button" style="background-color: hsl(45, 97%, 50%, 0.2)" href="{% url 'login' %}">Sign In</a>
   </div>
 </div>
 

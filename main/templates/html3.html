@@ -5,14 +5,19 @@
   rel="stylesheet" />
 <title>Landing</title>
 {% endblock meta %} {% block content %}
-<div style="position: relative">
-  <h1 class="welcome">GraviFit</h1>
-  <img src="{% static 'image/h.png' %}" class="decorate" />
+<img src="{% static 'image/h.gif' %}" class="decorate" alt="">
+<div class="section" id="first">
+  <div style="position: relative">
+    <h1 class="welcome">GraviFit</h1>
+  </div>
+  <div class="subtitle">
+    A training simulator (VR/AR or even a specialized gym chamber) where athletes experience drills in reduced or zero
+    gravity conditions, inspired by
+    space physics
+  </div>
+  <div class="button">Explore More</div>
 </div>
-<div class="subtitle">
-  A training simulator (VR/AR or even a specialized gym chamber) where athletes experience drills in reduced or zero
-  gravity conditions, inspired by
-  space physics
+<div class="section" id="second" style="background:hsla(206, 66%, 8%, 0.78); height:70vh; width: 100vw;">
 </div>
-<div class="button">Explore More</div>
+
 {% endblock content %}

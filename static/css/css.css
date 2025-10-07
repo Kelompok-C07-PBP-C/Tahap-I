@@ -23,11 +23,36 @@ body {
   background-size: cover;
   overflow-x: hidden;
   background-blend-mode: overlay;
+  padding-block: 10rem;
   padding: 0;
   margin: 0;
   font-family: 'Geologica', sans-serif;
 }
 
+button{
+  font-family: inherit;
+}
+label{
+  position: absolute;
+  color: white;
+  font-size: 12px;
+  top: -48%;
+  left: 0%;
+  mix-blend-mode: overlay;
+}
+a{
+  text-decoration: none;
+}
+.decorate {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  mix-blend-mode: color-burn;
+  opacity: 0.2;
+  z-index: -1;
+  filter: blur(1px);
+}
 .card {
   min-height: 10rem;
   max-width: 10rem;
@@ -48,6 +73,31 @@ body {
   backdrop-filter: blur(6px) saturate(1.2);
   position: relative;
   overflow: hidden;
+}
+.card::before{
+  content: '';
+  display: block;
+  position: absolute;
+  inset: 0 0 0 0;
+  z-index: -1;
+  background: linear-gradient(
+    180deg,
+    #E2F2AD 0%,
+    #C8EBA9 10%,
+    #B2E2A9 20%,
+    #98D6AE 30%,
+    #7DC8B3 40%,
+    #67B8BB 50%,
+    #50A7C2 60%,
+    #5398B7 70%,
+    #5688AC 80%,
+    #527A99 100%
+  );
+  opacity: 0;
+  transition: 500ms ease-in;
+}
+.card:hover::before{
+  opacity: 0.1;
 }
 .inner {
   width: min-content;
@@ -93,8 +143,8 @@ h3.title {
   position: relative;
   display: flex;
 }
-input, input:is(:-webkit-autofill, :autofill)  {
-  background: hsla(0, 0%, 30%, 0.15);
+input[type="text"], input[type="password"], input:-internal-autofill-selected {
+  background-color: hsla(0, 0%, 30%, 0.15) !important;
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-radius: 15px;
@@ -104,9 +154,12 @@ input, input:is(:-webkit-autofill, :autofill)  {
   width: 100%;
   padding: 0.9rem;
   padding-left: 3rem;
-  color: #eff5f6;
+  color: #eff5f6 !important;
 }
-
+  input:-webkit-autofill,
+  input:-webkit-autofill:focus {
+    transition: background-color 0s 600000s, color 0s 600000s !important;
+  }
 .link {
   text-align: right;
   color: #eff5f6;
@@ -134,7 +187,25 @@ input::placeholder {
   top: 55%;
   left: 7%;
 }
-
+.alert{
+  width: 100%;
+  padding-block: 0.9rem;
+  padding-inline: 1rem;
+  background-color: rgb(220, 53, 69, 0.2);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 8px 32px hsla(0, 0%, 0%, 0.1), inset 0 1px 0 hsla(0, 0%, 50%, 0.5), inset 0 -1px 0 hsla(0, 0%, 50%, 0.1),
+    inset 0 0 20px 10px hsla(0, 0%, 50%, 0.1);
+  color: #eff5f6;
+  text-align: left;
+  border-radius: 15px;
+  font-family: 'MuseoModerno', sans-serif;
+  font-size: 0.89rem;
+  box-sizing: border-box;
+}
+.alert.alert-warning{
+  background-color: rgb(255, 193, 7, 0.2);
+}
 .button {
   flex: 1;
   margin-top: 1rem;
