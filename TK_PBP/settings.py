@@ -56,7 +56,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 CSRF_TRUSTED_ORIGINS = [
-    "https://haekal-alexander-footballnews.pbp.cs.ui.ac.id/"
+    "https://haekal-alexander-tkpbp.pbp.cs.ui.ac.id"
 ]
 ROOT_URLCONF = 'TK_PBP.urls'
 
