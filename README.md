@@ -67,6 +67,7 @@ Daftar Modul yang Akan Diimplementasikan
 ---
 
 Sumber Initial Dataset
+https://docs.google.com/spreadsheets/d/1V5WDI6bk9W4e-xLFGekK7lzSh3USWyDNecmrQcqFUrw/edit?gid=0#gid=0 
 
 Dataset awal berisi sekitar *100 entri lapangan olahraga* di *10 kota besar di Indonesia*.
 Kategori utama produk (lapangan) mencakup:
