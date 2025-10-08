@@ -29,7 +29,7 @@ Kebermanfaatan:
 
 Daftar Modul yang Akan Diimplementasikan
 
-1. *Modul Autentikasi dan Landing Page* by Tirta Rendy Siahaan
+1. *Modul Autentikasi dan Landing Page* by Alexander Haekal Dinova
 
    * Register (akun user & admin)
    * Login (opsi Gmail)
@@ -38,19 +38,19 @@ Daftar Modul yang Akan Diimplementasikan
    * Halaman user penyewa
    * Halaman admin pemilik tempat
 
-2. *Modul Manajemen Lapangan (Admin)* by RPM Dimaz
+2. *Modul Manajemen Lapangan (Admin)* by Tirta Rendy Siahaan
 
    * Tambah dan hapus data lapangan
    * Tambah fasilitas, deskripsi, aturan venue, lokasi
    * Tambah jadwal ketersediaan
 
-3. *Modul Katalog Lapangan (User)* by Alexander Haekal Dinova
+3. *Modul Katalog Lapangan (User)* by Shafa Aurelia
 
    * Lihat daftar lapangan berdasarkan kota dan kategori
    * Filter berdasarkan harga
    * Sortir berdasarkan harga
 
-4. *Modul Penyewaan Lapangan (User)* by Shafa Aurelia
+4. *Modul Penyewaan Lapangan (User)* by RPM Dimaz
 
    * Pemesanan lapangan
    * Pembayaran
