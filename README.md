@@ -90,6 +90,8 @@ Setiap data mencakup:
 * Rentang harga
 * Fasilitas tambahan
 
+---
+
 Role atau Peran Pengguna
 
 1. *User (Penyewa / Menyewa)*
