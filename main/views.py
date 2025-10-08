@@ -37,3 +37,8 @@ def show_register(request):
 @login_required(login_url='/login')
 def show_landing(request):
     return render(request, "html3.html")
+
+def logged_out(request):
+    logout(request)
+    response = HttpResponseRedirect(reverse("main:login"))
+    return response

@@ -8,16 +8,16 @@
 <img src="{% static 'image/h.gif' %}" class="decorate" alt="">
 <div class="section" id="first">
   <div style="position: relative">
-    <h1 class="welcome">GraviFit</h1>
+    <h1 class="welcome">RAGASPACE</h1>
   </div>
   <div class="subtitle">
     A training simulator (VR/AR or even a specialized gym chamber) where athletes experience drills in reduced or zero
     gravity conditions, inspired by
     space physics
   </div>
-  <div class="button">Explore More</div>
+  <a class="button" href="{% url 'main:logout' %}" style="text-decoration:none">Explore More</a>
 </div>
-<div class="section" id="second" style="background:hsla(206, 66%, 8%, 0.78); height:70vh; width: 100vw;">
+<div class="section" id="second" style="height:70vh; width: 100vw;">
 </div>
 
 {% endblock content %}
