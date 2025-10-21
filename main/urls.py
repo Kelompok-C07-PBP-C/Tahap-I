@@ -10,10 +10,9 @@ urlpatterns = [
     path('login/', show_login, name="login"),
     path('register/', show_register, name="register"),
     path('', show_landing, name="landing"),
-    path('venues/', VenueListCreateView.as_view(), name='venue-list')
+    path('logout/', logged_out, name="logout"),
+    path('venues/', VenueListCreateView.as_view(), name='venue-list'),
 ]
-
-
 
 
 

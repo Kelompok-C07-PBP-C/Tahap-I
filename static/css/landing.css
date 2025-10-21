@@ -19,6 +19,7 @@
   height: 100vh;
 }
 #first{
+  height: calc(100vh + 6rem);
   background: url('/static/image/f.png'),
     linear-gradient(
       to bottom,
@@ -31,6 +32,8 @@
     background-repeat: no-repeat;
   background-size: cover;
   background-blend-mode: overlay;
+  position: relative;
+  z-index: 1;
 }
 body {
   flex-direction: column;
@@ -41,7 +44,7 @@ body {
   justify-content: center;
   align-items: center;
   
-  
+  overflow: overlay;
   overflow-x: hidden;
   
   padding: 0;
@@ -60,13 +63,25 @@ body {
 }
 .welcome {
   line-height: 0rem;
-  font-size: 15rem;
+  font-size: 12rem;
   text-wrap: nowrap;
   color: hsl(189, 38%, 60%, 1);
   filter: brightness(110%);
   mix-blend-mode: overlay;
   font-family: 'Monoton', sans-serif;
   text-transform: uppercase;
+  animation-duration: 500ms;
+  animation-timing-function: ease-in-out;
+  animation-name: animasi;
+  animation-fill-mode: forwards;
+}
+@keyframes animasi {
+  0%{
+    letter-spacing: -1rem;
+  }
+  100%{
+    letter-spacing: 0.2rem;
+  }
 }
 .decorate {
   position: absolute;
@@ -76,6 +91,7 @@ body {
   mix-blend-mode: color-burn;
   opacity: 0.2;
   filter: blur(1px);
+  z-index: 2;
 }
 .button {
   margin-top: 1rem;
@@ -96,4 +112,43 @@ body {
 .button:hover {
   filter: brightness(80%);
   color: hsl(189, 28%, 75%);
+}
+
+#second{
+ background: linear-gradient(
+  to bottom,
+  #0d1410, /* very deep green tint */
+  #101712, /* dark olive green */
+  #111a15, /* muted teal-green */
+  #111d18, /* deep turquoise */
+  #101f20, /* blue-green */
+  #0e2026, /* aqua-blue */
+  #0c202c, /* deep cyan */
+  #0a1d30, /* ocean blue */
+  #091a30, /* dark indigo */
+  #071426  /* deep teal navy */
+);
+}
+#first::after{
+  content: '';
+  display: block;
+  background-color:#0d1410 ;
+  width: 100vw;
+  height: 6rem;
+  position: absolute;
+  bottom: 0;
+  clip-path: ellipse(51% 49% at 50% 99%);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(90, 90, 90);
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
 }
