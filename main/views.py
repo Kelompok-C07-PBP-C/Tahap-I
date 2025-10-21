@@ -37,3 +37,13 @@ def show_register(request):
 @login_required(login_url='/login')
 def show_landing(request):
     return render(request, "html3.html")
+
+
+
+from rest_framework import generics
+from .models import Venue
+from .serializers import VenueSerializer
+
+class VenueListCreateView(generics.ListCreateAPIView):
+    queryset = Venue.objects.all()
+    serializer_class = VenueSerializer
