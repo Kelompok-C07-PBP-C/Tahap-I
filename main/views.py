@@ -47,6 +47,12 @@ def show_landing(request):
     return render(request, "html3.html")
 
 
+@login_required(login_url='/login')
+def show_catalog(request):
+    return render(request, "html4.html")
+
+
+
 def logged_out(request):
     logout(request)
     response = HttpResponseRedirect(reverse("main:login"))
