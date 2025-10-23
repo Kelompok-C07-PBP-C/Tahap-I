@@ -162,6 +162,7 @@
       <p class="mt-2 rounded-2xl border border-amber-300/30 bg-amber-400/10 px-4 py-3 text-sm text-amber-200">
         Booking requests require admin approval before payment. You'll be notified once a manager reviews your request.
       </p>
+      {% if can_book %}
       <form method="post" class="mt-6 space-y-4">
         {% csrf_token %}
         {{ booking_form.non_field_errors }}
@@ -219,6 +220,11 @@
         </div>
         <button type="submit" class="w-full rounded-2xl bg-primary px-5 py-3 text-base font-semibold text-white shadow-lg shadow-cyan-500/30 transition hover:bg-primary/80">Book this venue</button>
       </form>
+      {% else %}
+      <p class="mt-6 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-white/70">
+        Booking is unavailable while using an administrator account. Please switch to a standard user profile to place a booking.
+      </p>
+      {% endif %}
     </div>
   </div>
 </section>
