@@ -7,9 +7,7 @@ VenueSphere follows a modular Django architecture focused on clarity and maintai
 | Module | Responsibility |
 | --- | --- |
 | `venuebooking` | Global configuration, middleware, and settings management. |
-| `venues` | Domain logic for venues, bookings, payments, reviews, wishlists, and admin tooling. |
-| `venues/forms/` | Namespaced form modules grouped by concern (auth, booking, payments, admin). |
-| `venues/views/` | Package of view modules covering auth, catalogue, wishlist, booking, and staff dashboards. |
+| `venues` | Domain logic for venues, bookings, payments, reviews, and wishlists. |
 | `templates/` | Tailwind-driven presentation with reusable partials. |
 | `static/js/app.js` | Progressive enhancement via AJAX for wishlist and catalog filtering. |
 
@@ -41,7 +39,6 @@ Category ─┬─< Venue ─┬─< AddOn
 4. **Booking** — `VenueDetailView` handles booking submissions and redirects to the payment step.
 5. **Payment** — `BookingPaymentView` confirms the method and finalises invoices.
 6. **Review** — Reviews are managed inline on the detail page with optimistic updates.
-7. **Admin** — Staff-only routes (`AdminDashboardView`, `AdminVenue*View`) expose CRUD management and admin onboarding.
 
 ## Styling
 
