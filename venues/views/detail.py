@@ -63,7 +63,10 @@ class VenueDetailView(LoginRequiredMixin, DetailView):
             booking.venue = self.object
             booking.save()
             form.save_m2m()
-            messages.success(request, "Venue reserved! Continue to payment.")
-            return redirect("payment", pk=booking.pk)
+            messages.success(
+                request,
+                "Your booking request was submitted and is awaiting admin approval.",
+            )
+            return redirect("booked-places")
         messages.error(request, "Unable to create booking. Please check availability details.")
         return redirect("venue-detail", slug=self.object.slug)

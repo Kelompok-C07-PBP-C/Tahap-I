@@ -40,9 +40,11 @@ class BookingForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         addons_field = self.fields.get("addons")
         if addons_field is not None:
-            addons_field.widget.attrs.setdefault(
-                "class", "grid grid-cols-1 gap-2 text-white sm:grid-cols-2"
+            existing_classes = addons_field.widget.attrs.get("class", "")
+            addons_field.widget.attrs["class"] = (
+                f"{existing_classes} addon-option__input".strip()
             )
+            addons_field.widget.attrs.setdefault("data-addon-input", "true")
             if venue is not None:
                 addons_field.queryset = venue.addons.all()
 

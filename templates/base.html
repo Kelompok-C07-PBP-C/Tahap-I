@@ -55,10 +55,12 @@
             {% endif %}
             {% if request.user.is_staff %}
             <a href="{% url 'admin-dashboard' %}" class="transition hover:text-white">Admin workspace</a>
+            <a href="{% url 'admin-bookings' %}" class="transition hover:text-white">Booking approvals</a>
             <a
-              href="{% url 'admin-venue-create' %}"
+              href="{% url 'admin-venues' %}?show=create"
+              data-modal-target="venue-create-modal"
               class="rounded-2xl bg-primary px-4 py-2 text-sm font-semibold text-white shadow-md shadow-cyan-500/40 transition hover:bg-primary/80"
-              >Add product</a
+              >Add venue</a
             >
             {% endif %}
           </div>
