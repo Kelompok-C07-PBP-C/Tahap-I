@@ -84,7 +84,7 @@
           {% elif booking.status == 'pending' %}
           <span class="inline-flex items-center rounded-2xl border border-white/20 bg-white/10 px-4 py-2 text-sm text-white/70">We'll notify you when it's approved.</span>
           {% endif %}
-          {% if booking.status not in ('cancelled', 'completed') %}
+          {% if booking.status != 'cancelled' and booking.status != 'completed' %}
           <button
             type="button"
             data-modal-target="cancel-booking-{{ booking.pk }}"
@@ -100,7 +100,7 @@
   </div>
 </section>
 {% for booking in bookings %}
-{% if booking.status not in ('cancelled', 'completed') %}
+{% if booking.status != 'cancelled' and booking.status != 'completed' %}
 <div
   id="cancel-booking-{{ booking.pk }}"
   class="fixed inset-0 z-50 hidden"
