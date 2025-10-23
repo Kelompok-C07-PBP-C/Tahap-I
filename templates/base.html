@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="csrf-token" content="{{ csrf_token }}" />
-    <title>{% block title %}Venue Booking{% endblock %}</title>
+    <title>{% block title %}RagaSpace{% endblock %}</title>
     <link rel="icon" type="image/png" href="{% static 'images/favicon.ico' %}" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
     <script>
@@ -27,6 +27,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="{% static 'css/forms.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/ragaspace.css' %}" />
     <script src="{% static 'js/app.js' %}" defer></script>
     {% block head_extra %}{% endblock %}
   </head>
@@ -37,9 +38,14 @@
       <div class="absolute bottom-0 left-1/2 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full bg-emerald-400/10 blur-3xl"></div>
     </div>
     <div class="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-6 sm:px-8">
-      <nav class="mb-8 rounded-3xl border border-white/10 bg-white/5 px-6 py-4 shadow-xl shadow-slate-900/50 backdrop-blur-xl">
+      <nav class="mb-8 rounded-3xl border border-white/10 bg-white/5 px-6 py-4 shadow-xl shadow-slate-900/50 backdrop-blur-xl" data-animate>
         <div class="flex items-center justify-between gap-4">
-          <a href="{% url 'home' %}" class="text-2xl font-semibold tracking-tight text-white">VenueSphere</a>
+          <a href="{% url 'home' %}" class="flex items-center gap-3 text-2xl font-semibold tracking-tight text-white" data-ripple>
+            <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400/80 to-sky-500/60 shadow-lg shadow-cyan-500/40">
+              <img src="{% static 'images/ragaspace-logo.svg' %}" alt="RagaSpace logo" class="h-8 w-8" />
+            </span>
+            <span class="hidden sm:inline">RagaSpace</span>
+          </a>
           <button type="button" class="rounded-2xl border border-white/20 bg-white/10 p-2 text-white transition hover:bg-white/20 md:hidden" data-nav-toggle aria-controls="primary-nav-menu" aria-expanded="false">
             <span class="sr-only">Toggle navigation</span>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-6 w-6">
@@ -49,23 +55,24 @@
         </div>
         <div id="primary-nav-menu" class="mt-6 hidden flex-col gap-6 text-sm font-medium text-white/80 md:mt-4 md:flex md:flex-row md:items-center md:justify-between md:gap-8">
           <div class="flex flex-col gap-4 md:flex-row md:items-center md:gap-6">
-            <a href="{% url 'home' %}" class="transition hover:text-white">Home</a>
+            <a href="{% url 'home' %}" class="interactive-glow rounded-xl px-3 py-2 transition-colors hover:text-white" data-ripple>Home</a>
             {% if not request.user.is_staff %}
-            <a href="{% url 'catalog' %}" class="transition hover:text-white">Catalog</a>
+            <a href="{% url 'catalog' %}" class="interactive-glow rounded-xl px-3 py-2 transition-colors hover:text-white" data-ripple>Catalog</a>
             {% endif %}
             {% if user.is_authenticated and not request.user.is_staff %}
-            <a href="{% url 'wishlist' %}" class="transition hover:text-white">Wishlist</a>
+            <a href="{% url 'wishlist' %}" class="interactive-glow rounded-xl px-3 py-2 transition-colors hover:text-white" data-ripple>Wishlist</a>
             {% endif %}
             {% if user.is_authenticated %}
-            <a href="{% url 'booked-places' %}" class="transition hover:text-white">Booked places</a>
+            <a href="{% url 'booked-places' %}" class="interactive-glow rounded-xl px-3 py-2 transition-colors hover:text-white" data-ripple>Booked places</a>
             {% endif %}
             {% if request.user.is_staff %}
-            <a href="{% url 'admin-dashboard' %}" class="transition hover:text-white">Admin workspace</a>
-            <a href="{% url 'admin-bookings' %}" class="transition hover:text-white">Booking approvals</a>
+            <a href="{% url 'admin-dashboard' %}" class="interactive-glow rounded-xl px-3 py-2 transition-colors hover:text-white" data-ripple>Admin workspace</a>
+            <a href="{% url 'admin-bookings' %}" class="interactive-glow rounded-xl px-3 py-2 transition-colors hover:text-white" data-ripple>Booking approvals</a>
             <a
               href="{% url 'admin-venues' %}?show=create"
               data-modal-target="venue-create-modal"
-              class="rounded-2xl bg-primary px-4 py-2 text-sm font-semibold text-white shadow-md shadow-cyan-500/40 transition hover:bg-primary/80"
+              class="interactive-glow rounded-2xl bg-primary px-4 py-2 text-sm font-semibold text-white shadow-md shadow-cyan-500/40 transition hover:bg-primary/80"
+              data-ripple
               >Add venue</a
             >
             {% endif %}
@@ -75,7 +82,7 @@
               {{ global_filter_form.city }}
               {{ global_filter_form.category }}
               {{ global_filter_form.max_price }}
-              <button type="submit" class="rounded-xl bg-primary/80 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-cyan-500/40 transition hover:bg-primary">
+              <button type="submit" class="interactive-glow rounded-xl bg-primary/80 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-cyan-500/40 transition hover:bg-primary" data-ripple>
                 Search
               </button>
             </form>
@@ -84,11 +91,11 @@
               <p class="text-xs uppercase tracking-wider text-white/60">Signed in</p>
               <p class="text-lg font-semibold text-white">{{ request.user.username }}</p>
             </div>
-            <a href="{% url 'auth:logout' %}" class="rounded-2xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-slate-900/40 transition hover:bg-white/20">Logout</a>
+            <a href="{% url 'auth:logout' %}" class="interactive-glow rounded-2xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-slate-900/40 transition hover:bg-white/20" data-ripple>Logout</a>
             {% else %}
             <div class="flex flex-col gap-2 md:flex-row md:items-center md:gap-3">
-              <a href="{% url 'auth:login' %}" class="rounded-2xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-slate-900/40 transition hover:bg-white/20">Login</a>
-              <a href="{% url 'auth:register' %}" class="rounded-2xl bg-primary px-4 py-2 text-sm font-semibold text-white shadow-md shadow-cyan-500/40 transition hover:bg-primary/80">Register</a>
+              <a href="{% url 'auth:login' %}" class="interactive-glow rounded-2xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-slate-900/40 transition hover:bg-white/20" data-ripple>Login</a>
+              <a href="{% url 'auth:register' %}" class="interactive-glow rounded-2xl bg-primary px-4 py-2 text-sm font-semibold text-white shadow-md shadow-cyan-500/40 transition hover:bg-primary/80" data-ripple>Register</a>
             </div>
             {% endif %}
           </div>
@@ -96,15 +103,24 @@
       </nav>
       <main class="flex-1">
         {% for message in messages %}
-        <div class="mb-4 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm text-white shadow-lg shadow-slate-900/40 backdrop-blur">
+        <div class="flash-message mb-4 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm text-white shadow-lg shadow-slate-900/40 backdrop-blur" data-animate>
           {{ message }}
         </div>
         {% endfor %}
         {% block content %}{% endblock %}
       </main>
-      <footer class="mt-12 rounded-3xl border border-white/10 bg-white/5 px-6 py-4 text-center text-xs text-white/60 backdrop-blur-xl">
-        Crafted with care • VenueSphere © {% now 'Y' %}
+      <footer class="mt-12 rounded-3xl border border-white/10 bg-white/5 px-6 py-4 text-center text-xs text-white/60 backdrop-blur-xl" data-animate>
+        Crafted for athletes • RagaSpace © {% now 'Y' %}
       </footer>
+    </div>
+    <div
+      id="page-transition"
+      class="pointer-events-none fixed inset-0 z-50 flex items-center justify-center bg-slate-950/95 backdrop-blur-2xl transition-all duration-500 ease-out opacity-0 invisible"
+    >
+      <div class="flex flex-col items-center gap-4 text-white">
+        <div class="h-16 w-16 animate-spin-slow rounded-full border-2 border-cyan-400/60 border-t-transparent"></div>
+        <p class="text-sm uppercase tracking-[0.6em] text-cyan-100/80">RagaSpace</p>
+      </div>
     </div>
   </body>
 </html>
