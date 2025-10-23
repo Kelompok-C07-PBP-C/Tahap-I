@@ -4,6 +4,8 @@ from __future__ import annotations
 from decimal import Decimal
 from datetime import time
 
+from django.utils import timezone
+
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -123,19 +125,21 @@ class Wishlist(TimestampedModel):
 class Booking(TimestampedModel):
     """Captures a user's booking details."""
 
+    STATUS_PENDING = "pending"
     STATUS_ACTIVE = "active"
     STATUS_CONFIRMED = "confirmed"
     STATUS_COMPLETED = "completed"
     STATUS_CANCELLED = "cancelled"
 
     STATUS_CHOICES = [
+        (STATUS_PENDING, "Pending approval"),
         (STATUS_ACTIVE, "Reserved"),
         (STATUS_CONFIRMED, "Confirmed"),
         (STATUS_COMPLETED, "Completed"),
         (STATUS_CANCELLED, "Cancelled"),
     ]
 
-    ACTIVE_STATUSES = (STATUS_ACTIVE, STATUS_CONFIRMED)
+    ACTIVE_STATUSES = (STATUS_PENDING, STATUS_ACTIVE, STATUS_CONFIRMED)
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="bookings")
     venue = models.ForeignKey(Venue, on_delete=models.CASCADE, related_name="bookings")
@@ -143,7 +147,15 @@ class Booking(TimestampedModel):
     end_datetime = models.DateTimeField()
     addons = models.ManyToManyField(AddOn, related_name="bookings", blank=True)
     notes = models.TextField(blank=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_ACTIVE)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
+    approved_at = models.DateTimeField(null=True, blank=True)
+    approved_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="approved_bookings",
+    )
 
     class Meta:
         ordering = ["-start_datetime"]
@@ -168,6 +180,27 @@ class Booking(TimestampedModel):
     @property
     def total_cost(self) -> Decimal:
         return self.base_cost + self.addons_total
+
+    @property
+    def is_admin_approved(self) -> bool:
+        return self.approved_at is not None
+
+    def approve(self, user) -> None:
+        """Mark the booking as approved by an administrator."""
+
+        self.status = self.STATUS_ACTIVE
+        self.approved_at = timezone.now()
+        self.approved_by = user
+        self.save(update_fields=["status", "approved_at", "approved_by", "updated_at"])
+
+    def cancel(self, save: bool = True) -> None:
+        """Cancel the booking and clear any approval metadata."""
+
+        self.status = self.STATUS_CANCELLED
+        self.approved_at = None
+        self.approved_by = None
+        if save:
+            self.save(update_fields=["status", "approved_at", "approved_by", "updated_at"])
 
 
 class Payment(TimestampedModel):

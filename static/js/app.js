@@ -49,6 +49,77 @@ document.addEventListener('DOMContentLoaded', () => {
       navMenu.classList.toggle('hidden');
     });
   }
+
+  const modalStack = [];
+
+  const openModal = (modal) => {
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    modal.setAttribute('aria-hidden', 'false');
+    if (!modalStack.includes(modal)) {
+      modalStack.push(modal);
+    }
+    document.body.classList.add('overflow-hidden');
+    const focusTargetId = modal.dataset.modalInitialFocus;
+    let focusTarget = focusTargetId ? modal.querySelector(`#${focusTargetId}`) : null;
+    if (!focusTarget) {
+      focusTarget = modal.querySelector('[data-autofocus], input, select, textarea, button, a[href]');
+    }
+    if (focusTarget && typeof focusTarget.focus === 'function') {
+      focusTarget.focus();
+    }
+  };
+
+  const closeModal = (modal) => {
+    if (!modal) return;
+    modal.classList.add('hidden');
+    modal.setAttribute('aria-hidden', 'true');
+    const index = modalStack.indexOf(modal);
+    if (index >= 0) {
+      modalStack.splice(index, 1);
+    }
+    if (modalStack.length === 0) {
+      document.body.classList.remove('overflow-hidden');
+    }
+  };
+
+  document.addEventListener('click', (event) => {
+    const trigger = event.target.closest('[data-modal-target]');
+    if (trigger) {
+      const modalId = trigger.getAttribute('data-modal-target');
+      const modal = document.getElementById(modalId);
+      if (modal) {
+        event.preventDefault();
+        openModal(modal);
+        return;
+      }
+    }
+
+    const dismiss = event.target.closest('[data-modal-close]');
+    if (dismiss) {
+      event.preventDefault();
+      const modal = dismiss.closest('[data-modal]');
+      closeModal(modal);
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && modalStack.length > 0) {
+      event.preventDefault();
+      const modal = modalStack[modalStack.length - 1];
+      closeModal(modal);
+    }
+  });
+
+  document.querySelectorAll('[data-modal]').forEach((modal) => {
+    if (!modal.hasAttribute('aria-hidden')) {
+      modal.setAttribute('aria-hidden', modal.classList.contains('hidden') ? 'true' : 'false');
+    }
+    const defaultOpen = modal.getAttribute('data-modal-default-open');
+    if (defaultOpen && defaultOpen !== 'false') {
+      openModal(modal);
+    }
+  });
 });
 
 const filterForm = document.querySelector('#catalog-filter-form');
