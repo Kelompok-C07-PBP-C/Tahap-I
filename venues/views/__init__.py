@@ -14,7 +14,7 @@ from .admin import (
     AdminVenueUpdateView,
 )
 from .auth import AuthLoginView, AuthLogoutView, RegisterView
-from .booking import BookingPaymentView
+from .booking import BookedPlacesView, BookingPaymentView
 from .catalog import CatalogView, catalog_filter
 from .detail import VenueDetailView
 from .home import HomeView
@@ -29,6 +29,7 @@ __all__ = [
     "AuthLoginView",
     "AuthLogoutView",
     "RegisterView",
+    "BookedPlacesView",
     "BookingPaymentView",
     "CatalogView",
     "catalog_filter",

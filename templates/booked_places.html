@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}Booked places • VenueSphere{% endblock %}
+{% block content %}
+<section class="grid gap-8">
+  <div class="rounded-[3rem] border border-white/10 bg-white/5 p-8 shadow-2xl shadow-slate-950/50 backdrop-blur-2xl">
+    <h1 class="text-4xl font-semibold text-white">Booked places</h1>
+    <p class="mt-2 max-w-2xl text-white/70">
+      Review all of your venue reservations, including upcoming sessions and completed events.
+    </p>
+  </div>
+  <div class="space-y-4">
+    {% for booking in bookings %}
+    <article class="rounded-[2.5rem] border border-white/10 bg-white/5 p-6 shadow-xl shadow-slate-950/40 backdrop-blur-xl">
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div class="space-y-1">
+          <h2 class="text-2xl font-semibold text-white">{{ booking.venue.name }}</h2>
+          <p class="text-sm text-white/60">{{ booking.venue.city }} • {{ booking.venue.location }}</p>
+          <a href="{% url 'venue-detail' slug=booking.venue.slug %}" class="inline-flex items-center text-sm font-semibold text-primary transition hover:text-primary/80">View venue details →</a>
+        </div>
+        <span class="self-start rounded-full border border-white/20 bg-white/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-white/70">
+          {{ booking.get_status_display }}
+        </span>
+      </div>
+      <dl class="mt-4 grid gap-2 text-sm text-white/70 sm:grid-cols-2">
+        <div>
+          <dt class="text-xs uppercase tracking-wider text-white/50">Start</dt>
+          <dd class="text-white">{{ booking.start_datetime|date:'M d, Y H:i' }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs uppercase tracking-wider text-white/50">End</dt>
+          <dd class="text-white">{{ booking.end_datetime|date:'M d, Y H:i' }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs uppercase tracking-wider text-white/50">Booked on</dt>
+          <dd class="text-white">{{ booking.created_at|date:'M d, Y H:i' }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs uppercase tracking-wider text-white/50">Total cost</dt>
+          <dd class="text-white">Rp {{ booking.total_cost }}</dd>
+        </div>
+      </dl>
+      <div class="mt-4 text-sm text-white/70">
+        <h3 class="text-xs uppercase tracking-wider text-white/50">Add-ons</h3>
+        {% with addons=booking.addons.all %}
+        {% if addons %}
+        <ul class="mt-2 grid gap-1 sm:grid-cols-2">
+          {% for addon in addons %}
+          <li class="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-white/80">
+            <span class="block font-semibold text-white">{{ addon.name }}</span>
+            <span class="text-xs text-white/60">Rp {{ addon.price }}</span>
+          </li>
+          {% empty %}
+          <li class="text-white/60">No add-ons selected.</li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p class="mt-2 text-white/60">No add-ons selected.</p>
+        {% endif %}
+        {% endwith %}
+      </div>
+      {% if booking.notes %}
+      <div class="mt-4 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-white/70">
+        <h3 class="text-xs uppercase tracking-wider text-white/50">Notes</h3>
+        <p class="mt-1">{{ booking.notes }}</p>
+      </div>
+      {% endif %}
+    </article>
+    {% empty %}
+    <p class="text-white/70">You have not booked any venues yet. Browse the catalog to get started.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
