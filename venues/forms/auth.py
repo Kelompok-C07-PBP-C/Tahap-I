@@ -65,6 +65,17 @@ class RegistrationForm(UserCreationForm):
 class AdminCreationForm(UserCreationForm):
     """Form used by administrators to create fellow admins."""
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Ensure select widgets are styled consistently without relying on
+        # template hacks that break rendering.
+        for field in self.fields.values():
+            widget = field.widget
+            if isinstance(widget, forms.Select):
+                existing_classes = widget.attrs.get("class", "")
+                if "custom-select" not in existing_classes.split():
+                    widget.attrs["class"] = (existing_classes + " custom-select").strip()
+
     password1 = forms.CharField(
         label="Password",
         widget=forms.PasswordInput(

@@ -44,13 +44,7 @@
         {% for field in admin_form %}
         <div>
           <label class="mb-1 block text-sm font-medium text-white/70" for="{{ field.id_for_label }}">{{ field.label }}</label>
-          {% if field.widget_type == 'select' and 'custom-select' not in field.field.widget.attrs.class %}
-          {% with existing_classes=field.field.widget.attrs.class|default:'' %}
-          {{ field.as_widget(attrs={'class': existing_classes|add:' custom-select'}) }}
-          {% endwith %}
-          {% else %}
           {{ field }}
-          {% endif %}
           {% if field.errors %}
           <p class="mt-1 text-sm text-rose-300">{{ field.errors|striptags }}</p>
           {% endif %}
