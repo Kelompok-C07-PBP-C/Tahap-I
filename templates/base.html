@@ -39,32 +39,34 @@
     </div>
     {% block navbar %}
     <header class="sticky top-0 z-40 w-full bg-white text-slate-900 shadow-md" data-animate>
-      <nav class="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
-        <div class="flex flex-1 items-center justify-start">
+      <nav class="flex w-full items-center gap-4 px-4 py-3 sm:px-6 lg:px-10">
+        <div class="flex basis-0 flex-1 items-center justify-start">
           <a href="{% url 'home' %}" class="flex items-center justify-center">
             <img src="{% static 'images/ragaspace-logo.svg' %}" alt="RagaSpace logo" class="h-10 w-10 object-contain" />
           </a>
         </div>
-        <button
-          type="button"
-          class="flex items-center justify-center rounded-lg p-2 text-slate-600 transition hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400 md:hidden"
-          aria-expanded="false"
-          aria-controls="mobile-navigation"
-          data-nav-toggle
-        >
-          <span class="sr-only">Toggle navigation</span>
-          <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
-        <div id="primary-navigation" class="hidden flex-1 items-center justify-center gap-6 text-sm font-semibold md:flex">
-          <a href="{% url 'home' %}" class="transition hover:text-sky-600">Home</a>
-          <a href="{% url 'catalog' %}" class="transition hover:text-sky-600">Catalog</a>
-          <a href="{% url 'wishlist' %}" class="transition hover:text-sky-600">Wishlist</a>
-          <a href="{% url 'booked-places' %}" class="transition hover:text-sky-600">Booked places</a>
+        <div class="flex items-center justify-end md:hidden">
+          <button
+            type="button"
+            class="flex items-center justify-center rounded-lg p-2 text-slate-600 transition hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400"
+            aria-expanded="false"
+            aria-controls="mobile-navigation"
+            data-nav-toggle
+          >
+            <span class="sr-only">Toggle navigation</span>
+            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        </div>
+        <div id="primary-navigation" class="hidden basis-0 flex-1 items-center justify-center gap-10 text-base font-medium md:flex">
+          <a href="{% url 'home' %}" class="font-medium transition hover:text-sky-600">Home</a>
+          <a href="{% url 'catalog' %}" class="font-medium transition hover:text-sky-600">Catalog</a>
+          <a href="{% url 'wishlist' %}" class="font-medium transition hover:text-sky-600">Wishlist</a>
+          <a href="{% url 'booked-places' %}" class="font-medium transition hover:text-sky-600">Booked places</a>
           {% if request.user.is_staff %}
-          <a href="{% url 'admin-dashboard' %}" class="transition hover:text-sky-600">Admin workspace</a>
-          <a href="{% url 'admin-bookings' %}" class="transition hover:text-sky-600">Booking approvals</a>
+          <a href="{% url 'admin-dashboard' %}" class="font-medium transition hover:text-sky-600">Admin workspace</a>
+          <a href="{% url 'admin-bookings' %}" class="font-medium transition hover:text-sky-600">Booking approvals</a>
           <a
             href="{% url 'admin-venues' %}?show=create"
             data-modal-target="venue-create-modal"
@@ -73,17 +75,18 @@
           >
           {% endif %}
         </div>
-        <div class="hidden flex-1 items-center justify-end gap-4 text-sm font-semibold md:flex">
+        <div class="hidden basis-0 flex-1 items-center justify-end gap-4 text-base font-medium md:flex">
           {% if user.is_authenticated %}
-          <span class="text-base font-semibold">{{ request.user.username }}</span>
-          <a href="{% url 'auth:logout' %}" class="text-red-600 transition hover:text-red-700">Logout</a>
+          <span class="text-base font-medium">{{ request.user.username }}</span>
+          <span aria-hidden="true" class="text-slate-300">|</span>
+          <a href="{% url 'auth:logout' %}" class="font-medium text-red-600 transition hover:text-red-700">Logout</a>
           {% else %}
-          <a href="{% url 'auth:login' %}" class="transition hover:text-sky-600">Login</a>
+          <a href="{% url 'auth:login' %}" class="font-medium transition hover:text-sky-600">Login</a>
           <a href="{% url 'auth:register' %}" class="rounded-xl bg-sky-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-sky-600">Register</a>
           {% endif %}
         </div>
       </nav>
-      <div id="mobile-navigation" class="hidden border-t border-slate-200 bg-white px-4 pb-4 pt-2 text-sm font-semibold text-slate-900 md:hidden">
+      <div id="mobile-navigation" class="hidden border-t border-slate-200 bg-white px-4 pb-4 pt-2 text-sm font-medium text-slate-900 md:hidden">
         <div class="space-y-4">
           <div class="flex flex-col gap-2">
             <a href="{% url 'home' %}" class="transition hover:text-sky-600">Home</a>
@@ -103,8 +106,8 @@
           </div>
           <div class="flex flex-col gap-2 border-t border-slate-200 pt-3">
             {% if user.is_authenticated %}
-            <span class="text-base font-semibold">{{ request.user.username }}</span>
-            <a href="{% url 'auth:logout' %}" class="text-red-600 transition hover:text-red-700">Logout</a>
+            <span class="text-base font-medium">{{ request.user.username }}</span>
+            <a href="{% url 'auth:logout' %}" class="font-medium text-red-600 transition hover:text-red-700">Logout</a>
             {% else %}
             <a href="{% url 'auth:login' %}" class="transition hover:text-sky-600">Login</a>
             <a href="{% url 'auth:register' %}" class="rounded-xl bg-sky-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-sky-600">Register</a>
@@ -115,20 +118,30 @@
     </header>
     {% endblock %}
     {% block navbar_extra %}
-    <div class="mx-auto w-full max-w-7xl px-4 sm:px-8">
-      <div class="mt-6 flex flex-wrap items-center justify-center gap-2 rounded-3xl border border-white/10 bg-white/5 px-6 py-4 text-sm font-medium text-white/80 shadow-xl shadow-slate-900/50 backdrop-blur-xl" data-animate>
-        <form method="get" action="{% url 'catalog' %}" class="flex flex-wrap items-center justify-center gap-3">
-          {{ global_filter_form.city }}
-          {{ global_filter_form.category }}
-          {{ global_filter_form.max_price }}
-          <button type="submit" class="interactive-glow rounded-xl bg-primary/80 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-cyan-500/40 transition hover:bg-primary" data-ripple>
-            Search
-          </button>
-        </form>
+    <section class="relative isolate">
+      <img
+        src="{% static 'images/ragaspace-hero.svg' %}"
+        alt="Athletes playing on an indoor paddle court"
+        class="h-64 w-full object-cover sm:h-80 lg:h-[28rem]"
+      />
+      <div class="absolute inset-0 bg-gradient-to-b from-slate-900/10 via-slate-900/20 to-slate-900/60"></div>
+      <div class="pointer-events-none absolute inset-x-0 bottom-0 translate-y-1/2">
+        <div class="pointer-events-auto mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div class="flex flex-wrap items-center justify-center gap-3 rounded-3xl border border-white/15 bg-slate-900/70 px-6 py-5 text-sm font-medium text-white/80 shadow-2xl shadow-slate-950/40 backdrop-blur-xl" data-animate>
+            <form method="get" action="{% url 'catalog' %}" class="flex w-full flex-wrap items-center justify-center gap-4 md:flex-nowrap md:justify-between md:gap-6">
+              {{ global_filter_form.city }}
+              {{ global_filter_form.category }}
+              {{ global_filter_form.max_price }}
+              <button type="submit" class="rounded-xl bg-[#1B89AE] px-5 py-2 text-sm font-semibold text-white transition-colors duration-150 hover:bg-[#15647F]">
+                Search
+              </button>
+            </form>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
     {% endblock %}
-    <div class="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 pb-6 pt-6 sm:px-8" data-page-shell>
+    <div class="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 pb-6 pt-20 sm:px-8 lg:pt-28" data-page-shell>
       <main class="flex-1">
         {% for message in messages %}
         <div class="flash-message mb-4 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm text-white shadow-lg shadow-slate-900/40 backdrop-blur" data-animate>

@@ -22,12 +22,12 @@
         {{ form.username.errors }}
       </div>
       <div class="space-y-2">
-        {{ form.password1.label_tag }}
+        <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-white/80">Password:</label>
         {{ form.password1 }}
         {{ form.password1.errors }}
       </div>
       <div class="space-y-2">
-        {{ form.password2.label_tag }}
+        <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-white/80">Confirm password:</label>
         {{ form.password2 }}
         {{ form.password2.errors }}
       </div>
