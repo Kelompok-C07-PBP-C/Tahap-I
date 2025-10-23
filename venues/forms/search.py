@@ -2,6 +2,9 @@
 from __future__ import annotations
 
 from django import forms
+from django.db import OperationalError, ProgrammingError
+
+from ..models import Category, Venue
 
 from ..models import Category, Venue
 
