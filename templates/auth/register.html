@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 {% block title %}Register • RagaSpace{% endblock %}
+{% block navbar %}{% endblock %}
 {% block content %}
 <div class="mx-auto mt-12 max-w-md rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl shadow-slate-950/60 backdrop-blur-xl">
-  <h1 class="mb-6 text-center text-3xl font-semibold text-white">Create your account</h1>
+  <h1 class="mb-6 text-center text-3xl font-semibold text-white">Register to Ragaspace</h1>
   <form method="post" class="space-y-4">
     {% csrf_token %}
     {{ form.non_field_errors }}
