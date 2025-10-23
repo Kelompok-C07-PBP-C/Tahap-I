@@ -7,13 +7,12 @@
       <h1 class="text-3xl font-semibold text-white">Venue manager</h1>
       <p class="mt-2 text-white/70">Create, update, and curate the venues available for booking.</p>
     </div>
-    <button
-      type="button"
-      data-fictional-action="add"
+    <a
+      href="{% url 'admin-venue-create' %}"
       class="inline-flex items-center justify-center rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-cyan-500/40 transition hover:bg-primary/80"
     >
       Add new venue
-    </button>
+    </a>
   </div>
 
   <div class="overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 backdrop-blur-xl">
@@ -38,13 +37,20 @@
             <div class="flex flex-wrap gap-2">
               <a href="{% url 'venue-detail' slug=venue.slug %}" class="rounded-xl border border-white/20 px-3 py-1 text-xs text-white transition hover:bg-white/10">View</a>
               <a href="{% url 'admin-venue-edit' venue.pk %}" class="rounded-xl border border-white/20 px-3 py-1 text-xs text-white transition hover:bg-white/10">Edit</a>
-              <button
-                type="button"
-                data-fictional-action="delete"
-                class="rounded-xl border border-rose-300/40 px-3 py-1 text-xs text-rose-200 transition hover:bg-rose-400/20"
+              <form
+                method="post"
+                action="{% url 'admin-venue-delete' venue.pk %}"
+                class="inline"
+                onsubmit="return confirm('Are you sure you want to delete this venue?');"
               >
-                Delete
-              </button>
+                {% csrf_token %}
+                <button
+                  type="submit"
+                  class="rounded-xl border border-rose-300/40 px-3 py-1 text-xs text-rose-200 transition hover:bg-rose-400/20"
+                >
+                  Delete
+                </button>
+              </form>
             </div>
           </td>
         </tr>
@@ -72,22 +78,6 @@
     {% endif %}
   </div>
   {% endif %}
-  <p class="text-xs text-white/50">This admin workspace is currently in demo mode—venue creation and deletion are disabled.</p>
+  <p class="text-xs text-white/50">Use the actions above to keep the venue catalogue up to date.</p>
 </section>
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const messages = {
-      add: 'This demo does not support adding venues yet.',
-      delete: 'This demo does not support deleting venues yet.'
-    };
-
-    document.querySelectorAll('[data-fictional-action]').forEach((trigger) => {
-      trigger.addEventListener('click', (event) => {
-        const action = event.currentTarget.dataset.fictionalAction;
-        const message = messages[action] || 'This action is part of the demo experience.';
-        window.alert(message);
-      });
-    });
-  });
-</script>
 {% endblock %}
