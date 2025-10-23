@@ -38,6 +38,7 @@
       <div class="absolute bottom-0 left-1/2 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full bg-emerald-400/10 blur-3xl"></div>
     </div>
     <div class="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-6 sm:px-8" data-page-shell>
+      {% block navbar %}
       <nav class="mb-8 rounded-3xl border border-white/10 bg-white/5 px-6 py-4 shadow-xl shadow-slate-900/50 backdrop-blur-xl" data-animate>
         <div class="flex items-center justify-between gap-4">
           <a href="{% url 'home' %}" class="flex items-center gap-3 text-2xl font-semibold tracking-tight text-white" data-ripple>
@@ -101,6 +102,7 @@
           </div>
         </div>
       </nav>
+      {% endblock %}
       <main class="flex-1">
         {% for message in messages %}
         <div class="flash-message mb-4 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm text-white shadow-lg shadow-slate-900/40 backdrop-blur" data-animate>
