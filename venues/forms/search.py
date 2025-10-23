@@ -6,6 +6,8 @@ from django.db import OperationalError, ProgrammingError
 
 from ..models import Category, Venue
 
+from ..models import Category, Venue
+
 
 class SearchFilterForm(forms.Form):
     """Form displayed in navigation for quick searching."""
@@ -42,23 +44,12 @@ class SearchFilterForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        city_choices = [("", "All cities")]
-        try:
-            city_values = (
-                Venue.objects.order_by("city")
-                .values_list("city", flat=True)
-                .distinct()
-            )
-            city_choices.extend((city, city) for city in city_values if city)
-        except (OperationalError, ProgrammingError):
-            # Database tables might not exist yet during initial setup.
-            pass
-        self.fields["city"].choices = city_choices
-
-        try:
-            category_qs = Category.objects.order_by("name")
-            # Trigger a lightweight evaluation so missing tables raise immediately.
-            category_qs.exists()
-        except (OperationalError, ProgrammingError):
-            category_qs = Category.objects.none()
-        self.fields["category"].queryset = category_qs
+        city_values = (
+            Venue.objects.order_by("city")
+            .values_list("city", flat=True)
+            .distinct()
+        )
+        self.fields["city"].choices = [("", "All cities")] + [
+            (city, city) for city in city_values if city
+        ]
+        self.fields["category"].queryset = Category.objects.order_by("name")
