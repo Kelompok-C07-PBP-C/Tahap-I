@@ -1,6 +1,6 @@
 # Architecture overview
 
-VenueSphere follows a modular Django architecture focused on clarity and maintainability.
+RagaSpace follows a modular Django architecture focused on clarity and maintainability.
 
 ## Modules
 

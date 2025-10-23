@@ -173,6 +173,118 @@ document.addEventListener('DOMContentLoaded', () => {
       openModal(modal);
     }
   });
+
+  const animatedElements = document.querySelectorAll('[data-animate]');
+  const animatedObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          animatedObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.2 }
+  );
+
+  const observeAnimated = (element) => {
+    if (!element || element.dataset.animateObserved === 'true') {
+      return;
+    }
+    animatedObserver.observe(element);
+    element.dataset.animateObserved = 'true';
+  };
+
+  animatedElements.forEach((element) => observeAnimated(element));
+
+  const attachRipple = (element) => {
+    if (!element || element.dataset.rippleBound === 'true') {
+      return;
+    }
+    element.dataset.rippleBound = 'true';
+    if (!element.classList.contains('relative')) {
+      element.classList.add('relative');
+    }
+    element.addEventListener('click', (event) => {
+      if (event.button !== 0 || event.metaKey || event.ctrlKey) {
+        return;
+      }
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        return;
+      }
+      const rect = element.getBoundingClientRect();
+      const ripple = document.createElement('span');
+      ripple.className = 'ripple';
+      ripple.style.left = `${event.clientX - rect.left}px`;
+      ripple.style.top = `${event.clientY - rect.top}px`;
+      element.appendChild(ripple);
+      window.setTimeout(() => {
+        ripple.remove();
+      }, 750);
+    });
+  };
+
+  document.querySelectorAll('.interactive-glow, [data-ripple]').forEach((element) => attachRipple(element));
+
+  const transitionOverlay = document.getElementById('page-transition');
+
+  const hideTransition = () => {
+    if (!transitionOverlay) return;
+    transitionOverlay.classList.remove('opacity-100', 'pointer-events-auto');
+    transitionOverlay.classList.add('opacity-0', 'pointer-events-none');
+    window.setTimeout(() => {
+      transitionOverlay.classList.add('invisible');
+    }, 400);
+  };
+
+  const showTransition = () => {
+    if (!transitionOverlay) return;
+    transitionOverlay.classList.remove('pointer-events-none', 'opacity-0', 'invisible');
+    transitionOverlay.classList.add('opacity-100', 'pointer-events-auto');
+  };
+
+  hideTransition();
+  window.addEventListener('pageshow', () => hideTransition());
+
+  document.addEventListener('click', (event) => {
+    if (event.defaultPrevented) {
+      return;
+    }
+    const anchor = event.target.closest('a[href]');
+    if (!anchor) {
+      return;
+    }
+    if (anchor.dataset.modalTarget || anchor.hasAttribute('data-modal-target')) {
+      return;
+    }
+    const href = anchor.getAttribute('href');
+    if (!href || href.startsWith('#')) {
+      return;
+    }
+    if (anchor.target && anchor.target !== '_self') {
+      return;
+    }
+    if (anchor.host && anchor.host !== window.location.host) {
+      return;
+    }
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+      return;
+    }
+    showTransition();
+    event.preventDefault();
+    window.setTimeout(() => {
+      window.location.href = anchor.href;
+    }, 220);
+  });
+
+  const refreshInteractive = (root = document) => {
+    const scope = root instanceof Element ? root : document;
+    scope.querySelectorAll('[data-animate]').forEach((element) => observeAnimated(element));
+    scope.querySelectorAll('.interactive-glow, [data-ripple]').forEach((element) => attachRipple(element));
+  };
+
+  window.RagaSpace = window.RagaSpace || {};
+  window.RagaSpace.refreshInteractive = refreshInteractive;
 });
 
 const filterForm = document.querySelector('#catalog-filter-form');
@@ -196,7 +308,8 @@ if (filterForm) {
         }
         data.venues.forEach((venue) => {
           const card = document.createElement('article');
-          card.className = 'group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-5 shadow-xl shadow-slate-950/40 backdrop-blur-xl transition hover:-translate-y-1 hover:bg-white/10';
+          card.className = 'card-tilt group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-5 shadow-xl shadow-slate-950/40 backdrop-blur-xl transition hover:bg-white/10';
+          card.setAttribute('data-animate', '');
           card.innerHTML = `
             <div class="relative">
               <img src="${venue.image_url}" alt="${venue.name}" class="h-48 w-full rounded-2xl object-cover" />
@@ -213,11 +326,14 @@ if (filterForm) {
             </div>
             <div class="mt-4 flex items-center justify-between">
               <span class="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs uppercase tracking-widest text-white/70">Rp ${venue.price}</span>
-              <a href="${venue.url}" class="rounded-2xl bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20">View product</a>
+              <a href="${venue.url}" class="interactive-glow rounded-2xl bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20" data-ripple>View product</a>
             </div>
           `;
           grid.appendChild(card);
         });
+        if (window.RagaSpace && typeof window.RagaSpace.refreshInteractive === 'function') {
+          window.RagaSpace.refreshInteractive(grid);
+        }
       })
       .catch((error) => console.error('Filter failed', error));
   });

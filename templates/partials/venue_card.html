@@ -1,4 +1,4 @@
-<article class="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-5 shadow-xl shadow-slate-950/40 backdrop-blur-xl transition hover:-translate-y-1 hover:bg-white/10">
+<article class="card-tilt group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-5 shadow-xl shadow-slate-950/40 backdrop-blur-xl transition hover:bg-white/10" data-animate>
   <div class="relative">
     <img src="{{ venue.image_url }}" alt="{{ venue.name }}" class="h-48 w-full rounded-2xl object-cover" />
     <button data-venue="{{ venue.id }}" data-wishlisted="{% if venue.id in wishlist_ids %}true{% else %}false{% endif %}" class="wishlist-button {% if venue.id in wishlist_ids %}wishlist-button--active{% endif %} absolute right-3 top-3 rounded-full border border-white/30 bg-white/10 p-2 text-white transition hover:bg-white/20" aria-label="Toggle wishlist" aria-pressed="{% if venue.id in wishlist_ids %}true{% else %}false{% endif %}">
@@ -16,6 +16,6 @@
   </div>
   <div class="mt-4 flex items-center justify-between">
     <span class="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs uppercase tracking-widest text-white/70">Rp {{ venue.price_per_hour }}</span>
-    <a href="{% url 'venue-detail' slug=venue.slug %}" class="rounded-2xl bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20">View product</a>
+    <a href="{% url 'venue-detail' slug=venue.slug %}" class="interactive-glow rounded-2xl bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20" data-ripple>View product</a>
   </div>
 </article>

@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
-{% block title %}Home • VenueSphere{% endblock %}
+{% block title %}Home • RagaSpace{% endblock %}
 {% block content %}
-<section class="grid gap-12">
-  <div class="relative overflow-hidden rounded-[3rem] border border-white/10 bg-gradient-to-br from-white/10 via-white/5 to-white/10 p-10 shadow-2xl shadow-slate-950/60 backdrop-blur-2xl">
+<section class="grid gap-12" data-animate>
+  <div class="relative overflow-hidden rounded-[3rem] border border-white/10 bg-gradient-to-br from-white/10 via-white/5 to-white/10 p-10 shadow-2xl shadow-slate-950/60 backdrop-blur-2xl" data-animate>
     <div class="flex flex-col gap-6 md:flex-row md:items-center">
-      <div class="md:w-1/2">
+      <div class="md:w-1/2" data-animate>
         <span class="rounded-full border border-white/20 bg-white/10 px-4 py-1 text-xs uppercase tracking-[0.4em] text-white/70">Premium venues</span>
         <h1 class="mt-4 text-4xl font-semibold leading-tight text-white md:text-5xl">Elevate your game with curated sport venues</h1>
         <p class="mt-4 max-w-xl text-white/70">Discover premium courts and arenas tailored for your next match, tournament, or community gathering. Filter by city, category, and price to find the perfect fit in seconds.</p>
@@ -12,12 +12,13 @@
           {{ global_filter_form.city }}
           {{ global_filter_form.category }}
           {{ global_filter_form.max_price }}
-          <button type="submit" class="rounded-2xl bg-primary px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-cyan-500/30 transition hover:bg-primary/80">Explore venues</button>
+          <button type="submit" class="interactive-glow rounded-2xl bg-primary px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-cyan-500/30 transition hover:bg-primary/80" data-ripple>Explore venues</button>
         </form>
         {% if request.user.is_staff %}
         <a
           href="{% url 'admin-venue-create' %}"
-          class="mt-4 inline-flex items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-white/10 transition hover:bg-white/20"
+          class="interactive-glow mt-4 inline-flex items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-white/10 transition hover:bg-white/20"
+          data-ripple
         >Add a new venue</a>
         {% endif %}
       </div>
@@ -29,7 +30,7 @@
   </div>
   <div class="grid gap-6 lg:grid-cols-3">
     {% for venue in popular_venues %}
-    <article class="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl shadow-slate-950/40 backdrop-blur-xl transition hover:-translate-y-1 hover:bg-white/10">
+    <article class="card-tilt group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl shadow-slate-950/40 backdrop-blur-xl transition hover:bg-white/10" data-animate>
       <img src="{{ venue.image_url }}" alt="{{ venue.name }}" class="h-48 w-full rounded-2xl object-cover" />
       <div class="mt-4 flex items-start justify-between">
         <div>
@@ -46,20 +47,20 @@
       <p class="mt-2 text-sm text-white/70">{{ venue.description|truncatechars:120 }}</p>
       <div class="mt-4 flex items-center justify-between">
         <span class="rounded-full border border-white/20 bg-white/10 px-4 py-1 text-xs uppercase tracking-widest text-white/70">Rp {{ venue.price_per_hour }}</span>
-        <a href="{% url 'venue-detail' slug=venue.slug %}" class="rounded-2xl bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20">View product</a>
+        <a href="{% url 'venue-detail' slug=venue.slug %}" class="interactive-glow rounded-2xl bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20" data-ripple>View product</a>
       </div>
     </article>
     {% empty %}
     <p class="text-white/70">No popular venues yet.</p>
     {% endfor %}
   </div>
-  <div class="rounded-[3rem] border border-white/10 bg-white/5 p-10 backdrop-blur-2xl">
+  <div class="rounded-[3rem] border border-white/10 bg-white/5 p-10 backdrop-blur-2xl" data-animate>
     <div class="flex flex-col justify-between gap-6 md:flex-row md:items-center">
       <div>
         <h2 class="text-3xl font-semibold text-white">Start exploring the full catalog</h2>
         <p class="mt-2 text-white/70">Browse curated venues with advanced filtering for categories, cities, and budgets.</p>
       </div>
-      <a href="{% url 'catalog' %}" class="rounded-2xl bg-primary px-6 py-3 text-base font-semibold text-white shadow-lg shadow-cyan-500/30 transition hover:bg-primary/80">Browse catalog</a>
+      <a href="{% url 'catalog' %}" class="interactive-glow rounded-2xl bg-primary px-6 py-3 text-base font-semibold text-white shadow-lg shadow-cyan-500/30 transition hover:bg-primary/80" data-ripple>Browse catalog</a>
     </div>
   </div>
 </section>

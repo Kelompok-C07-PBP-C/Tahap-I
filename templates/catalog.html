@@ -1,15 +1,15 @@
 {% extends 'base.html' %}
-{% block title %}Catalog • VenueSphere{% endblock %}
+{% block title %}Catalog • RagaSpace{% endblock %}
 {% block content %}
-<section class="grid gap-10">
-  <div class="rounded-[3rem] border border-white/10 bg-white/5 p-8 shadow-xl shadow-slate-950/50 backdrop-blur-2xl">
+<section class="grid gap-10" data-animate>
+  <div class="rounded-[3rem] border border-white/10 bg-white/5 p-8 shadow-xl shadow-slate-950/50 backdrop-blur-2xl" data-animate>
     <h1 class="text-4xl font-semibold text-white">Venue catalog</h1>
     <p class="mt-2 max-w-2xl text-white/70">Fine-tune your search with precise filters for city, category, and budget. Results update instantly without leaving the page.</p>
     <form id="catalog-filter-form" class="mt-6 grid gap-4 md:grid-cols-4">
       {{ filter.form.city }}
       {{ filter.form.category }}
       {{ filter.form.max_price }}
-      <button type="submit" class="rounded-2xl bg-primary px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-cyan-500/30 transition hover:bg-primary/80">Apply filters</button>
+      <button type="submit" class="interactive-glow rounded-2xl bg-primary px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-cyan-500/30 transition hover:bg-primary/80" data-ripple>Apply filters</button>
     </form>
   </div>
   <div id="catalog-grid" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -22,11 +22,11 @@
   {% if is_paginated %}
   <div class="flex justify-center gap-2">
     {% if page_obj.has_previous %}
-    <a href="?page={{ page_obj.previous_page_number }}" class="rounded-full border border-white/20 px-4 py-2 text-sm text-white/70 transition hover:bg-white/10">Previous</a>
+    <a href="?page={{ page_obj.previous_page_number }}" class="interactive-glow rounded-full border border-white/20 px-4 py-2 text-sm text-white/70 transition hover:bg-white/10" data-ripple>Previous</a>
     {% endif %}
     <span class="rounded-full border border-white/20 px-4 py-2 text-sm text-white/70">Page {{ page_obj.number }} of {{ paginator.num_pages }}</span>
     {% if page_obj.has_next %}
-    <a href="?page={{ page_obj.next_page_number }}" class="rounded-full border border-white/20 px-4 py-2 text-sm text-white/70 transition hover:bg-white/10">Next</a>
+    <a href="?page={{ page_obj.next_page_number }}" class="interactive-glow rounded-full border border-white/20 px-4 py-2 text-sm text-white/70 transition hover:bg-white/10" data-ripple>Next</a>
     {% endif %}
   </div>
   {% endif %}

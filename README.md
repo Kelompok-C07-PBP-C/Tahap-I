@@ -1,6 +1,6 @@
-# VenueSphere
+# RagaSpace
 
-VenueSphere is a secure, modern venue booking platform built with Django, Tailwind CSS, and progressive enhancement techniques. The experience combines a cohesive glassmorphism-inspired UI with robust booking workflows that cover discovery, wishlist management, checkout, and review sharing.
+RagaSpace is a secure, modern venue booking platform built with Django, Tailwind CSS, and progressive enhancement techniques. The experience combines a cohesive glassmorphism-inspired UI, cinematic micro-interactions, and robust booking workflows that cover discovery, wishlist management, checkout, and review sharing.
 
 ## Features
 
