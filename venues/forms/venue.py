@@ -4,7 +4,7 @@ from __future__ import annotations
 from django import forms
 from django.utils.text import slugify
 
-from ..models import AddOn, Venue
+from ..models import AddOn, Category, Venue
 
 
 class VenueForm(forms.ModelForm):
@@ -101,6 +101,22 @@ class VenueForm(forms.ModelForm):
                 }
             ),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Guide the admin through the required business fields
+        self.fields["name"].label = "Nama lapangan"
+        self.fields["location"].label = "Lokasi"
+        self.fields["city"].label = "Kota"
+        self.fields["price_per_hour"].label = "Rentang harga"
+        self.fields["price_per_hour"].help_text = "Masukkan harga sewa per jam."
+        self.fields["facilities"].label = "Fasilitas tambahan"
+        self.fields["facilities"].help_text = "Pisahkan setiap fasilitas dengan koma."
+        self.fields["slug"].required = False
+
+        # Ensure category choices are ordered and show a helpful prompt
+        self.fields["category"].queryset = Category.objects.order_by("name")
+        self.fields["category"].empty_label = "Pilih kategori olahraga"
 
     def clean_slug(self):
         slug = self.cleaned_data.get("slug")
