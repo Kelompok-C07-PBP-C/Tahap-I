@@ -93,6 +93,7 @@ document.addEventListener('click', (event) => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+  document.body.classList.add('js-enabled');
   const navToggle = document.querySelector('[data-nav-toggle]');
   const navMenu = document.querySelector('#primary-nav-menu');
   if (navToggle && navMenu) {
@@ -227,6 +228,19 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.interactive-glow, [data-ripple]').forEach((element) => attachRipple(element));
 
   const transitionOverlay = document.getElementById('page-transition');
+  const pageShell = document.querySelector('[data-page-shell]');
+
+  const revealPageShell = () => {
+    if (!pageShell) return;
+    pageShell.classList.remove('is-leaving');
+    pageShell.classList.remove('opacity-0');
+    window.requestAnimationFrame(() => {
+      pageShell.classList.add('is-ready');
+      pageShell.style.removeProperty('opacity');
+      pageShell.style.removeProperty('filter');
+      pageShell.style.removeProperty('transform');
+    });
+  };
 
   const hideTransition = () => {
     if (!transitionOverlay) return;
@@ -235,16 +249,23 @@ document.addEventListener('DOMContentLoaded', () => {
     window.setTimeout(() => {
       transitionOverlay.classList.add('invisible');
     }, 400);
+    revealPageShell();
   };
 
   const showTransition = () => {
     if (!transitionOverlay) return;
     transitionOverlay.classList.remove('pointer-events-none', 'opacity-0', 'invisible');
     transitionOverlay.classList.add('opacity-100', 'pointer-events-auto');
+    if (pageShell) {
+      pageShell.classList.remove('is-ready');
+      pageShell.classList.add('is-leaving');
+    }
   };
 
+  revealPageShell();
   hideTransition();
   window.addEventListener('pageshow', () => hideTransition());
+  window.addEventListener('beforeunload', () => showTransition());
 
   document.addEventListener('click', (event) => {
     if (event.defaultPrevented) {
@@ -274,7 +295,24 @@ document.addEventListener('DOMContentLoaded', () => {
     event.preventDefault();
     window.setTimeout(() => {
       window.location.href = anchor.href;
-    }, 220);
+    }, 320);
+  });
+
+  document.addEventListener('submit', (event) => {
+    const form = event.target;
+    if (!(form instanceof HTMLFormElement)) {
+      return;
+    }
+    if (event.defaultPrevented) {
+      return;
+    }
+    if (form.dataset.noTransition === 'true') {
+      return;
+    }
+    if (form.target && form.target !== '_self') {
+      return;
+    }
+    showTransition();
   });
 
   const refreshInteractive = (root = document) => {

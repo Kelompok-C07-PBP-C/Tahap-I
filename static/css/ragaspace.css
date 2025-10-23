@@ -10,6 +10,42 @@ body {
   position: relative;
 }
 
+body:not(.js-enabled) [data-page-shell] {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+[data-page-shell] {
+  opacity: 0;
+  transform: translate3d(0, 36px, 0) scale(0.985);
+  filter: blur(18px);
+  transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform, filter;
+}
+
+[data-page-shell].is-ready {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  filter: blur(0);
+}
+
+[data-page-shell].is-leaving {
+  opacity: 0;
+  transform: translate3d(0, 24px, 0) scale(0.98);
+  filter: blur(14px);
+}
+
+#page-transition {
+  transform: scale(1.05);
+  transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1), transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+#page-transition.opacity-100 {
+  transform: scale(1);
+}
+
 body::before,
 body::after {
   content: "";
@@ -133,6 +169,13 @@ body::after {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  [data-page-shell] {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+  }
+
   [data-animate] {
     opacity: 1 !important;
     transform: none !important;

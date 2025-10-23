@@ -37,12 +37,12 @@
       <div class="absolute right-0 top-0 h-[32rem] w-[32rem] rounded-full bg-cyan-500/10 blur-3xl"></div>
       <div class="absolute bottom-0 left-1/2 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full bg-emerald-400/10 blur-3xl"></div>
     </div>
-    <div class="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-6 sm:px-8">
+    <div class="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-6 sm:px-8" data-page-shell>
       <nav class="mb-8 rounded-3xl border border-white/10 bg-white/5 px-6 py-4 shadow-xl shadow-slate-900/50 backdrop-blur-xl" data-animate>
         <div class="flex items-center justify-between gap-4">
           <a href="{% url 'home' %}" class="flex items-center gap-3 text-2xl font-semibold tracking-tight text-white" data-ripple>
-            <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400/80 to-sky-500/60 shadow-lg shadow-cyan-500/40">
-              <img src="{% static 'images/ragaspace-logo.svg' %}" alt="RagaSpace logo" class="h-8 w-8" />
+            <span class="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400/80 to-sky-500/60 p-1 shadow-lg shadow-cyan-500/40 sm:h-12 sm:w-12">
+              <img src="{% static 'images/ragaspace-logo.svg' %}" alt="RagaSpace logo" class="h-full w-full object-contain" />
             </span>
             <span class="hidden sm:inline">RagaSpace</span>
           </a>
