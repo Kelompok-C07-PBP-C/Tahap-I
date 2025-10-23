@@ -245,11 +245,25 @@ const syncWishlistGrid = ({ venueId, wishlisted, venueData }) => {
   updateWishlistEmptyState(grid, emptyState);
 };
 
+const syncWishlistButtons = ({ venueId, wishlisted }) => {
+  if (!venueId) {
+    return;
+  }
+  const selector = `.wishlist-button[data-venue="${escapeSelector(venueId)}"]`;
+  document.querySelectorAll(selector).forEach((button) => {
+    if (!(button instanceof HTMLElement)) {
+      return;
+    }
+    updateWishlistButton(button, wishlisted);
+  });
+};
+
 document.addEventListener('wishlist:changed', (event) => {
   if (!event.detail) {
     return;
   }
   syncWishlistGrid(event.detail);
+  syncWishlistButtons(event.detail);
 });
 
 function toggleWishlist(button) {
