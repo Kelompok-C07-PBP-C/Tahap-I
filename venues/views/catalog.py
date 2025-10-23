@@ -9,9 +9,10 @@ from django.views.generic import ListView
 
 from ..filters import VenueFilter
 from ..models import Venue, Wishlist
+from .mixins import EnsureCsrfCookieMixin
 
 
-class CatalogView(LoginRequiredMixin, ListView):
+class CatalogView(EnsureCsrfCookieMixin, LoginRequiredMixin, ListView):
     model = Venue
     template_name = "catalog.html"
     context_object_name = "venues"
