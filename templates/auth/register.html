@@ -1,31 +1,42 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Register • RagaSpace{% endblock %}
+{% block navbar %}{% endblock %}
+{% block navbar_extra %}{% endblock %}
 {% block content %}
-<div class="mx-auto mt-12 max-w-md rounded-3xl border border-white/10 bg-white/5 p-8 shadow-2xl shadow-slate-950/60 backdrop-blur-xl">
-  <h1 class="mb-6 text-center text-3xl font-semibold text-white">Create your account</h1>
-  <form method="post" class="space-y-4">
-    {% csrf_token %}
-    {{ form.non_field_errors }}
-    <div>
-      {{ form.username.label_tag }}
-      {{ form.username }}
-      {{ form.username.errors }}
+<div class="flex min-h-[calc(100vh-8rem)] items-center justify-center py-12">
+  <div class="w-full max-w-xl rounded-3xl border border-white/10 bg-white/5 p-12 shadow-2xl shadow-slate-950/60 backdrop-blur-xl">
+    <div class="mb-4 flex justify-center">
+      <span class="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400/80 to-sky-500/60 p-3 shadow-lg shadow-cyan-500/40">
+        <img src="{% static 'images/ragaspace-logo.svg' %}" alt="RagaSpace" class="h-full w-full object-contain" />
+      </span>
     </div>
-    <div>
-      {{ form.password1.label_tag }}
-      {{ form.password1 }}
-      {{ form.password1.errors }}
-    </div>
-    <div>
-      {{ form.password2.label_tag }}
-      {{ form.password2 }}
-      {{ form.password2.errors }}
-    </div>
-    <button type="submit" class="w-full rounded-2xl bg-primary px-4 py-3 text-lg font-semibold text-white shadow-lg shadow-cyan-500/40 transition hover:bg-primary/80">Register</button>
-  </form>
-  <p class="mt-6 text-center text-sm text-white/70">
-    Already have an account?
-    <a href="{% url 'auth:login' %}" class="font-semibold text-primary hover:underline">Sign in</a>
-  </p>
+    <h1 class="mb-2 text-center text-4xl font-bold text-white">Register to Ragaspace</h1>
+    <p class="mb-6 text-center text-xl font-normal text-white/80">Create your account</p>
+    <form method="post" class="space-y-6">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      <div class="space-y-2">
+        <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-white/80">Username:</label>
+        {{ form.username }}
+        {{ form.username.errors }}
+      </div>
+      <div class="space-y-2">
+        {{ form.password1.label_tag }}
+        {{ form.password1 }}
+        {{ form.password1.errors }}
+      </div>
+      <div class="space-y-2">
+        {{ form.password2.label_tag }}
+        {{ form.password2 }}
+        {{ form.password2.errors }}
+      </div>
+      <button type="submit" class="w-full rounded-2xl bg-[#1B89AE] px-4 py-3 text-lg font-semibold text-white transition-colors duration-150 hover:bg-[#15647F]">Register</button>
+    </form>
+    <p class="mt-6 text-center text-sm text-white/70">
+      Already have an account?
+      <a href="{% url 'auth:login' %}" class="font-semibold text-primary hover:underline">Sign in</a>
+    </p>
+  </div>
 </div>
 {% endblock %}

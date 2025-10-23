@@ -404,15 +404,26 @@ document.addEventListener('click', (event) => {
 
 document.addEventListener('DOMContentLoaded', () => {
   document.body.classList.add('js-enabled');
-  const navToggle = document.querySelector('[data-nav-toggle]');
-  const navMenu = document.querySelector('#primary-nav-menu');
-  if (navToggle && navMenu) {
-    navToggle.addEventListener('click', () => {
-      const expanded = navToggle.getAttribute('aria-expanded') === 'true';
-      navToggle.setAttribute('aria-expanded', (!expanded).toString());
-      navMenu.classList.toggle('hidden');
+  const navToggleButtons = document.querySelectorAll('[data-nav-toggle]');
+  navToggleButtons.forEach((button) => {
+    const controls = button.getAttribute('aria-controls');
+    if (!controls) {
+      return;
+    }
+    const menu = document.getElementById(controls);
+    if (!menu) {
+      return;
+    }
+    button.addEventListener('click', () => {
+      const expanded = button.getAttribute('aria-expanded') === 'true';
+      button.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+      if (menu.classList.contains('hidden')) {
+        menu.classList.remove('hidden');
+      } else {
+        menu.classList.add('hidden');
+      }
     });
-  }
+  });
 
   const modalStack = [];
 
