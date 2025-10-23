@@ -42,12 +42,36 @@ class SearchFilterForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        city_values = (
-            Venue.objects.order_by("city")
+
+        preferred_city_order = [
+            "Jakarta",
+            "Bandung",
+            "Tangerang",
+            "Yogyakarta",
+            "Surabaya",
+            "Makassar",
+            "Denpasar",
+            "Palembang",
+            "Semarang",
+            "Medan",
+        ]
+
+        city_choices = [("", "All cities")]
+        for city in preferred_city_order:
+            city_choices.append((city, city))
+
+        # include any other cities that may have been added later
+        remaining_cities = (
+            Venue.objects.exclude(city__in=preferred_city_order)
+            .order_by("city")
             .values_list("city", flat=True)
             .distinct()
         )
-        self.fields["city"].choices = [("", "All cities")] + [
-            (city, city) for city in city_values if city
-        ]
-        self.fields["category"].queryset = Category.objects.order_by("name")
+        for city in remaining_cities:
+            if city:
+                city_choices.append((city, city))
+
+        self.fields["city"].choices = city_choices
+        self.fields["category"].queryset = (
+            Category.objects.exclude(name__iexact="Basketball Courts").order_by("name")
+        )
