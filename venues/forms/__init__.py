@@ -1,7 +1,8 @@
 """Public forms package for the venues app."""
 from __future__ import annotations
 
-from .auth import AdminCreationForm, LoginForm, RegistrationForm
+from .admin import AdminCreationForm
+from .auth import LoginForm, RegistrationForm
 from .booking import BookingForm
 from .payment import PaymentForm
 from .review import ReviewForm

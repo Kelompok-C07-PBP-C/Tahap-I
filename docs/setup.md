@@ -12,9 +12,8 @@
 2. Install dependencies with `pip install -r requirements.txt`.
 3. Copy `.env.example` to `.env` and update the secret key plus database settings.
 4. Run migrations via `python manage.py migrate`.
-5. (Optional) Seed demo content: `python manage.py seeddemo`.
-6. Create a superuser if you want Django admin access: `python manage.py createsuperuser`.
-7. Start the dev server: `python manage.py runserver`.
+5. Create a superuser: `python manage.py createsuperuser`.
+6. Start the dev server: `python manage.py runserver`.
 
 ## Tailwind usage
 
@@ -30,4 +29,4 @@ python manage.py test
 
 ## Data seeding
 
-Use `python manage.py seeddemo` to generate demo venues, add-ons, availability windows, a confirmed booking, and the default administrator (`admin/Admin123!`). The command is idempotent and safe to rerun while iterating locally.
+You can populate sample venues through the Django admin UI or by creating fixtures. The models are structured to support factories when integrating with tools such as `factory_boy`.

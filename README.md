@@ -9,7 +9,6 @@ VenueSphere is a secure, modern venue booking platform built with Django, Tailwi
 - 📚 **Catalog & filtering** — Rich venue listings with city, category, and price filters powered by `django-filter`.
 - 💖 **Wishlist** — Add/remove favourites with asynchronous updates and persistent storage per user.
 - 📅 **Booking & payment** — Collect schedule preferences, optional add-ons, and capture payment intents with invoice summaries.
-- 🧑‍💼 **Admin workspace** — Dedicated dashboard for staff to invite new admins and curate venue inventory end-to-end.
 - ⭐ **Reviews** — First-party reviews linked to verified users with edit-safe defaults.
 
 ## Getting started
@@ -21,24 +20,16 @@ VenueSphere is a secure, modern venue booking platform built with Django, Tailwi
    pip install -r requirements.txt
    ```
 2. **Environment variables** — copy `.env.example` (see below) and adjust secrets.
-3. **Database & demo data**
+3. **Database**
    ```bash
    python manage.py migrate
-   python manage.py seeddemo  # creates demo+admin accounts and venues
-   ```
-   The seed command provisions:
-   - Admin account `admin` / `Admin123!`
-   - Demo account `demo` / `Demo123!`
-   - Sample venues, add-ons, availability, bookings, and reviews
-4. *(Optional)* Create your own superuser if you need Django admin access
-   ```bash
    python manage.py createsuperuser
    ```
-5. **Run**
+4. **Run**
    ```bash
    python manage.py runserver
    ```
-6. Visit `http://127.0.0.1:8000/` and log in to explore the dashboard.
+5. Visit `http://127.0.0.1:8000/` and log in to explore the dashboard.
 
 ## Tech stack & practices
 
@@ -54,4 +45,4 @@ VenueSphere is a secure, modern venue booking platform built with Django, Tailwi
 python manage.py test
 ```
 
-Use the in-app **Admin Workspace** (top navigation) to manage venues and onboard additional administrators without leaving the glassmorphism interface.
+Feel free to load sample data by creating venues in the Django admin (`/admin/`).
