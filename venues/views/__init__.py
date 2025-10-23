@@ -1,4 +1,9 @@
-"""View package exports."""
+"""View package exports.
+
+The legacy ``views.py`` shim has been deleted so Django imports this
+package directly; keeping explicit exports here preserves backwards
+compatibility for modules that still import ``venues.views``.
+"""
 from __future__ import annotations
 
 from .admin import (

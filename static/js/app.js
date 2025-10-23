@@ -39,6 +39,18 @@ document.addEventListener('click', (event) => {
   }
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+  const navToggle = document.querySelector('[data-nav-toggle]');
+  const navMenu = document.querySelector('#primary-nav-menu');
+  if (navToggle && navMenu) {
+    navToggle.addEventListener('click', () => {
+      const expanded = navToggle.getAttribute('aria-expanded') === 'true';
+      navToggle.setAttribute('aria-expanded', (!expanded).toString());
+      navMenu.classList.toggle('hidden');
+    });
+  }
+});
+
 const filterForm = document.querySelector('#catalog-filter-form');
 if (filterForm) {
   filterForm.addEventListener('submit', (event) => {

@@ -12,4 +12,9 @@ urlpatterns = [
     path("api/catalog/filter/", views.catalog_filter, name="catalog-filter"),
     path("venue/<slug:slug>/", views.VenueDetailView.as_view(), name="venue-detail"),
     path("booking/<int:pk>/payment/", views.BookingPaymentView.as_view(), name="payment"),
+    path("workspace/", views.AdminDashboardView.as_view(), name="admin-dashboard"),
+    path("workspace/venues/", views.AdminVenueListView.as_view(), name="admin-venues"),
+    path("workspace/venues/add/", views.AdminVenueCreateView.as_view(), name="admin-venue-create"),
+    path("workspace/venues/<int:pk>/edit/", views.AdminVenueUpdateView.as_view(), name="admin-venue-edit"),
+    path("workspace/venues/<int:pk>/delete/", views.AdminVenueDeleteView.as_view(), name="admin-venue-delete"),
 ]

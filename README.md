@@ -20,10 +20,10 @@ VenueSphere is a secure, modern venue booking platform built with Django, Tailwi
    pip install -r requirements.txt
    ```
 2. **Environment variables** — copy `.env.example` (see below) and adjust secrets.
-3. **Database**
+3. **Database & demo data**
    ```bash
    python manage.py migrate
-   python manage.py createsuperuser
+   python manage.py seeddemo  # creates sample venues, demo accounts, and an initial admin
    ```
 4. **Run**
    ```bash
@@ -45,4 +45,4 @@ VenueSphere is a secure, modern venue booking platform built with Django, Tailwi
 python manage.py test
 ```
 
-Feel free to load sample data by creating venues in the Django admin (`/admin/`).
+Feel free to explore the dedicated admin workspace at `/workspace/` once logged in as a staff member. It provides CRUD tools for venues and the ability to invite additional administrators.
