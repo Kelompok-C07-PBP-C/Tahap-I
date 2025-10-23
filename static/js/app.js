@@ -294,6 +294,7 @@ const syncWishlistGrid = ({ venueId, wishlisted, venueData, wishlistItemHtml }) 
 };
 
 const syncWishlistButtons = ({ venueId, wishlisted, venueData }) => {
+const syncWishlistButtons = ({ venueId, wishlisted }) => {
   if (!venueId) {
     return;
   }
