@@ -23,12 +23,16 @@ class VenueDetailView(EnsureCsrfCookieMixin, LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         venue: Venue = context["venue"]
-        booking_form = BookingForm(self.request.POST or None, venue=venue)
+        can_book = not self.request.user.is_staff
+        booking_form = None
+        if can_book:
+            booking_form = BookingForm(self.request.POST or None, venue=venue)
         review_form = ReviewForm(self.request.POST or None)
         context.update(
             {
                 "booking_form": booking_form,
                 "review_form": review_form,
+                "can_book": can_book,
                 "wishlist_ids": set(
                     Wishlist.objects.filter(user=self.request.user).values_list("venue_id", flat=True)
                 ),
@@ -57,6 +61,12 @@ class VenueDetailView(EnsureCsrfCookieMixin, LoginRequiredMixin, DetailView):
         return redirect("venue-detail", slug=self.object.slug)
 
     def handle_booking(self, request: HttpRequest) -> HttpResponse:
+        if request.user.is_staff:
+            messages.error(
+                request,
+                "Administrators cannot create bookings. Please use a regular user account.",
+            )
+            return redirect("venue-detail", slug=self.object.slug)
         form = BookingForm(request.POST, venue=self.object)
         if form.is_valid():
             booking: Booking = form.save(commit=False)
