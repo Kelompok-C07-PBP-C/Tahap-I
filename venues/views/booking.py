@@ -32,9 +32,11 @@ class BookingPaymentView(LoginRequiredMixin, View):
     template_name = "booking_payment.html"
 
     def _get_booking(self, request: HttpRequest, pk: int) -> Booking:
-        return get_object_or_404(
+        booking = get_object_or_404(
             Booking.objects.select_related("venue", "payment").prefetch_related("addons"), pk=pk, user=request.user
         )
+        booking.ensure_payment()
+        return booking
 
     def get(self, request: HttpRequest, pk: int) -> HttpResponse:
         booking = self._get_booking(request, pk)

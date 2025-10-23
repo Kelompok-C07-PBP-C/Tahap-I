@@ -185,6 +185,27 @@ class Booking(TimestampedModel):
     def is_admin_approved(self) -> bool:
         return self.approved_at is not None
 
+    def ensure_payment(self) -> "Payment":
+        """Return a payment record for this booking, creating or updating as needed."""
+
+        from decimal import Decimal
+        from uuid import uuid4
+
+        payment, created = Payment.objects.get_or_create(
+            booking=self,
+            defaults={
+                "method": "qris",
+                "status": "waiting",
+                "total_amount": self.total_cost,
+                "deposit_amount": Decimal("10000"),
+                "reference_code": uuid4().hex[:12].upper(),
+            },
+        )
+        if not created and payment.total_amount != self.total_cost:
+            payment.total_amount = self.total_cost
+            payment.save(update_fields=["total_amount", "updated_at"])
+        return payment
+
     def approve(self, user) -> None:
         """Mark the booking as approved by an administrator."""
 
@@ -192,6 +213,10 @@ class Booking(TimestampedModel):
         self.approved_at = timezone.now()
         self.approved_by = user
         self.save(update_fields=["status", "approved_at", "approved_by", "updated_at"])
+        payment = self.ensure_payment()
+        if payment.status != "waiting":
+            payment.status = "waiting"
+            payment.save(update_fields=["status", "updated_at"])
 
     def cancel(self, save: bool = True) -> None:
         """Cancel the booking and clear any approval metadata."""
