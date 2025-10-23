@@ -7,6 +7,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, JsonResponse
 from django.shortcuts import get_object_or_404
+from django.template.loader import render_to_string
+from django.urls import reverse
+from django.utils.text import Truncator
 from django.views import View
 from django.views.generic import ListView
 
@@ -42,7 +45,7 @@ class WishlistToggleView(LoginRequiredMixin, View):
         wishlist, created = Wishlist.objects.get_or_create(user=request.user, venue=venue)
         if not created:
             wishlist.delete()
-        return JsonResponse({"wishlisted": created})
+        return JsonResponse(_build_wishlist_response(request, venue, created))
 
 
 @login_required
@@ -51,4 +54,31 @@ def wishlist_toggle(request: HttpRequest, pk: int) -> JsonResponse:
     wishlist, created = Wishlist.objects.get_or_create(user=request.user, venue=venue)
     if not created:
         wishlist.delete()
-    return JsonResponse({"wishlisted": created})
+    return JsonResponse(_build_wishlist_response(request, venue, created))
+
+
+def _build_wishlist_response(request: HttpRequest, venue: Venue, wishlisted: bool) -> dict[str, Any]:
+    description = Truncator(venue.description or "").chars(120)
+    venue_data = {
+        "id": str(venue.pk),
+        "name": venue.name,
+        "city": venue.city,
+        "category": venue.category.name if venue.category else "",
+        "price": str(venue.price_per_hour),
+        "url": reverse("venue-detail", kwargs={"slug": venue.slug}),
+        "image": venue.image_url,
+        "description": description,
+    }
+    response: dict[str, Any] = {
+        "wishlisted": wishlisted,
+        "wishlist_count": Wishlist.objects.filter(user=request.user).count(),
+        "venue": venue_data,
+        "wishlist_item_html": None,
+    }
+    if wishlisted:
+        response["wishlist_item_html"] = render_to_string(
+            "partials/wishlist_card.html",
+            {"venue": venue, "wishlist_description": description},
+            request=request,
+        )
+    return response

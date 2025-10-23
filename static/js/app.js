@@ -72,6 +72,9 @@ const updateWishlistButton = (button, wishlisted) => {
   }
   button.classList.toggle('wishlist-button--active', Boolean(wishlisted));
   button.setAttribute('aria-pressed', wishlisted ? 'true' : 'false');
+  const label = wishlisted ? 'Remove from wishlist' : 'Add to wishlist';
+  button.setAttribute('aria-label', label);
+  button.setAttribute('title', label);
   button.dataset.wishlisted = wishlisted ? 'true' : 'false';
 };
 
@@ -100,6 +103,32 @@ const extractVenueData = (button) => {
     image: image || '',
     description: description || '',
   };
+};
+
+const applyVenueDataset = (button, venueData) => {
+  if (!button || !venueData) {
+    return;
+  }
+  if (venueData.id !== undefined && venueData.id !== null) {
+    button.dataset.venue = String(venueData.id);
+  }
+  const mapping = {
+    venueName: 'name',
+    venueCity: 'city',
+    venueCategory: 'category',
+    venuePrice: 'price',
+    venueUrl: 'url',
+    venueImage: 'image',
+    venueDescription: 'description',
+  };
+  Object.entries(mapping).forEach(([datasetKey, sourceKey]) => {
+    if (Object.prototype.hasOwnProperty.call(venueData, sourceKey)) {
+      const value = venueData[sourceKey];
+      if (value !== undefined && value !== null) {
+        button.dataset[datasetKey] = String(value);
+      }
+    }
+  });
 };
 
 const createWishlistCard = (venueData) => {
@@ -140,6 +169,7 @@ const createWishlistCard = (venueData) => {
   const button = document.createElement('button');
   button.className =
     'wishlist-button wishlist-button--active rounded-full border border-white/20 bg-white/10 p-2 text-white transition hover:bg-white/20';
+  button.type = 'button';
   button.setAttribute('aria-label', 'Unlove');
   button.setAttribute('aria-pressed', 'true');
   button.dataset.venue = String(venueData.id || '');
@@ -211,7 +241,7 @@ const updateWishlistEmptyState = (grid, emptyState) => {
   }
 };
 
-const syncWishlistGrid = ({ venueId, wishlisted, venueData }) => {
+const syncWishlistGrid = ({ venueId, wishlisted, venueData, wishlistItemHtml }) => {
   if (!venueId) {
     return;
   }
@@ -229,6 +259,24 @@ const syncWishlistGrid = ({ venueId, wishlisted, venueData }) => {
     updateWishlistEmptyState(grid, emptyState);
     return;
   }
+  if (typeof wishlistItemHtml === 'string' && wishlistItemHtml.trim() !== '') {
+    const trimmed = wishlistItemHtml.trim();
+    if (existingCard) {
+      existingCard.outerHTML = trimmed;
+    } else {
+      const template = document.createElement('template');
+      template.innerHTML = trimmed;
+      const newCard = template.content.firstElementChild;
+      if (newCard) {
+        grid.prepend(newCard);
+      }
+    }
+    if (window.RagaSpace && typeof window.RagaSpace.refreshInteractive === 'function') {
+      window.RagaSpace.refreshInteractive(grid);
+    }
+    updateWishlistEmptyState(grid, emptyState);
+    return;
+  }
   if (existingCard) {
     updateWishlistEmptyState(grid, emptyState);
     return;
@@ -240,9 +288,25 @@ const syncWishlistGrid = ({ venueId, wishlisted, venueData }) => {
   const card = createWishlistCard(venueData);
   grid.prepend(card);
   if (window.RagaSpace && typeof window.RagaSpace.refreshInteractive === 'function') {
-    window.RagaSpace.refreshInteractive(grid);
+    window.RagaSpace.refreshInteractive(card);
   }
   updateWishlistEmptyState(grid, emptyState);
+};
+
+const syncWishlistButtons = ({ venueId, wishlisted, venueData }) => {
+  if (!venueId) {
+    return;
+  }
+  const selector = `.wishlist-button[data-venue="${escapeSelector(venueId)}"]`;
+  document.querySelectorAll(selector).forEach((button) => {
+    if (!(button instanceof HTMLElement)) {
+      return;
+    }
+    if (venueData) {
+      applyVenueDataset(button, venueData);
+    }
+    updateWishlistButton(button, wishlisted);
+  });
 };
 
 document.addEventListener('wishlist:changed', (event) => {
@@ -250,6 +314,7 @@ document.addEventListener('wishlist:changed', (event) => {
     return;
   }
   syncWishlistGrid(event.detail);
+  syncWishlistButtons(event.detail);
 });
 
 function toggleWishlist(button) {
@@ -291,12 +356,31 @@ function toggleWishlist(button) {
       return response.json();
     })
     .then((data) => {
-      const wishlisted = Boolean(data.wishlisted);
+      const wishlisted = Boolean(data && data.wishlisted);
+      const fallbackVenueData = extractVenueData(button) || { id: venueId };
+      const serverVenue = data && typeof data.venue === 'object' && data.venue !== null ? data.venue : null;
+      const venueData = {
+        ...fallbackVenueData,
+        ...(serverVenue || {}),
+      };
+      if (!venueData.id) {
+        venueData.id = venueId;
+      }
+      const wishlistItemHtml =
+        data && typeof data.wishlist_item_html === 'string' ? data.wishlist_item_html : null;
+      const wishlistCount =
+        data && typeof data.wishlist_count === 'number' ? data.wishlist_count : null;
+      applyVenueDataset(button, venueData);
       updateWishlistButton(button, wishlisted);
-      const venueData = extractVenueData(button);
       document.dispatchEvent(
         new CustomEvent('wishlist:changed', {
-          detail: { venueId, wishlisted, venueData },
+          detail: {
+            venueId: String(venueData.id),
+            wishlisted,
+            venueData,
+            wishlistItemHtml,
+            wishlistCount,
+          },
         })
       );
     })
