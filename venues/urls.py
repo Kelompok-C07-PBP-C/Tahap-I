@@ -7,6 +7,7 @@ urlpatterns = [
     path("", views.HomeView.as_view(), name="home"),
     path("catalog/", views.CatalogView.as_view(), name="catalog"),
     path("wishlist/", views.WishlistView.as_view(), name="wishlist"),
+    path("bookings/", views.BookedPlacesView.as_view(), name="booked-places"),
     path("wishlist/<int:pk>/toggle/", views.WishlistToggleView.as_view(), name="wishlist-toggle"),
     path("api/wishlist/<int:pk>/toggle/", views.wishlist_toggle, name="wishlist-toggle-api"),
     path("api/catalog/filter/", views.catalog_filter, name="catalog-filter"),

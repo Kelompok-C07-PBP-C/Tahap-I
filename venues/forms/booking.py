@@ -35,13 +35,46 @@ class BookingForm(forms.ModelForm):
         ),
     )
 
+    def __init__(self, *args, venue=None, **kwargs):
+        self.venue = venue
+        super().__init__(*args, **kwargs)
+        addons_field = self.fields.get("addons")
+        if addons_field is not None:
+            addons_field.widget.attrs.setdefault(
+                "class", "grid grid-cols-1 gap-2 text-white sm:grid-cols-2"
+            )
+            if venue is not None:
+                addons_field.queryset = venue.addons.all()
+
+                def _label(addon):
+                    return f"{addon.name} • Rp {addon.price}"
+
+                addons_field.label_from_instance = _label
+
     class Meta:
         model = Booking
         fields = ("start_datetime", "end_datetime", "notes", "addons")
         widgets = {
-            "addons": forms.CheckboxSelectMultiple(
-                attrs={
-                    "class": "grid grid-cols-1 gap-2 text-white sm:grid-cols-2",
-                }
-            )
+            "addons": forms.CheckboxSelectMultiple(),
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        start = cleaned_data.get("start_datetime")
+        end = cleaned_data.get("end_datetime")
+        if start and end and start >= end:
+            raise forms.ValidationError("End time must be after the start time.")
+        if start and end and self.venue is not None:
+            overlapping = (
+                Booking.objects.filter(
+                    venue=self.venue,
+                    status__in=Booking.ACTIVE_STATUSES,
+                )
+                .filter(start_datetime__lt=end, end_datetime__gt=start)
+                .exclude(pk=self.instance.pk)
+            )
+            if overlapping.exists():
+                raise forms.ValidationError(
+                    "This venue is already booked for the selected time range."
+                )
+        return cleaned_data

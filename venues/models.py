@@ -123,12 +123,27 @@ class Wishlist(TimestampedModel):
 class Booking(TimestampedModel):
     """Captures a user's booking details."""
 
+    STATUS_ACTIVE = "active"
+    STATUS_CONFIRMED = "confirmed"
+    STATUS_COMPLETED = "completed"
+    STATUS_CANCELLED = "cancelled"
+
+    STATUS_CHOICES = [
+        (STATUS_ACTIVE, "Reserved"),
+        (STATUS_CONFIRMED, "Confirmed"),
+        (STATUS_COMPLETED, "Completed"),
+        (STATUS_CANCELLED, "Cancelled"),
+    ]
+
+    ACTIVE_STATUSES = (STATUS_ACTIVE, STATUS_CONFIRMED)
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="bookings")
     venue = models.ForeignKey(Venue, on_delete=models.CASCADE, related_name="bookings")
     start_datetime = models.DateTimeField()
     end_datetime = models.DateTimeField()
     addons = models.ManyToManyField(AddOn, related_name="bookings", blank=True)
     notes = models.TextField(blank=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_ACTIVE)
 
     class Meta:
         ordering = ["-start_datetime"]

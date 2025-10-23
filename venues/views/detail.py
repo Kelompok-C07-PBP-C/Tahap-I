@@ -22,7 +22,7 @@ class VenueDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         venue: Venue = context["venue"]
-        booking_form = BookingForm(self.request.POST or None)
+        booking_form = BookingForm(self.request.POST or None, venue=venue)
         review_form = ReviewForm(self.request.POST or None)
         context.update(
             {
@@ -56,7 +56,7 @@ class VenueDetailView(LoginRequiredMixin, DetailView):
         return redirect("venue-detail", slug=self.object.slug)
 
     def handle_booking(self, request: HttpRequest) -> HttpResponse:
-        form = BookingForm(request.POST)
+        form = BookingForm(request.POST, venue=self.object)
         if form.is_valid():
             booking: Booking = form.save(commit=False)
             booking.user = request.user
