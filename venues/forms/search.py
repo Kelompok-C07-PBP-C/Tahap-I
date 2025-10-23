@@ -6,8 +6,6 @@ from django.db import OperationalError, ProgrammingError
 
 from ..models import Category, Venue
 
-from ..models import Category, Venue
-
 
 class SearchFilterForm(forms.Form):
     """Form displayed in navigation for quick searching."""
@@ -17,7 +15,7 @@ class SearchFilterForm(forms.Form):
         choices=(),
         widget=forms.Select(
             attrs={
-                "class": "custom-select w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-sm text-white backdrop-blur",
+                "class": "filter-select w-full",
             }
         ),
     )
@@ -27,7 +25,7 @@ class SearchFilterForm(forms.Form):
         empty_label="All categories",
         widget=forms.Select(
             attrs={
-                "class": "custom-select w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-sm text-white backdrop-blur",
+                "class": "filter-select w-full",
             }
         ),
     )
@@ -36,7 +34,7 @@ class SearchFilterForm(forms.Form):
         min_value=0,
         widget=forms.NumberInput(
             attrs={
-                "class": "w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-sm text-white placeholder-white/60 backdrop-blur",
+                "class": "filter-input w-full",
                 "placeholder": "Max Price",
             }
         ),
