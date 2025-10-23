@@ -52,31 +52,45 @@
         <p class="text-sm text-white/70">Keep track of venues you love. Quickly revisit them when you're ready to book.</p>
       </div>
     </div>
-    <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {% for item in wishlists %}
-      <article class="card-tilt group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl shadow-slate-950/40 backdrop-blur-xl" data-animate>
-        <img src="{{ item.venue.image_url }}" alt="{{ item.venue.name }}" class="h-48 w-full rounded-2xl object-cover" />
-        <div class="mt-4 flex items-start justify-between">
-          <div>
-            <p class="text-xs uppercase tracking-[0.4em] text-white/50">{{ item.venue.category.name }}</p>
-            <h3 class="text-xl font-semibold text-white">{{ item.venue.name }}</h3>
-            <p class="text-sm text-white/60">{{ item.venue.city }}</p>
+    <div class="mt-6 space-y-6">
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" data-wishlist-grid>
+        {% for item in wishlists %}
+        <article class="card-tilt group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl shadow-slate-950/40 backdrop-blur-xl" data-animate data-wishlist-item="{{ item.venue.id }}">
+          <img src="{{ item.venue.image_url }}" alt="{{ item.venue.name }}" class="h-48 w-full rounded-2xl object-cover" />
+          <div class="mt-4 flex items-start justify-between">
+            <div>
+              <p class="text-xs uppercase tracking-[0.4em] text-white/50">{{ item.venue.category.name }}</p>
+              <h3 class="text-xl font-semibold text-white">{{ item.venue.name }}</h3>
+              <p class="text-sm text-white/60">{{ item.venue.city }}</p>
+            </div>
+            <button
+              data-venue="{{ item.venue.id }}"
+              data-wishlisted="true"
+              data-venue-name="{{ item.venue.name|escape }}"
+              data-venue-city="{{ item.venue.city|escape }}"
+              data-venue-category="{{ item.venue.category.name|escape }}"
+              data-venue-price="{{ item.venue.price_per_hour }}"
+              data-venue-url="{% url 'venue-detail' slug=item.venue.slug %}"
+              data-venue-image="{{ item.venue.image_url|escape }}"
+              data-venue-description="{{ item.venue.description|truncatechars:120|escape }}"
+              class="wishlist-button wishlist-button--active rounded-full border border-white/20 bg-white/10 p-2 text-white transition hover:bg-white/20"
+              aria-label="Unlove"
+              aria-pressed="true"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="#ef4444" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ef4444" class="h-6 w-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+              </svg>
+            </button>
           </div>
-          <button data-venue="{{ item.venue.id }}" data-wishlisted="true" class="wishlist-button wishlist-button--active rounded-full border border-white/20 bg-white/10 p-2 text-white transition hover:bg-white/20" aria-label="Unlove" aria-pressed="true">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="#ef4444" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ef4444" class="h-6 w-6">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-            </svg>
-          </button>
-        </div>
-        <p class="mt-2 text-sm text-white/70">{{ item.venue.description|truncatechars:120 }}</p>
-        <div class="mt-4 flex items-center justify-between">
-          <span class="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs uppercase tracking-widest text-white/70">Rp {{ item.venue.price_per_hour }}</span>
-          <a href="{% url 'venue-detail' slug=item.venue.slug %}" class="interactive-glow rounded-2xl bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20" data-ripple>View product</a>
-        </div>
-      </article>
-      {% empty %}
-      <p class="text-white/70">You haven't saved any venues yet.</p>
-      {% endfor %}
+          <p class="mt-2 text-sm text-white/70">{{ item.venue.description|truncatechars:120 }}</p>
+          <div class="mt-4 flex items-center justify-between">
+            <span class="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs uppercase tracking-widest text-white/70">Rp {{ item.venue.price_per_hour }}</span>
+            <a href="{% url 'venue-detail' slug=item.venue.slug %}" class="interactive-glow rounded-2xl bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20" data-ripple>View product</a>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+      <p class="text-white/70 {% if wishlists %}hidden{% endif %}" data-wishlist-empty>You haven't saved any venues yet.</p>
     </div>
   </div>
 </section>
