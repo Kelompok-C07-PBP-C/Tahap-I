@@ -1,11 +1,12 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RagaSpace - Catalog</title>
+    <title>RagaSpace - Wishlist</title>
     
-    <!-- Memuat Font Poppins -->
+    <!-- Font -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
     
     <style>
@@ -18,11 +19,11 @@
 
         body {
             background-image: linear-gradient(180deg, #001926, #46DFB3);
-            background-color: #001926; 
-            color: #fff; 
+            background-color: #001926;
+            color: #fff;
         }
 
-        /* Navbar */
+        /* NAVBAR */
         header {
             background-color: white;
             color: black;
@@ -47,21 +48,24 @@
             font-weight: 500;
         }
 
-        nav a:hover {
-            color: #46DFB3; 
+        nav a.active {
+            font-weight: 700;
+            color: #46DFB3;
         }
 
-        /* Hero Section */
+        nav a:hover {
+            color: #46DFB3;
+        }
+
+        /* HERO */
         .hero {
             position: relative;
-            background-image: url('https://images.unsplash.com/photo-1652732876761-47eb529fa714?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDE3fHx8ZW58MHx8fHx8'); 
-            background-size: cover;
-            background-position: center;
+            background: url("{% static 'image/header.jpg' %}") center/cover no-repeat;
             height: 300px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 40px; /* Jarak ke konten kartu */
+            margin-bottom: 40px;
         }
 
         .hero::after {
@@ -79,16 +83,31 @@
             z-index: 1;
         }
 
-        /* Cards Section */
-        .catalog {
-            background-color: transparent; 
+        /* WISHLIST CONTAINER */
+        .wishlist-container {
+            background-color: transparent;
             padding: 1rem 5%;
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 2rem;
             justify-items: center;
+            min-height: 60vh;
         }
 
+        /* EMPTY STATE */
+        .empty-box {
+            grid-column: 1 / -1;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(6px);
+            border-radius: 12px;
+            padding: 40px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        /* CARD */
         .card {
             background-color: white;
             border-radius: 15px;
@@ -121,7 +140,7 @@
 
         .card span {
             display: inline-block;
-            background: #46DFB3; /* Diubah ke warna tema baru */
+            background: #46DFB3;
             color: #001926;
             border-radius: 8px;
             font-size: 0.75rem;
@@ -141,9 +160,23 @@
             margin-bottom: 0.8rem;
         }
 
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-footer button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: red;
+            font-size: 1.3rem;
+        }
+
         .card .view {
             font-size: 0.9rem;
-            color: #46DFB3; /* Diubah ke warna tema baru */
+            color: #46DFB3;
             text-decoration: none;
             font-weight: 600;
         }
@@ -152,13 +185,14 @@
             text-decoration: underline;
         }
 
+        /* FOOTER */
         .footer {
-            background-color: #111a22; /* Warna dasar footer */
+            background-color: #111a22;
             color: white;
-            padding-top: 20px; /* Padding untuk konten */
-            margin-top: 30px; /* Jarak dari konten kartu */
+            padding-top: 20px;
+            margin-top: 30px;
         }
-        
+
         .footer-main-content {
             display: flex;
             justify-content: space-around;
@@ -177,8 +211,7 @@
             color: #fff;
         }
 
-        .footer-col p,
-        .footer-col a {
+        .footer-col p, .footer-col a {
             color: #a0a0a0;
             text-decoration: none;
             font-size: 12px;
@@ -188,118 +221,65 @@
         }
 
         .footer-col a:hover {
-            color: #46DFB3; /* Hover color disesuaikan */
+            color: #46DFB3;
         }
 
-        .footer-col .contact-info {
-            line-height: 1.5;
-            margin-bottom: 1px;
-        }
-        
         .footer-bottom {
-            background-color: #1a2a38; 
+            background-color: #1a2a38;
             padding: 15px 50px;
             display: flex;
             justify-content: space-between;
-            font-size: 12px; 
+            font-size: 12px;
             color: #a0a0a0;
         }
 
         .footer-bottom a {
-            color: #a0a0a0; 
+            color: #a0a0a0;
             text-decoration: none;
             margin-left: 30px;
         }
     </style>
 </head>
 <body>
-    
+
     <!-- HEADER -->
     <header>
         <div class="header-logo">RagaSpace</div>
         <nav>
-            <a href="#">Home</a>
-            <a href="#">Catalog</a>
-            <a href="#"><b>WishList</b></a>
+            <a href="/">Home</a>
+            <a href="/catalog">Catalog</a>
+            <a href="#" class="active">WishList</a>
         </nav>
-        <div>
-            <!-- Menggunakan cart/login dari desain awal -->
-            <div class="header-cart">User | Logout</div> 
-            
-        </div>
+        <div class="header-cart">User | Logout</div>
     </header>
 
-    <main>
-        <!-- HERO BANNER -->
-        <section class="hero">
-            <h1>Go Book Your Venue!</h1>
-        </section>
+    <!-- HERO -->
+    <section class="hero">
+        <h1>Go Book Your Venue!</h1>
+    </section>
 
-        <!-- CARDS SECTION (Sesuai permintaan) -->
-        <section class="catalog">
-            <!-- Repeatable card 1 -->
-            <div class="card">
-                <img src="https://asset.kompas.com/crops/QEOEX6om6c-cd4uVg4Y0mhBM5A8=/0x0:0x0/1200x800/data/photo/2024/09/10/66dfcd40817d4.jpg" alt="Court">
-                <div class="card-content">
-                    <h3>Haikyuu Court</h3>
-                    <span>Volleyball</span>
-                    <p class="location">Jl. Wahid Hasyim No.10D, Jakarta Pusat 10340, DKI Jakarta, Indonesia</p>
-                    <p class="price">Rp 100.000 / Sesi</p>
-                    <a href="#" class="view">View Product →</a>
-                </div>
-            </div>
+    <!-- WISHLIST SECTION -->
+    <section id="wishlist-container" class="wishlist-container">
+        <!-- AJAX data muncul di sini -->
+    </section>
 
-            <!-- Repeatable card 2 -->
-            <div class="card">
-                <img src="https://asset.ayo.co.id/image/venue/174779194980695.image_cropper_1747791897916.jpg_middle.jpeg" alt="Court">
-                <div class="card-content">
-                    <h3>House of Padel Court</h3>
-                    <span>Padel</span>
-                    <p class="location">Jl. Wahid Hasyim No.10D, Jakarta Pusat 10340, DKI Jakarta, Indonesia</p>
-                    <p class="price">Rp 100.000 / Sesi</p>
-                    <a href="#" class="view">View Product →</a>
-                </div>
-            </div>
-
-            <!-- Repeatable card 3 -->
-            <div class="card">
-                <img src="https://offloadmedia.feverup.com/secretmanchester.com/wp-content/uploads/2024/06/25091112/visual-of-Dutton-Street-cheetham-hill-venue-where-pure-padel-will-open-in-manchester-1024x576.jpg" alt="Court">
-                <div class="card-content">
-                    <h3>Padel Love Court</h3>
-                    <span>Padel</span>
-                    <p class="location">Jl. Wahid Hasyim No.10D, Jakarta Pusat 10340, DKI Jakarta, Indonesia</p>
-                    <p class="price">Rp 100.000 / Sesi</p>
-                    <a href="#" class="view">View Product →</a>
-                </div>
-            </div>
-
-        </section>
-    </main>
-    
-    <!-- FOOTER BARU DENGAN HTML/CSS (Dipertahankan dari Canvas sebelumnya) -->
+    <!-- FOOTER -->
     <footer class="footer">
         <div class="footer-main-content">
-            <!-- Kolom 1: Branding & Kontak -->
             <div class="footer-col">
-                <h2 style="font-size: 24px; margin-bottom: 5px;">RagaSpace</h2>
-                <div class="contact-info">
-                    <p>Jl. Wahid Hasyim No.10D</p>
-                    <p>Jakarta Pusat, 10340</p>
-                    <p style="margin-bottom: 10px;">DKI Jakarta, Indonesia</p>
-                    <p>📞 021 - 1234 5678</p>
-                    <p>✉️ ragaspace@gmail.com</p>
-                </div>
+                <h2 style="font-size: 24px;">RagaSpace</h2>
+                <p>Jl. Wahid Hasyim No.10D</p>
+                <p>Jakarta Pusat, 10340</p>
+                <p>DKI Jakarta, Indonesia</p>
+                <p>📞 021 - 1234 5678</p>
+                <p>✉️ ragaspace@gmail.com</p>
             </div>
-
-            <!-- Kolom 2: Company -->
             <div class="footer-col">
                 <h2>Company</h2>
                 <a href="#">About RagaSpace</a>
                 <a href="#">Careers</a>
                 <a href="#">Log and Media</a>
             </div>
-
-            <!-- Kolom 3: Support -->
             <div class="footer-col">
                 <h2>Support</h2>
                 <a href="#">Support Docs</a>
@@ -307,8 +287,6 @@
                 <a href="#">Partnership</a>
             </div>
         </div>
-        
-        <!-- COPYRIGHT BAR -->
         <div class="footer-bottom">
             <div>© 2025 RagaSpace All Right Served</div>
             <div class="footer-legal-links">
@@ -319,5 +297,64 @@
         </div>
     </footer>
 
+    <!-- AJAX SCRIPT -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch("{% url 'get_wishlist_json' %}")
+                .then(response => response.json())
+                .then(data => {
+                    const container = document.getElementById("wishlist-container");
+                    container.innerHTML = "";
+
+                    if (data.length === 0) {
+                        container.innerHTML = `
+                            <div class="empty-box">No WishList Available</div>
+                        `;
+                    } else {
+                        data.forEach(item => {
+                            container.innerHTML += `
+                                <div class="card">
+                                    <img src="${item.fields.image_url}" alt="${item.fields.name}">
+                                    <div class="card-content">
+                                        <h3>${item.fields.name}</h3>
+                                        <span>${item.fields.category}</span>
+                                        <p class="location">${item.fields.location}</p>
+                                        <p class="price">Rp ${item.fields.price} / Sesi</p>
+                                        <div class="card-footer">
+                                            <button onclick="removeFromWishlist(${item.pk})">❤️</button>
+                                            <a href="/details/${item.pk}" class="view">View Product →</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    }
+                });
+        });
+
+        function removeFromWishlist(id) {
+            fetch(`/wishlist/delete/${id}/`, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken"),
+                }
+            }).then(() => location.reload());
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== "") {
+                const cookies = document.cookie.split(";");
+                for (let cookie of cookies) {
+                    cookie = cookie.trim();
+                    if (cookie.startsWith(name + "=")) {
+                        cookieValue = decodeURIComponent(cookie.split("=")[1]);
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
 </body>
 </html>
