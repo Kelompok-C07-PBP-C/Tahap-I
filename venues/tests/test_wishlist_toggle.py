@@ -46,7 +46,13 @@ class WishlistToggleAPITests(TestCase):
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
         self.assertEqual(first_response.status_code, 200)
-        self.assertTrue(first_response.json()["wishlisted"])
+        first_payload = first_response.json()
+        self.assertTrue(first_payload["wishlisted"])
+        self.assertEqual(first_payload["wishlist_count"], 1)
+        self.assertIsInstance(first_payload["wishlist_item_html"], str)
+        self.assertIn(str(self.venue.pk), first_payload["wishlist_item_html"])
+        self.assertEqual(first_payload["venue"]["id"], str(self.venue.pk))
+        self.assertEqual(first_payload["venue"]["name"], self.venue.name)
         self.assertTrue(Wishlist.objects.filter(user=self.user, venue=self.venue).exists())
 
         second_response = self.client.post(
@@ -56,7 +62,11 @@ class WishlistToggleAPITests(TestCase):
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
         self.assertEqual(second_response.status_code, 200)
-        self.assertFalse(second_response.json()["wishlisted"])
+        second_payload = second_response.json()
+        self.assertFalse(second_payload["wishlisted"])
+        self.assertEqual(second_payload["wishlist_count"], 0)
+        self.assertIsNone(second_payload["wishlist_item_html"])
+        self.assertEqual(second_payload["venue"]["id"], str(self.venue.pk))
         self.assertFalse(Wishlist.objects.filter(user=self.user, venue=self.venue).exists())
 
     def test_toggle_requires_authentication(self) -> None:
