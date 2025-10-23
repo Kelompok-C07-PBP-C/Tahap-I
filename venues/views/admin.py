@@ -66,6 +66,10 @@ class AdminVenueListView(AdminRequiredMixin, LoginRequiredMixin, ListView):
         return context
 
     def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        if not request.user.has_perm("venues.add_venue"):
+            messages.error(request, "You do not have permission to create venues.")
+            return redirect("admin-venues")
+
         form = self.form_class(request.POST)
         if form.is_valid():
             form.save()
@@ -88,6 +92,10 @@ class AdminVenueCreateView(AdminRequiredMixin, LoginRequiredMixin, View):
         return render(request, self.template_name, {"form": form, "formset": formset})
 
     def post(self, request: HttpRequest) -> HttpResponse:
+        if not request.user.has_perm("venues.add_venue"):
+            messages.error(request, "You do not have permission to create venues.")
+            return redirect(self.success_url)
+
         form = VenueForm(request.POST)
         formset = AddOnFormSet(request.POST, instance=form.instance)
         if form.is_valid() and formset.is_valid():
@@ -131,6 +139,10 @@ class AdminVenueDeleteView(AdminRequiredMixin, LoginRequiredMixin, View):
     success_url = reverse_lazy("admin-venues")
 
     def post(self, request: HttpRequest, pk: int) -> HttpResponse:
+        if not request.user.has_perm("venues.delete_venue"):
+            messages.error(request, "You do not have permission to delete venues.")
+            return redirect(self.success_url)
+
         venue = get_object_or_404(Venue, pk=pk)
         venue.delete()
         messages.success(request, "Venue deleted successfully.")
