@@ -458,6 +458,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const revealPageShell = () => {
     if (!pageShell) return;
     pageShell.classList.remove('is-leaving');
+    pageShell.classList.remove('opacity-0');
+    window.requestAnimationFrame(() => {
+      pageShell.classList.add('is-ready');
+      pageShell.style.removeProperty('opacity');
+      pageShell.style.removeProperty('filter');
+      pageShell.style.removeProperty('transform');
     window.requestAnimationFrame(() => {
       pageShell.classList.add('is-ready');
     });
