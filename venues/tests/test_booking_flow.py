@@ -17,6 +17,12 @@ class BookingFlowTests(TestCase):
             email="booker@example.com",
             password="secret123",
         )
+        self.admin = get_user_model().objects.create_user(
+            username="approver",
+            email="approver@example.com",
+            password="secret123",
+            is_staff=True,
+        )
         self.category = Category.objects.create(name="Stadium")
         self.venue = Venue.objects.create(
             category=self.category,
@@ -74,3 +80,33 @@ class BookingFlowTests(TestCase):
         self.assertEqual(Booking.objects.count(), 0)
         messages = list(response.context["messages"])
         self.assertTrue(any("Unable to create booking" in str(message) for message in messages))
+
+    def test_user_can_pay_once_booking_is_approved(self) -> None:
+        self.client.force_login(self.user)
+        start = timezone.now() + timedelta(days=3)
+        end = start + timedelta(hours=1)
+        self.client.post(
+            reverse("venue-detail", kwargs={"slug": self.venue.slug}),
+            {
+                "start_datetime": start.strftime("%Y-%m-%dT%H:%M"),
+                "end_datetime": end.strftime("%Y-%m-%dT%H:%M"),
+            },
+        )
+        booking = Booking.objects.get(user=self.user, venue=self.venue)
+        pending_response = self.client.get(reverse("payment", args=[booking.pk]))
+        self.assertRedirects(pending_response, reverse("booked-places"))
+
+        booking.approve(self.admin)
+        booking.refresh_from_db()
+
+        payment_page = self.client.get(reverse("payment", args=[booking.pk]))
+        self.assertEqual(payment_page.status_code, 200)
+        confirm_response = self.client.post(
+            reverse("payment", args=[booking.pk]),
+            {"method": "gopay"},
+        )
+        self.assertRedirects(confirm_response, reverse("booked-places"))
+        booking.refresh_from_db()
+        self.assertEqual(booking.status, Booking.STATUS_CONFIRMED)
+        self.assertEqual(booking.payment.status, "confirmed")
+        self.assertEqual(booking.payment.method, "gopay")
