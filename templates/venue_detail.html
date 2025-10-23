@@ -75,6 +75,9 @@
     <div class="rounded-[3rem] border border-white/10 bg-white/5 p-8 shadow-2xl shadow-slate-950/50 backdrop-blur-2xl">
       <h2 class="text-2xl font-semibold text-white">Booking details</h2>
       <p class="mt-2 text-white/70">Choose your preferred date, time, and add-ons. Available hours: {{ venue.available_start_time }} - {{ venue.available_end_time }}</p>
+      <p class="mt-2 rounded-2xl border border-amber-300/30 bg-amber-400/10 px-4 py-3 text-sm text-amber-200">
+        Booking requests require admin approval before payment. You'll be notified once a manager reviews your request.
+      </p>
       <form method="post" class="mt-6 space-y-4">
         {% csrf_token %}
         {{ booking_form.non_field_errors }}

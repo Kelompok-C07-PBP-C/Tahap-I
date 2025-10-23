@@ -33,6 +33,7 @@ class AdminDashboardView(AdminRequiredMixin, LoginRequiredMixin, TemplateView):
                     "venues": Venue.objects.count(),
                     "bookings": Booking.objects.count(),
                     "payments": Payment.objects.count(),
+                    "pending_bookings": Booking.objects.filter(status=Booking.STATUS_PENDING).count(),
                 },
                 "admins": user_model.objects.filter(is_staff=True).order_by("username"),
                 "admin_form": kwargs.get("admin_form") or self.form_class(),
@@ -56,6 +57,25 @@ class AdminVenueListView(AdminRequiredMixin, LoginRequiredMixin, ListView):
     context_object_name = "venues"
     paginate_by = 10
     ordering = ["name"]
+    form_class = VenueForm
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context.setdefault("venue_form", kwargs.get("venue_form") or self.form_class())
+        context["show_create_modal"] = kwargs.get("show_create_modal") or self.request.GET.get("show") == "create"
+        return context
+
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Venue created successfully.")
+            return redirect("admin-venues")
+        messages.error(request, "Please fix the errors below to create the venue.")
+        self.object_list = self.get_queryset()
+        return self.render_to_response(
+            self.get_context_data(venue_form=form, show_create_modal=True)
+        )
 
 
 class AdminVenueCreateView(AdminRequiredMixin, LoginRequiredMixin, View):
@@ -115,3 +135,36 @@ class AdminVenueDeleteView(AdminRequiredMixin, LoginRequiredMixin, View):
         venue.delete()
         messages.success(request, "Venue deleted successfully.")
         return redirect(self.success_url)
+
+
+class AdminBookingApprovalView(AdminRequiredMixin, LoginRequiredMixin, TemplateView):
+    template_name = "admin/booking_approvals.html"
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["pending_bookings"] = (
+            Booking.objects.select_related("venue", "user")
+            .prefetch_related("addons")
+            .filter(status=Booking.STATUS_PENDING)
+            .order_by("start_datetime")
+        )
+        return context
+
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        booking = get_object_or_404(Booking.objects.select_related("payment"), pk=request.POST.get("booking_id"))
+        decision = request.POST.get("decision")
+        if booking.status != Booking.STATUS_PENDING:
+            messages.error(request, "This booking has already been processed.")
+            return redirect("admin-bookings")
+        if decision == "approve":
+            booking.approve(request.user)
+            messages.success(request, "Booking approved successfully.")
+        elif decision == "cancel":
+            booking.cancel()
+            if hasattr(booking, "payment"):
+                booking.payment.status = "waiting"
+                booking.payment.save(update_fields=["status", "updated_at"])
+            messages.success(request, "Booking request cancelled.")
+        else:
+            messages.error(request, "Invalid action.")
+        return redirect("admin-bookings")
