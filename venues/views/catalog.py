@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpRequest, JsonResponse
 from django.urls import reverse
+from django.utils.text import Truncator
 from django.views.generic import ListView
 
 from ..filters import VenueFilter
@@ -47,6 +48,7 @@ def catalog_filter(request: HttpRequest) -> JsonResponse:
             "category": venue.category.name,
             "image_url": venue.image_url,
             "url": reverse("venue-detail", kwargs={"slug": venue.slug}),
+            "description": Truncator(venue.description).chars(120),
             "wishlisted": venue.id in wishlist_ids,
         }
         for venue in filterset.qs
