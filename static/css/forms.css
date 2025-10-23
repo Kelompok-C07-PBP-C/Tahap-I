@@ -170,6 +170,71 @@ select.custom-select::-webkit-scrollbar-thumb,
   stroke: #ef4444;
 }
 
+.filter-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: rgba(255, 255, 255, 0.98) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%231B89AE'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M6 9l6 6 6-6'/%3E%3C/svg%3E") !important;
+  background-position: right 1.25rem center !important;
+  background-repeat: no-repeat !important;
+  background-size: 1rem !important;
+  border: 1.5px solid rgba(15, 23, 42, 0.18) !important;
+  border-radius: 9999px !important;
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.16) !important;
+  color: #0f172a !important;
+  color-scheme: light;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.01em !important;
+  padding: 0.85rem 3rem 0.85rem 1.5rem !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.filter-select:hover {
+  border-color: rgba(15, 23, 42, 0.28) !important;
+}
+
+.filter-select:focus,
+.filter-select:focus-visible {
+  outline: none !important;
+  border-color: #1b89ae !important;
+  box-shadow: 0 0 0 3px rgba(27, 137, 174, 0.22), 0 18px 36px rgba(15, 23, 42, 0.18) !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%23ffffff'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M6 9l6 6 6-6'/%3E%3C/svg%3E") !important;
+}
+
+.filter-select option,
+.filter-select optgroup {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  font-weight: 500 !important;
+}
+
+.filter-input {
+  background-color: rgba(255, 255, 255, 0.98) !important;
+  border: 1.5px solid rgba(15, 23, 42, 0.18) !important;
+  border-radius: 9999px !important;
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.16) !important;
+  color: #0f172a !important;
+  color-scheme: light;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.01em !important;
+  padding: 0.85rem 1.5rem !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.filter-input::placeholder {
+  color: rgba(15, 23, 42, 0.48) !important;
+}
+
+.filter-input:focus,
+.filter-input:focus-visible {
+  outline: none !important;
+  border-color: #1b89ae !important;
+  box-shadow: 0 0 0 3px rgba(27, 137, 174, 0.22), 0 18px 36px rgba(15, 23, 42, 0.18) !important;
+}
+
 .wishlist-button--active svg,
 .wishlist-button--active svg path {
   fill: #ef4444;
