@@ -32,16 +32,16 @@
 
 .custom-select option,
 .custom-select optgroup {
-  background-color: #0f172a;
-  color: #f8fafc;
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
 }
 
 .custom-select option:hover,
 .custom-select option:checked,
 .custom-select option:focus,
 .custom-select optgroup:focus {
-  background-color: #1e293b;
-  color: #38bdf8;
+  background-color: #1e293b !important;
+  color: #38bdf8 !important;
 }
 
 .custom-select::-ms-expand {
