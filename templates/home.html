@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}Home • VenueSphere{% endblock %}
+{% block content %}
+<section class="grid gap-12">
+  <div class="relative overflow-hidden rounded-[3rem] border border-white/10 bg-gradient-to-br from-white/10 via-white/5 to-white/10 p-10 shadow-2xl shadow-slate-950/60 backdrop-blur-2xl">
+    <div class="flex flex-col gap-6 md:flex-row md:items-center">
+      <div class="md:w-1/2">
+        <span class="rounded-full border border-white/20 bg-white/10 px-4 py-1 text-xs uppercase tracking-[0.4em] text-white/70">Premium venues</span>
+        <h1 class="mt-4 text-4xl font-semibold leading-tight text-white md:text-5xl">Elevate your game with curated sport venues</h1>
+        <p class="mt-4 max-w-xl text-white/70">Discover premium courts and arenas tailored for your next match, tournament, or community gathering. Filter by city, category, and price to find the perfect fit in seconds.</p>
+        <form method="get" action="{% url 'catalog' %}" class="mt-8 grid gap-3 rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl md:grid-cols-4">
+          {{ global_filter_form.city }}
+          {{ global_filter_form.category }}
+          {{ global_filter_form.max_price }}
+          <button type="submit" class="rounded-2xl bg-primary px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-cyan-500/30 transition hover:bg-primary/80">Explore venues</button>
+        </form>
+      </div>
+      <div class="relative md:w-1/2">
+        <div class="absolute -top-8 left-16 hidden h-24 w-24 rounded-full border border-white/40 bg-white/10 blur-xl md:block"></div>
+        <img src="https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=800&q=80" alt="Sports venue" class="relative z-10 w-full rounded-[2.5rem] border border-white/10 object-cover shadow-[0_30px_60px_-20px] shadow-cyan-500/50" />
+      </div>
+    </div>
+  </div>
+  <div class="grid gap-6 lg:grid-cols-3">
+    {% for venue in popular_venues %}
+    <article class="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl shadow-slate-950/40 backdrop-blur-xl transition hover:-translate-y-1 hover:bg-white/10">
+      <img src="{{ venue.image_url }}" alt="{{ venue.name }}" class="h-48 w-full rounded-2xl object-cover" />
+      <div class="mt-4 flex items-start justify-between">
+        <div>
+          <p class="text-sm uppercase tracking-widest text-white/60">{{ venue.category.name }}</p>
+          <h3 class="text-2xl font-semibold text-white">{{ venue.name }}</h3>
+          <p class="text-sm text-white/60">{{ venue.city }}</p>
+        </div>
+        <button data-venue="{{ venue.id }}" class="wishlist-button rounded-full border border-white/20 bg-white/10 p-2 text-white transition hover:bg-white/20" aria-label="Toggle wishlist">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="{% if venue.id in wishlist_ids %}currentColor{% else %}none{% endif %}" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+          </svg>
+        </button>
+      </div>
+      <p class="mt-2 text-sm text-white/70">{{ venue.description|truncatechars:120 }}</p>
+      <div class="mt-4 flex items-center justify-between">
+        <span class="rounded-full border border-white/20 bg-white/10 px-4 py-1 text-xs uppercase tracking-widest text-white/70">Rp {{ venue.price_per_hour }}</span>
+        <a href="{% url 'venue-detail' slug=venue.slug %}" class="rounded-2xl bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20">View product</a>
+      </div>
+    </article>
+    {% empty %}
+    <p class="text-white/70">No popular venues yet.</p>
+    {% endfor %}
+  </div>
+  <div class="rounded-[3rem] border border-white/10 bg-white/5 p-10 backdrop-blur-2xl">
+    <div class="flex flex-col justify-between gap-6 md:flex-row md:items-center">
+      <div>
+        <h2 class="text-3xl font-semibold text-white">Start exploring the full catalog</h2>
+        <p class="mt-2 text-white/70">Browse curated venues with advanced filtering for categories, cities, and budgets.</p>
+      </div>
+      <a href="{% url 'catalog' %}" class="rounded-2xl bg-primary px-6 py-3 text-base font-semibold text-white shadow-lg shadow-cyan-500/30 transition hover:bg-primary/80">Browse catalog</a>
+    </div>
+  </div>
+</section>
+{% endblock %}
