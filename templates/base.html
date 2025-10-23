@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Venue Booking{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{% static 'images/favicon.ico' %}" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#38bdf8',
+              secondary: '#0f172a'
+            },
+            fontFamily: {
+              sans: ['"Poppins"', 'ui-sans-serif', 'system-ui']
+            }
+          }
+        }
+      };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <script src="{% static 'js/app.js' %}" defer></script>
+    {% block head_extra %}{% endblock %}
+  </head>
+  <body class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 font-sans text-slate-100">
+    <div class="fixed inset-0 -z-10 overflow-hidden">
+      <div class="absolute -left-40 top-20 h-96 w-96 rounded-full bg-primary/20 blur-3xl"></div>
+      <div class="absolute right-0 top-0 h-[32rem] w-[32rem] rounded-full bg-cyan-500/10 blur-3xl"></div>
+      <div class="absolute bottom-0 left-1/2 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full bg-emerald-400/10 blur-3xl"></div>
+    </div>
+    <div class="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-6 sm:px-8">
+      {% if user.is_authenticated %}
+      <nav class="mb-8 rounded-3xl border border-white/10 bg-white/5 px-6 py-4 shadow-xl shadow-slate-900/50 backdrop-blur-xl">
+        <div class="flex flex-col gap-4">
+          <div class="flex flex-wrap items-center justify-between gap-4">
+            <a href="{% url 'home' %}" class="text-2xl font-semibold tracking-tight text-white">VenueSphere</a>
+            <div class="flex flex-wrap items-center gap-4">
+              <div class="text-left text-sm text-white/80 md:text-right">
+                <p>Welcome back,</p>
+                <p class="text-lg font-semibold text-white">{{ request.user.username }}</p>
+              </div>
+              <a href="{% url 'auth:logout' %}" class="rounded-2xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-slate-900/40 transition hover:bg-white/20">
+                Logout
+              </a>
+            </div>
+          </div>
+          <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div class="flex flex-wrap gap-3 text-sm font-medium text-white/80">
+              <a href="{% url 'home' %}" class="rounded-xl border border-transparent px-3 py-1 transition hover:border-white/40 hover:text-white">Home</a>
+              <a href="{% url 'catalog' %}" class="rounded-xl border border-transparent px-3 py-1 transition hover:border-white/40 hover:text-white">Catalog</a>
+              <a href="{% url 'wishlist' %}" class="rounded-xl border border-transparent px-3 py-1 transition hover:border-white/40 hover:text-white">Wishlist</a>
+              {% if request.user.is_staff %}
+              <a href="{% url 'admin-dashboard' %}" class="rounded-xl border border-white/20 bg-white/10 px-3 py-1 text-white transition hover:bg-white/20">Admin Workspace</a>
+              <a href="{% url 'admin-venues' %}" class="rounded-xl border border-transparent px-3 py-1 transition hover:border-white/40 hover:text-white">Manage Venues</a>
+              {% endif %}
+            </div>
+            <form method="get" action="{% url 'catalog' %}" class="grid w-full gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 backdrop-blur-lg md:w-auto md:auto-cols-max md:grid-flow-col md:items-center">
+              <div class="w-full md:w-40">
+                {{ global_filter_form.city }}
+              </div>
+              <div class="w-full md:w-40">
+                {{ global_filter_form.category }}
+              </div>
+              <div class="w-full md:w-36">
+                {{ global_filter_form.max_price }}
+              </div>
+              <button type="submit" class="rounded-xl bg-primary/80 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-cyan-500/40 transition hover:bg-primary">
+                Search
+              </button>
+            </form>
+          </div>
+        </div>
+      </nav>
+      {% endif %}
+      <main class="flex-1">
+        {% for message in messages %}
+        <div class="mb-4 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm text-white shadow-lg shadow-slate-900/40 backdrop-blur">
+          {{ message }}
+        </div>
+        {% endfor %}
+        {% block content %}{% endblock %}
+      </main>
+      <footer class="mt-12 rounded-3xl border border-white/10 bg-white/5 px-6 py-4 text-center text-xs text-white/60 backdrop-blur-xl">
+        Crafted with care • VenueSphere © {% now 'Y' %}
+      </footer>
+    </div>
+  </body>
+</html>
