@@ -10,7 +10,7 @@ from django.shortcuts import get_object_or_404
 from django.views import View
 from django.views.generic import ListView
 
-from ..models import Venue, Wishlist
+from ..models import Booking, Venue, Wishlist
 
 
 class WishlistView(LoginRequiredMixin, ListView):
@@ -23,6 +23,16 @@ class WishlistView(LoginRequiredMixin, ListView):
             .select_related("venue", "venue__category")
             .prefetch_related("venue__addons")
         )
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["approved_bookings"] = (
+            Booking.objects.filter(user=self.request.user, status=Booking.STATUS_ACTIVE)
+            .select_related("venue")
+            .prefetch_related("addons")
+            .order_by("-start_datetime")
+        )
+        return context
 
 
 class WishlistToggleView(LoginRequiredMixin, View):
