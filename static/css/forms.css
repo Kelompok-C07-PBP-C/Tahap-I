@@ -87,3 +87,9 @@ select.custom-select::-webkit-scrollbar-thumb,
   border-radius: 9999px;
   border: 2px solid #0f172a;
 }
+
+.wishlist-button--active svg,
+.wishlist-button--active svg path {
+  fill: #ef4444;
+  stroke: #ef4444;
+}

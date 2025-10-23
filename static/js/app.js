@@ -5,17 +5,57 @@ function getCookie(name) {
   return null;
 }
 
-const csrfToken = getCookie('csrftoken');
+const getCsrfToken = () => {
+  const cookieToken = getCookie('csrftoken');
+  if (cookieToken) {
+    return cookieToken;
+  }
+  const metaToken = document.querySelector('meta[name="csrf-token"]');
+  if (metaToken) {
+    return metaToken.getAttribute('content');
+  }
+  return '';
+};
+
+const updateWishlistButton = (button, wishlisted) => {
+  if (!button) return;
+  const svg = button.querySelector('svg');
+  const path = svg ? svg.querySelector('path') : null;
+  if (svg) {
+    svg.setAttribute('fill', wishlisted ? '#ef4444' : 'none');
+    svg.setAttribute('stroke', wishlisted ? '#ef4444' : 'currentColor');
+  }
+  if (path) {
+    path.setAttribute('fill', wishlisted ? '#ef4444' : 'none');
+    path.setAttribute('stroke', wishlisted ? '#ef4444' : 'currentColor');
+  }
+  button.classList.toggle('wishlist-button--active', Boolean(wishlisted));
+  button.setAttribute('aria-pressed', wishlisted ? 'true' : 'false');
+  button.dataset.wishlisted = wishlisted ? 'true' : 'false';
+};
 
 function toggleWishlist(button) {
   const venueId = button.dataset.venue;
+  if (!venueId || button.dataset.loading === 'true') {
+    return;
+  }
+
+  const previousState = button.getAttribute('aria-pressed') === 'true';
+  const desiredState = !previousState;
+  const csrfToken = getCsrfToken();
+
+  button.dataset.loading = 'true';
+  updateWishlistButton(button, desiredState);
+
   fetch(`/api/wishlist/${venueId}/toggle/`, {
     method: 'POST',
     headers: {
       'X-Requested-With': 'XMLHttpRequest',
       'Content-Type': 'application/json',
+      Accept: 'application/json',
       ...(csrfToken ? { 'X-CSRFToken': csrfToken } : {}),
     },
+    credentials: 'same-origin',
     body: JSON.stringify({}),
   })
     .then((response) => response.json())
@@ -31,7 +71,16 @@ function toggleWishlist(button) {
       }
       button.setAttribute('aria-pressed', data.wishlisted ? 'true' : 'false');
     })
-    .catch((error) => console.error('Wishlist toggle failed', error));
+    .then((data) => {
+      updateWishlistButton(button, Boolean(data.wishlisted));
+    })
+    .catch((error) => {
+      updateWishlistButton(button, previousState);
+      console.error('Wishlist toggle failed', error);
+    })
+    .finally(() => {
+      delete button.dataset.loading;
+    });
 }
 
 document.addEventListener('click', (event) => {
