@@ -15,7 +15,7 @@ class SearchFilterForm(forms.Form):
         choices=(),
         widget=forms.Select(
             attrs={
-                "class": "filter-select w-full",
+                "class": "custom-select w-full rounded-2xl border border-white/25 bg-slate-950/70 px-5 py-3 text-sm text-white/90 backdrop-blur",
             }
         ),
     )
@@ -25,7 +25,7 @@ class SearchFilterForm(forms.Form):
         empty_label="All categories",
         widget=forms.Select(
             attrs={
-                "class": "filter-select w-full",
+                "class": "custom-select w-full rounded-2xl border border-white/25 bg-slate-950/70 px-5 py-3 text-sm text-white/90 backdrop-blur",
             }
         ),
     )
@@ -34,7 +34,7 @@ class SearchFilterForm(forms.Form):
         min_value=0,
         widget=forms.NumberInput(
             attrs={
-                "class": "filter-input w-full",
+                "class": "w-full rounded-2xl border border-white/25 bg-slate-950/70 px-5 py-3 text-sm text-white/90 placeholder:text-white/60 backdrop-blur",
                 "placeholder": "Max Price",
             }
         ),

@@ -39,8 +39,8 @@
     </div>
     {% block navbar %}
     <header class="sticky top-0 z-40 w-full bg-white text-slate-900 shadow-md" data-animate>
-      <nav class="flex w-full items-center gap-4 px-4 py-3 sm:px-6 lg:px-10">
-        <div class="flex basis-0 flex-1 items-center justify-start">
+      <nav class="flex w-full items-center px-4 py-3 sm:px-6 lg:px-10">
+        <div class="flex flex-1 items-center justify-start">
           <a href="{% url 'home' %}" class="flex items-center justify-center">
             <img src="{% static 'images/ragaspace-logo.svg' %}" alt="RagaSpace logo" class="h-10 w-10 object-contain" />
           </a>
@@ -59,7 +59,7 @@
             </svg>
           </button>
         </div>
-        <div id="primary-navigation" class="hidden basis-0 flex-1 items-center justify-center gap-10 text-base font-medium md:flex">
+        <div id="primary-navigation" class="hidden flex-1 items-center justify-center gap-16 text-base font-medium md:flex">
           <a href="{% url 'home' %}" class="font-medium transition hover:text-sky-600">Home</a>
           <a href="{% url 'catalog' %}" class="font-medium transition hover:text-sky-600">Catalog</a>
           <a href="{% url 'wishlist' %}" class="font-medium transition hover:text-sky-600">Wishlist</a>
@@ -75,7 +75,7 @@
           >
           {% endif %}
         </div>
-        <div class="hidden basis-0 flex-1 items-center justify-end gap-4 text-base font-medium md:flex">
+        <div class="hidden flex-1 items-center justify-end gap-4 text-base font-medium md:flex">
           {% if user.is_authenticated %}
           <span class="text-base font-medium">{{ request.user.username }}</span>
           <span aria-hidden="true" class="text-slate-300">|</span>
@@ -117,30 +117,7 @@
       </div>
     </header>
     {% endblock %}
-    {% block navbar_extra %}
-    <section class="relative isolate">
-      <img
-        src="{% static 'images/ragaspace-hero.svg' %}"
-        alt="Athletes playing on an indoor paddle court"
-        class="h-64 w-full object-cover sm:h-80 lg:h-[28rem]"
-      />
-      <div class="absolute inset-0 bg-gradient-to-b from-slate-900/10 via-slate-900/20 to-slate-900/60"></div>
-      <div class="pointer-events-none absolute inset-x-0 bottom-0 translate-y-1/2">
-        <div class="pointer-events-auto mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div class="flex flex-wrap items-center justify-center gap-3 rounded-3xl border border-white/15 bg-slate-900/70 px-6 py-5 text-sm font-medium text-white/80 shadow-2xl shadow-slate-950/40 backdrop-blur-xl" data-animate>
-            <form method="get" action="{% url 'catalog' %}" class="flex w-full flex-wrap items-center justify-center gap-4 md:flex-nowrap md:justify-center md:gap-10">
-              {{ global_filter_form.city }}
-              {{ global_filter_form.category }}
-              {{ global_filter_form.max_price }}
-              <button type="submit" class="rounded-xl bg-[#1B89AE] px-5 py-2 text-sm font-semibold text-white transition-colors duration-150 hover:bg-[#15647F]">
-                Search
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </section>
-    {% endblock %}
+    {% block navbar_extra %}{% endblock %}
     <div class="{% block page_shell_class %}relative mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 pb-6 pt-20 sm:px-8 lg:pt-28{% endblock %}" data-page-shell>
       <main class="{% block main_class %}flex-1{% endblock %}">
         {% for message in messages %}
