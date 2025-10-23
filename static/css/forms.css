@@ -3,7 +3,6 @@
   -webkit-appearance: none;
   -moz-appearance: none;
   background: linear-gradient(135deg, rgba(15, 23, 42, 0.85), rgba(30, 41, 59, 0.75));
-  background-color: rgba(15, 23, 42, 0.9);
   border: 1px solid rgba(148, 163, 184, 0.35);
   border-radius: 0.75rem;
   color: #f8fafc;
@@ -11,7 +10,6 @@
   padding-right: 3rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
   position: relative;
-  color-scheme: dark;
 }
 
 .custom-select:focus {
@@ -28,14 +26,12 @@
 
 .custom-select option {
   background-color: #0f172a;
-  color: #e2e8f0;
+  color: #f8fafc;
 }
 
 .custom-select option:hover,
-.custom-select option:checked,
-.custom-select option:focus {
+.custom-select option:checked {
   background-color: #1e293b;
-  color: #f8fafc;
 }
 
 .custom-select::-ms-expand {
@@ -49,3 +45,6 @@
   background-size: 1rem;
 }
 
+.dark .custom-select {
+  color-scheme: dark;
+}

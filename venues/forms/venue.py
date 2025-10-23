@@ -30,7 +30,7 @@ class VenueForm(forms.ModelForm):
         widgets = {
             "category": forms.Select(
                 attrs={
-                    "class": "custom-select w-full rounded-xl px-4 py-2 text-white backdrop-blur",
+                    "class": "custom-select w-full rounded-xl border border-white/20 bg-white/10 px-4 py-2 text-white backdrop-blur",
                 }
             ),
             "name": forms.TextInput(
