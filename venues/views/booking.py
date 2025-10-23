@@ -42,7 +42,7 @@ class BookingPaymentView(LoginRequiredMixin, View):
         booking = self._get_booking(request, pk)
         if booking.status == Booking.STATUS_PENDING:
             messages.error(request, "This booking still requires admin approval before payment.")
-            return redirect("booked-places")
+            return redirect("wishlist")
         if booking.status in {Booking.STATUS_CANCELLED, Booking.STATUS_COMPLETED}:
             messages.error(request, "This booking can no longer be paid.")
             return redirect("booked-places")
@@ -53,7 +53,7 @@ class BookingPaymentView(LoginRequiredMixin, View):
         booking = self._get_booking(request, pk)
         if booking.status == Booking.STATUS_PENDING:
             messages.error(request, "This booking still requires admin approval before payment.")
-            return redirect("booked-places")
+            return redirect("wishlist")
         if booking.status in {Booking.STATUS_CANCELLED, Booking.STATUS_COMPLETED}:
             messages.error(request, "This booking can no longer be paid.")
             return redirect("booked-places")
@@ -64,7 +64,7 @@ class BookingPaymentView(LoginRequiredMixin, View):
             payment.save()
             booking.status = Booking.STATUS_CONFIRMED
             booking.save(update_fields=["status", "updated_at"])
-            messages.success(request, "Payment confirmed! Enjoy your venue.")
+            messages.success(request, "Payment completed! Your booking is confirmed.")
             return redirect("booked-places")
         messages.error(request, "Could not process the payment. Please try again.")
         return render(request, self.template_name, {"booking": booking, "form": form})
@@ -78,7 +78,10 @@ class BookedPlacesView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return (
-            Booking.objects.filter(user=self.request.user)
+            Booking.objects.filter(
+                user=self.request.user,
+                status__in=[Booking.STATUS_CONFIRMED, Booking.STATUS_COMPLETED],
+            )
             .select_related("venue")
             .prefetch_related("addons")
             .order_by("-start_datetime")

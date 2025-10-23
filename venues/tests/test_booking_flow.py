@@ -94,7 +94,7 @@ class BookingFlowTests(TestCase):
         )
         booking = Booking.objects.get(user=self.user, venue=self.venue)
         pending_response = self.client.get(reverse("payment", args=[booking.pk]))
-        self.assertRedirects(pending_response, reverse("booked-places"))
+        self.assertRedirects(pending_response, reverse("wishlist"))
 
         booking.approve(self.admin)
         booking.refresh_from_db()

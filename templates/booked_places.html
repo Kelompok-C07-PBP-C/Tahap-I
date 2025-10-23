@@ -4,9 +4,7 @@
 <section class="grid gap-8">
   <div class="rounded-[3rem] border border-white/10 bg-white/5 p-8 shadow-2xl shadow-slate-950/50 backdrop-blur-2xl">
     <h1 class="text-4xl font-semibold text-white">Booked places</h1>
-    <p class="mt-2 max-w-2xl text-white/70">
-      Review all of your venue reservations, including upcoming sessions and completed events.
-    </p>
+    <p class="mt-2 max-w-2xl text-white/70">Review your confirmed reservations and completed events in one place.</p>
   </div>
   <div class="space-y-4">
     {% for booking in bookings %}
@@ -66,25 +64,17 @@
       {% endif %}
       <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div class="text-sm text-white/70">
-          {% if booking.status == 'pending' %}
-          <span class="rounded-full border border-amber-300/30 bg-amber-400/10 px-3 py-1 text-amber-200">Awaiting admin approval</span>
-          {% elif booking.status == 'active' %}
-          <span class="rounded-full border border-emerald-300/30 bg-emerald-400/10 px-3 py-1 text-emerald-200">Approved • Reserve confirmed</span>
-          {% elif booking.status == 'confirmed' %}
+          {% if booking.status == 'confirmed' %}
           <span class="rounded-full border border-sky-300/30 bg-sky-400/10 px-3 py-1 text-sky-200">Payment received</span>
           {% elif booking.status == 'completed' %}
           <span class="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-white/70">Event completed</span>
-          {% elif booking.status == 'cancelled' %}
-          <span class="rounded-full border border-rose-300/30 bg-rose-400/10 px-3 py-1 text-rose-200">Booking cancelled</span>
           {% endif %}
         </div>
         <div class="flex flex-wrap gap-2">
-          {% if booking.status == 'active' %}
-          <a href="{% url 'payment' booking.pk %}" class="inline-flex items-center justify-center rounded-2xl bg-primary px-4 py-2 text-sm font-semibold text-white shadow-md shadow-cyan-500/40 transition hover:bg-primary/80">Proceed to payment</a>
-          {% elif booking.status == 'pending' %}
-          <span class="inline-flex items-center rounded-2xl border border-white/20 bg-white/10 px-4 py-2 text-sm text-white/70">We'll notify you when it's approved.</span>
+          {% if booking.status == 'confirmed' %}
+          <span class="inline-flex items-center rounded-2xl border border-white/20 bg-white/10 px-4 py-2 text-sm text-white/70">You're all set! We'll remind you before your event.</span>
           {% endif %}
-          {% if booking.status != 'cancelled' and booking.status != 'completed' %}
+          {% if booking.status != 'completed' %}
           <button
             type="button"
             data-modal-target="cancel-booking-{{ booking.pk }}"
@@ -95,7 +85,7 @@
       </div>
     </article>
     {% empty %}
-    <p class="text-white/70">You have not booked any venues yet. Browse the catalog to get started.</p>
+    <p class="text-white/70">Once your payment is complete, your confirmed bookings will appear here.</p>
     {% endfor %}
   </div>
 </section>
