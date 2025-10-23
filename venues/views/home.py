@@ -9,9 +9,10 @@ from django.views.generic import TemplateView
 
 from ..filters import VenueFilter
 from ..models import Venue, Wishlist
+from .mixins import EnsureCsrfCookieMixin
 
 
-class HomeView(LoginRequiredMixin, TemplateView):
+class HomeView(EnsureCsrfCookieMixin, LoginRequiredMixin, TemplateView):
     template_name = "home.html"
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:

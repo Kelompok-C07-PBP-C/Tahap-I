@@ -11,9 +11,10 @@ from django.views import View
 from django.views.generic import ListView
 
 from ..models import Booking, Venue, Wishlist
+from .mixins import EnsureCsrfCookieMixin
 
 
-class WishlistView(LoginRequiredMixin, ListView):
+class WishlistView(EnsureCsrfCookieMixin, LoginRequiredMixin, ListView):
     template_name = "wishlist.html"
     context_object_name = "wishlists"
 
