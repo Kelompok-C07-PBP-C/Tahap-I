@@ -11,9 +11,10 @@ from django.views.generic import DetailView
 
 from ..forms import BookingForm, ReviewForm
 from ..models import Booking, Review, Venue, Wishlist
+from .mixins import EnsureCsrfCookieMixin
 
 
-class VenueDetailView(LoginRequiredMixin, DetailView):
+class VenueDetailView(EnsureCsrfCookieMixin, LoginRequiredMixin, DetailView):
     model = Venue
     template_name = "venue_detail.html"
     slug_field = "slug"

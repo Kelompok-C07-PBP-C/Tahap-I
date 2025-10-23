@@ -4,6 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="{{ csrf_cookie_value }}" />
     <title>{% block title %}Venue Booking{% endblock %}</title>
     <link rel="icon" type="image/png" href="{% static 'images/favicon.ico' %}" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>

@@ -9,9 +9,10 @@ from django.views.generic import ListView
 
 from ..filters import VenueFilter
 from ..models import Venue, Wishlist
+from .mixins import EnsureCsrfCookieMixin
 
 
-class CatalogView(LoginRequiredMixin, ListView):
+class CatalogView(EnsureCsrfCookieMixin, LoginRequiredMixin, ListView):
     model = Venue
     template_name = "catalog.html"
     context_object_name = "venues"
@@ -34,6 +35,9 @@ class CatalogView(LoginRequiredMixin, ListView):
 @login_required
 def catalog_filter(request: HttpRequest) -> JsonResponse:
     filterset = VenueFilter(request.GET, queryset=Venue.objects.all())
+    wishlist_ids = set(
+        Wishlist.objects.filter(user=request.user).values_list("venue_id", flat=True)
+    )
     rendered_cards = [
         {
             "id": venue.id,
@@ -43,6 +47,7 @@ def catalog_filter(request: HttpRequest) -> JsonResponse:
             "category": venue.category.name,
             "image_url": venue.image_url,
             "url": reverse("venue-detail", kwargs={"slug": venue.slug}),
+            "wishlisted": venue.id in wishlist_ids,
         }
         for venue in filterset.qs
     ]

@@ -53,6 +53,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "venues.context_processors.global_filters",
+                "venues.context_processors.csrf_token_context",
             ],
         },
     },
