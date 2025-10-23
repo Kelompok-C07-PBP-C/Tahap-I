@@ -5,30 +5,83 @@ function getCookie(name) {
   return null;
 }
 
-const csrfToken = getCookie('csrftoken');
+const getCsrfToken = () => {
+  const cookieToken = getCookie('csrftoken');
+  if (cookieToken) {
+    return cookieToken;
+  }
+  const metaToken = document.querySelector('meta[name="csrf-token"]');
+  if (metaToken) {
+    return metaToken.getAttribute('content');
+  }
+  return '';
+};
+
+const updateWishlistButton = (button, wishlisted) => {
+  if (!button) return;
+  const svg = button.querySelector('svg');
+  const path = svg ? svg.querySelector('path') : null;
+  if (svg) {
+    svg.setAttribute('fill', wishlisted ? '#ef4444' : 'none');
+    svg.setAttribute('stroke', wishlisted ? '#ef4444' : 'currentColor');
+  }
+  if (path) {
+    path.setAttribute('fill', wishlisted ? '#ef4444' : 'none');
+    path.setAttribute('stroke', wishlisted ? '#ef4444' : 'currentColor');
+  }
+  button.classList.toggle('wishlist-button--active', Boolean(wishlisted));
+  button.setAttribute('aria-pressed', wishlisted ? 'true' : 'false');
+  button.dataset.wishlisted = wishlisted ? 'true' : 'false';
+};
 
 function toggleWishlist(button) {
   const venueId = button.dataset.venue;
+  if (!venueId || button.dataset.loading === 'true') {
+    return;
+  }
+
+  const previousState = button.getAttribute('aria-pressed') === 'true';
+  const desiredState = !previousState;
+  const csrfToken = getCsrfToken();
+
+  button.dataset.loading = 'true';
+  updateWishlistButton(button, desiredState);
+
   fetch(`/api/wishlist/${venueId}/toggle/`, {
     method: 'POST',
     headers: {
       'X-Requested-With': 'XMLHttpRequest',
       'Content-Type': 'application/json',
+      Accept: 'application/json',
       ...(csrfToken ? { 'X-CSRFToken': csrfToken } : {}),
     },
+    credentials: 'same-origin',
     body: JSON.stringify({}),
   })
-    .then((response) => response.json())
-    .then((data) => {
-      const svg = button.querySelector('svg');
-      if (!svg) return;
-      if (data.wishlisted) {
-        svg.setAttribute('fill', 'currentColor');
-      } else {
-        svg.setAttribute('fill', 'none');
+    .then((response) => {
+      if (response.redirected) {
+        window.location.href = response.url;
+        throw new Error('Authentication required');
       }
+      if (!response.ok) {
+        throw new Error(`Wishlist toggle failed with status ${response.status}`);
+      }
+      const contentType = response.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        throw new Error('Unexpected response format');
+      }
+      return response.json();
     })
-    .catch((error) => console.error('Wishlist toggle failed', error));
+    .then((data) => {
+      updateWishlistButton(button, Boolean(data.wishlisted));
+    })
+    .catch((error) => {
+      updateWishlistButton(button, previousState);
+      console.error('Wishlist toggle failed', error);
+    })
+    .finally(() => {
+      delete button.dataset.loading;
+    });
 }
 
 document.addEventListener('click', (event) => {
@@ -147,8 +200,8 @@ if (filterForm) {
           card.innerHTML = `
             <div class="relative">
               <img src="${venue.image_url}" alt="${venue.name}" class="h-48 w-full rounded-2xl object-cover" />
-              <button data-venue="${venue.id}" class="wishlist-button absolute right-3 top-3 rounded-full border border-white/30 bg-white/10 p-2 text-white transition hover:bg-white/20" aria-label="Toggle wishlist">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6">
+              <button data-venue="${venue.id}" class="wishlist-button ${venue.wishlisted ? 'wishlist-button--active' : ''} absolute right-3 top-3 rounded-full border border-white/30 bg-white/10 p-2 text-white transition hover:bg-white/20" aria-label="Toggle wishlist" aria-pressed="${venue.wishlisted ? 'true' : 'false'}" data-wishlisted="${venue.wishlisted ? 'true' : 'false'}">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="${venue.wishlisted ? '#ef4444' : 'none'}" viewBox="0 0 24 24" stroke-width="1.5" stroke="${venue.wishlisted ? '#ef4444' : 'currentColor'}" class="h-6 w-6">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
                 </svg>
               </button>
