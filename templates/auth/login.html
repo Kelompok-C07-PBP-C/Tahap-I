@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Login • RagaSpace{% endblock %}
 {% block navbar %}{% endblock %}
 {% block content %}
@@ -12,16 +13,26 @@
       {{ form.username }}
       {{ form.username.errors }}
     </div>
-    <div>
-      {{ form.password.label_tag }}
-      {{ form.password }}
-      {{ form.password.errors }}
-    </div>
-    <button type="submit" class="w-full rounded-2xl bg-primary px-4 py-3 text-lg font-semibold text-white shadow-lg shadow-cyan-500/40 transition hover:bg-primary/80">Login</button>
-  </form>
-  <p class="mt-6 text-center text-sm text-white/70">
-    Don't have an account?
-    <a href="{% url 'auth:register' %}" class="font-semibold text-primary hover:underline">Register now</a>
-  </p>
+    <h1 class="mb-6 text-center text-4xl font-bold text-white">Login to RagaSpace</h1>
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      <div>
+        {{ form.username.label_tag }}
+        {{ form.username }}
+        {{ form.username.errors }}
+      </div>
+      <div>
+        {{ form.password.label_tag }}
+        {{ form.password }}
+        {{ form.password.errors }}
+      </div>
+      <button type="submit" class="w-full rounded-2xl bg-primary px-4 py-3 text-lg font-semibold text-white shadow-lg shadow-cyan-500/40 transition hover:bg-primary/80">Login</button>
+    </form>
+    <p class="mt-6 text-center text-sm text-white/70">
+      Don't have an account?
+      <a href="{% url 'auth:register' %}" class="font-semibold text-primary hover:underline">Register now</a>
+    </p>
+  </div>
 </div>
 {% endblock %}
