@@ -32,10 +32,7 @@ class BookingCancelView(LoginRequiredMixin, View):
         if payment is not None:
             payment.status = "waiting"
             payment.save(update_fields=["status", "updated_at"])
-        success_message = "Booking cancelled successfully. Your refund has been processed."
-        if request.headers.get("x-requested-with") == "XMLHttpRequest":
-            return JsonResponse({"success": True, "message": success_message, "booking_id": booking.pk})
-        messages.success(request, success_message)
+        messages.success(request, "Booking cancelled successfully.")
         return redirect("booked-places")
 
 
