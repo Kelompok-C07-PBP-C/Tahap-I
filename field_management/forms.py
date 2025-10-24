@@ -166,12 +166,10 @@ class BookingDecisionForm(forms.Form):
     def apply_decision(self, approver) -> tuple[Booking, str]:
         """Persist the selected decision and return the updated booking."""
 
-        if not self.cleaned_data or self.booking is None:
+        if not self.is_valid() or self.booking is None:
             raise ValueError("Form harus divalidasi sebelum diproses.")
 
-        decision = self.cleaned_data.get("decision")
-        if decision is None:
-            raise ValueError("Form harus divalidasi sebelum diproses.")
+        decision = self.cleaned_data["decision"]
         booking = self.booking
 
         if decision == self.APPROVE:

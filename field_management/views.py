@@ -183,13 +183,7 @@ class AdminBookingApprovalView(AdminRequiredMixin, LoginRequiredMixin, TemplateV
                 messages.error(request, error)
             return redirect("admin-bookings")
 
-        try:
-            _, decision = form.apply_decision(request.user)
-        except Exception:  # pragma: no cover - defensive guard
-            logger.exception("Failed to process booking decision", extra={"booking_id": form.data.get("booking_id")})
-            messages.error(request, "Terjadi kesalahan saat memproses permintaan booking. Silakan coba lagi.")
-            return redirect("admin-bookings")
-
+        _, decision = form.apply_decision(request.user)
         if decision == BookingDecisionForm.APPROVE:
             messages.success(request, "Booking approved successfully.")
         else:

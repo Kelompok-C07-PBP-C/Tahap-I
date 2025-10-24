@@ -119,25 +119,3 @@ class AdminBookingApprovalViewTests(TestCase):
         self.assertRedirects(response, reverse("admin-bookings"))
         messages = list(response.context["messages"])
         self.assertTrue(any("sudah diproses" in str(message) for message in messages))
-
-    def test_unexpected_error_is_surface_as_message(self) -> None:
-        booking = self._create_booking()
-        self.client.force_login(self.admin)
-
-        with patch(
-            "field_management.views.BookingDecisionForm.apply_decision",
-            side_effect=RuntimeError("boom"),
-        ):
-            response = self.client.post(
-                reverse("admin-bookings"),
-                {"booking_id": booking.pk, "decision": "approve"},
-                follow=True,
-            )
-
-        self.assertRedirects(response, reverse("admin-bookings"))
-        booking.refresh_from_db()
-        self.assertEqual(booking.status, Booking.STATUS_PENDING)
-        messages = list(response.context["messages"])
-        self.assertTrue(
-            any("Terjadi kesalahan" in str(message) for message in messages)
-        )
