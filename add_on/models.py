@@ -22,4 +22,7 @@ class AddOn(models.Model):
         ordering = ["name"]
 
     def __str__(self) -> str:  # pragma: no cover - trivial
+
         return f"{self.name} ({self.venue.name})"
+
+

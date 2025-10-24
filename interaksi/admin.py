@@ -13,4 +13,8 @@ class WishlistAdmin(admin.ModelAdmin):
 class ReviewAdmin(admin.ModelAdmin):
     list_display = ("venue", "user", "rating", "created_at")
     list_filter = ("rating", "venue")
+<<<<<<< HEAD
     search_fields = ("comment", "venue__name", "user__username")
+=======
+    search_fields = ("comment", "venue__name", "user__username")
+>>>>>>> origin/dev

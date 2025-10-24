@@ -7,4 +7,8 @@ from .models import AddOn
 class AddOnAdmin(admin.ModelAdmin):
     list_display = ("name", "venue", "price", "updated_at")
     list_filter = ("venue",)
+<<<<<<< HEAD
     search_fields = ("name", "venue__name")
+=======
+    search_fields = ("name", "venue__name")
+>>>>>>> origin/dev

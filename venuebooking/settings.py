@@ -11,9 +11,12 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 import os
+<<<<<<< HEAD:venuebooking/settings.py
+=======
 from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
+>>>>>>> origin/dev:TK_PBP/settings.py
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -62,6 +65,22 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+<<<<<<< HEAD:venuebooking/settings.py
+
+ROOT_URLCONF = "venuebooking.urls"
+
+TEMPLATES = [
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [BASE_DIR / "templates"],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+=======
 CSRF_TRUSTED_ORIGINS = [
     "https://haekal-alexander-tkpbp.pbp.cs.ui.ac.id"
 ]
@@ -77,6 +96,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+>>>>>>> origin/dev:TK_PBP/settings.py
                 "katalog.context_processors.global_filters",
                 "authentication.context_processors.csrf_token_context",
             ],
@@ -84,6 +104,25 @@ TEMPLATES = [
     },
 ]
 
+<<<<<<< HEAD:venuebooking/settings.py
+WSGI_APPLICATION = "venuebooking.wsgi.application"
+ASGI_APPLICATION = "venuebooking.asgi.application"
+
+
+# Database
+# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+        "USER": os.getenv("DJANGO_DB_USER", ""),
+        "PASSWORD": os.getenv("DJANGO_DB_PASSWORD", ""),
+        "HOST": os.getenv("DJANGO_DB_HOST", ""),
+        "PORT": os.getenv("DJANGO_DB_PORT", ""),
+    }
+}
+=======
 WSGI_APPLICATION = 'TK_PBP.wsgi.application'
 ASGI_APPLICATION = "TK_PBP.asgi.application"
 
@@ -112,6 +151,7 @@ else:
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+>>>>>>> origin/dev:TK_PBP/settings.py
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -168,4 +208,8 @@ CSRF_COOKIE_SECURE = os.getenv("DJANGO_CSRF_COOKIE_SECURE", "0") == "1"
 SESSION_COOKIE_SECURE = os.getenv("DJANGO_SESSION_COOKIE_SECURE", "0") == "1"
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
+<<<<<<< HEAD:venuebooking/settings.py
 SECURE_REFERRER_POLICY = "strict-origin"
+=======
+SECURE_REFERRER_POLICY = "strict-origin"
+>>>>>>> origin/dev:TK_PBP/settings.py

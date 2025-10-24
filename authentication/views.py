@@ -4,11 +4,20 @@ from __future__ import annotations
 from typing import Any
 
 from django.contrib import messages
+<<<<<<< HEAD
+from django.contrib.auth import login as auth_login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView
+from django.db.models import Count
+from django.forms.forms import NON_FIELD_ERRORS
+from django.http import HttpRequest, HttpResponse, JsonResponse
+=======
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.db.models import Count
 from django.http import HttpRequest, HttpResponse
+>>>>>>> origin/dev
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views import View
@@ -23,13 +32,58 @@ from .forms import LoginForm, RegistrationForm
 from .mixins import AdminRequiredMixin, EnsureCsrfCookieMixin
 
 
+<<<<<<< HEAD
+class AuthLoginView(EnsureCsrfCookieMixin, LoginView):
+=======
 class AuthLoginView(LoginView):
+>>>>>>> origin/dev
     template_name = "authentication/login.html"
     authentication_form = LoginForm
 
     def get_success_url(self) -> str:
         return reverse("home")
 
+<<<<<<< HEAD
+    def _is_ajax_request(self) -> bool:
+        request_header = self.request.headers.get("X-Requested-With", "")
+        return request_header.lower() == "xmlhttprequest"
+
+    def form_valid(self, form):
+        if self._is_ajax_request():
+            auth_login(self.request, form.get_user())
+            return JsonResponse(
+                {
+                    "success": True,
+                    "redirect_url": self.get_success_url(),
+                }
+            )
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        if self._is_ajax_request():
+            error_data = form.errors.get_json_data()
+            field_errors: dict[str, list[str]] = {}
+            non_field_errors: list[str] = []
+
+            for field, messages in error_data.items():
+                parsed_messages = [message.get("message", "") for message in messages]
+                if field == NON_FIELD_ERRORS:
+                    non_field_errors.extend(parsed_messages)
+                    continue
+                field_errors[field] = parsed_messages
+
+            return JsonResponse(
+                {
+                    "success": False,
+                    "errors": field_errors,
+                    "non_field_errors": non_field_errors,
+                },
+                status=400,
+            )
+        return super().form_invalid(form)
+
+=======
+>>>>>>> origin/dev
 
 class AuthLogoutView(LoginRequiredMixin, View):
     """Log out the current user and redirect them to the login page."""

@@ -25,4 +25,8 @@ def update_payment_on_addons(sender, instance: Booking, action: str, **kwargs):
         payment = instance.ensure_payment()
         if payment.total_amount != instance.total_cost:
             payment.total_amount = instance.total_cost
+<<<<<<< HEAD
             payment.save(update_fields=["total_amount", "updated_at"])
+=======
+            payment.save(update_fields=["total_amount", "updated_at"])
+>>>>>>> origin/dev

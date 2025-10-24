@@ -396,4 +396,8 @@
 
     refreshVenues();
   });
+<<<<<<< HEAD
 })();
+=======
+})();
+>>>>>>> origin/dev
