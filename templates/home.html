@@ -62,7 +62,7 @@
 {% block content %}
 <section class="flex w-full flex-col" data-animate>
   <div class="w-full bg-white py-6 text-slate-900" data-animate>
-    <div class="mx-auto flex w-full max-w-7xl flex-col gap-10 px-6 sm:px-10 lg:grid lg:grid-cols-[auto_1fr_auto] lg:items-center lg:gap-12">
+    <div class="mx-auto flex w-full max-w-7xl flex-col items-center gap-10 px-6 sm:px-10 lg:flex-row lg:items-center lg:gap-14 lg:px-12">
       <div class="flex flex-1 flex-wrap items-center justify-center gap-[20px] lg:flex-nowrap lg:justify-start">
         <img
           src="https://images.unsplash.com/photo-1526401485004-46910ecc8e51?auto=format&fit=crop&w=600&q=80"
@@ -80,13 +80,13 @@
           class="h-[240px] w-[228px] rounded-[2rem] object-cover shadow-xl shadow-slate-900/15"
         />
       </div>
-      <div class="flex flex-col gap-4 text-left lg:max-w-xl lg:pl-10">
+      <div class="flex max-w-sm flex-1 flex-col gap-4 text-left lg:max-w-sm">
         <h1 class="text-4xl font-semibold text-slate-900 md:text-[2.75rem]">From Court to Field</h1>
         <p class="text-base leading-relaxed text-slate-700">
           Discover fields that inspire, gear that performs, and moments that keep your game alive.
         </p>
       </div>
-      <div class="flex w-full items-center justify-start lg:justify-end">
+      <div class="flex w-full items-center justify-center lg:w-auto lg:justify-end">
         <form method="get" action="{% url 'catalog' %}">
           <button
             type="submit"
