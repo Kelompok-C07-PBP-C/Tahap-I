@@ -159,8 +159,4 @@ class BookingFlowTests(TestCase):
 
         booking.refresh_from_db()
         self.assertEqual(booking.status, Booking.STATUS_CANCELLED)
-<<<<<<< HEAD
         self.assertEqual(booking.payment.status, "waiting")
-=======
-        self.assertEqual(booking.payment.status, "waiting")
->>>>>>> origin/dev

@@ -1095,61 +1095,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 const filterForm = document.querySelector('#catalog-filter-form');
-<<<<<<< HEAD
-if (filterForm) {
-  filterForm.addEventListener('submit', (event) => {
-    event.preventDefault();
-    const params = new URLSearchParams(new FormData(filterForm));
-    fetch(`/api/catalog/filter/?${params.toString()}`, {
-      headers: {
-        'X-Requested-With': 'XMLHttpRequest',
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        const grid = document.querySelector('#catalog-grid');
-        if (!grid) return;
-        grid.innerHTML = '';
-        if (data.venues.length === 0) {
-          grid.innerHTML = '<p class="text-white/70">No venues match your filters yet.</p>';
-          return;
-        }
-        data.venues.forEach((venue) => {
-          const card = document.createElement('article');
-          card.className = 'card-tilt group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-5 shadow-xl shadow-slate-950/40 backdrop-blur-xl transition hover:bg-white/10';
-          card.setAttribute('data-animate', '');
-          const wishlistedClass = venue.wishlisted ? 'wishlist-button--active' : '';
-          const heartFill = venue.wishlisted ? '#ef4444' : 'none';
-          const heartStroke = venue.wishlisted ? '#ef4444' : 'currentColor';
-          const wishlistedState = venue.wishlisted ? 'true' : 'false';
-          const priceDisplay = formatCurrency(venue.price);
-          card.innerHTML = `
-            <div class="relative">
-              <img src="${escapeHtml(venue.image_url)}" alt="${escapeHtml(venue.name)}" class="h-48 w-full rounded-2xl object-cover" />
-              <button data-venue="${escapeHtml(venue.id)}" data-wishlisted="${wishlistedState}" data-venue-name="${escapeHtml(venue.name)}" data-venue-city="${escapeHtml(venue.city)}" data-venue-category="${escapeHtml(venue.category)}" data-venue-price="${escapeHtml(venue.price)}" data-venue-url="${escapeHtml(venue.url)}" data-venue-image="${escapeHtml(venue.image_url)}" data-venue-description="${escapeHtml(venue.description || '')}" data-toggle-url="${escapeHtml(venue.toggle_url)}" class="wishlist-button ${wishlistedClass} absolute right-3 top-3 rounded-full border border-white/30 bg-white/10 p-2 text-white transition hover:bg-white/20" aria-label="Toggle wishlist" aria-pressed="${wishlistedState}">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="${heartFill}" viewBox="0 0 24 24" stroke-width="1.5" stroke="${heartStroke}" class="h-6 w-6">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                </svg>
-              </button>
-            </div>
-            <div class="mt-4 flex flex-col gap-2">
-              <p class="text-xs uppercase tracking-[0.4em] text-white/50">${escapeHtml(venue.category)}</p>
-              <h3 class="text-xl font-semibold text-white">${escapeHtml(venue.name)}</h3>
-              <p class="text-sm text-white/60">${escapeHtml(venue.city)}</p>
-            </div>
-            <div class="mt-4 flex items-center justify-between">
-              <span class="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs uppercase tracking-widest text-white/70">Rp ${escapeHtml(priceDisplay)}</span>
-              <a href="${escapeHtml(venue.url)}" class="interactive-glow rounded-2xl bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20" data-ripple>View product</a>
-            </div>
-          `;
-          grid.appendChild(card);
-        });
-        if (window.RagaSpace && typeof window.RagaSpace.refreshInteractive === 'function') {
-          window.RagaSpace.refreshInteractive(grid);
-        }
-      })
-      .catch((error) => console.error('Filter failed', error));
-=======
 if (filterForm && typeof window.fetch === 'function') {
   const grid = document.querySelector('#catalog-grid');
   const feedback = document.querySelector('[data-search-feedback]');
@@ -1358,6 +1303,5 @@ if (filterForm && typeof window.fetch === 'function') {
   filterForm.addEventListener('submit', (event) => {
     event.preventDefault();
     submitFilters();
->>>>>>> origin/dev
   });
 }

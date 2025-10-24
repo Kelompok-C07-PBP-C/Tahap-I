@@ -1,10 +1,4 @@
-<<<<<<< HEAD
-"""Wishlist and review helper views."""
 from __future__ import annotations
-
-=======
-from __future__ import annotations
->>>>>>> origin/dev
 import json
 from json import JSONDecodeError
 from typing import Any
@@ -144,8 +138,4 @@ def _build_wishlist_response(request: HttpRequest, venue: Venue, wishlisted: boo
             },
             request=request,
         )
-<<<<<<< HEAD
     return response
-=======
-    return response
->>>>>>> origin/dev

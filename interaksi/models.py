@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-"""Models capturing likes and reviews."""
-=======
->>>>>>> origin/dev
 from __future__ import annotations
 
 from django.conf import settings
@@ -10,11 +6,6 @@ from django.db import models
 
 
 class Wishlist(models.Model):
-<<<<<<< HEAD
-    """Stores a user's favourite venues."""
-
-=======
->>>>>>> origin/dev
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="wishlists")
     venue = models.ForeignKey("manajemen_lapangan.Venue", on_delete=models.CASCADE, related_name="wishlisted_by")
     created_at = models.DateTimeField(auto_now_add=True)
@@ -43,8 +34,4 @@ class Review(models.Model):
         unique_together = ("user", "venue")
 
     def __str__(self) -> str:  # pragma: no cover - trivial
-<<<<<<< HEAD
         return f"{self.user} rated {self.venue}"
-=======
-        return f"{self.user} rated {self.venue}"
->>>>>>> origin/dev

@@ -21,8 +21,4 @@ class BookingAdmin(admin.ModelAdmin):
 class PaymentAdmin(admin.ModelAdmin):
     list_display = ("booking", "method", "status", "total_amount", "updated_at")
     list_filter = ("status", "method")
-<<<<<<< HEAD
     search_fields = ("reference_code",)
-=======
-    search_fields = ("reference_code",)
->>>>>>> origin/dev

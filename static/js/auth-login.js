@@ -189,8 +189,4 @@
       attachLoginHandler(form);
     }
   }
-<<<<<<< HEAD
 })();
-=======
-})();
->>>>>>> origin/dev

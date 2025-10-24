@@ -5,11 +5,7 @@ from typing import Any
 
 from django.forms import BaseInlineFormSet, inlineformset_factory
 
-<<<<<<< HEAD
-# from manajemen_lapangan.models import Venue
-=======
 from manajemen_lapangan.models import Venue
->>>>>>> origin/dev
 
 from .forms import AddOnForm
 from .models import AddOn

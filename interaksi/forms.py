@@ -26,8 +26,4 @@ class ReviewForm(forms.ModelForm):
                     "rows": 4,
                 }
             ),
-<<<<<<< HEAD
         }
-=======
-        }
->>>>>>> origin/dev

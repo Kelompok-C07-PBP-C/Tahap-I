@@ -99,8 +99,4 @@ class Migration(migrations.Migration):
             name="addons",
             field=models.ManyToManyField(blank=True, related_name="bookings", to="add_on.addon"),
         ),
-<<<<<<< HEAD
     ]
-=======
-    ]
->>>>>>> origin/dev

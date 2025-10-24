@@ -135,8 +135,4 @@ class AdminAddOnViewTests(TestCase):
         self.client.force_login(self.regular_user)
         response = self.client.get(reverse("admin-venue-addons", args=[self.venue.pk]))
 
-<<<<<<< HEAD
         self.assertRedirects(response, reverse("home"))
-=======
-        self.assertRedirects(response, reverse("home"))
->>>>>>> origin/dev

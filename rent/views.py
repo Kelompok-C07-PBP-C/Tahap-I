@@ -7,11 +7,8 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 from django.views.generic import ListView
-<<<<<<< HEAD
-=======
 import json
 from typing import Any, Dict
->>>>>>> origin/dev
 
 from .forms import PaymentForm
 from .models import Booking, Payment
@@ -103,8 +100,6 @@ class BookedPlacesView(LoginRequiredMixin, ListView):
             .prefetch_related("addons")
             .order_by("-start_datetime")
         )
-<<<<<<< HEAD
-=======
 
 
 def _serialize_booking(booking: Booking) -> Dict[str, Any]:
@@ -215,4 +210,3 @@ class BookingPaymentJSONView(LoginRequiredMixin, View):
         booking.status = Booking.STATUS_CONFIRMED
         booking.save(update_fields=["status", "updated_at"]) 
         return JsonResponse({"booking": _serialize_booking(booking)})
->>>>>>> origin/dev
