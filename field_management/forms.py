@@ -4,6 +4,8 @@ from __future__ import annotations
 from django import forms
 from django.utils.text import slugify
 
+from field_booking.models import Booking
+
 from .models import Category, Venue
 
 
@@ -123,3 +125,63 @@ class VenueForm(forms.ModelForm):
         if base:
             return slugify(base)
         return slug
+
+
+class BookingDecisionForm(forms.Form):
+    """Validate admin actions performed on booking approvals."""
+
+    APPROVE = "approve"
+    CANCEL = "cancel"
+
+    DECISION_CHOICES = (
+        (APPROVE, "Approve"),
+        (CANCEL, "Cancel"),
+    )
+
+    booking_id = forms.IntegerField(widget=forms.HiddenInput)
+    decision = forms.ChoiceField(choices=DECISION_CHOICES, widget=forms.HiddenInput)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.booking: Booking | None = None
+
+    def clean(self):
+        cleaned_data = super().clean()
+        booking_id = cleaned_data.get("booking_id")
+        decision = cleaned_data.get("decision")
+        if booking_id is None or decision is None:
+            return cleaned_data
+
+        try:
+            booking = Booking.objects.select_related("payment").get(pk=booking_id)
+        except Booking.DoesNotExist as exc:  # pragma: no cover - defensive guard
+            raise forms.ValidationError("Booking tidak ditemukan.") from exc
+
+        if booking.status != Booking.STATUS_PENDING:
+            raise forms.ValidationError("Booking ini sudah diproses.")
+
+        self.booking = booking
+        return cleaned_data
+
+    def apply_decision(self, approver) -> tuple[Booking, str]:
+        """Persist the selected decision and return the updated booking."""
+
+        if not self.cleaned_data or self.booking is None:
+            raise ValueError("Form harus divalidasi sebelum diproses.")
+
+        decision = self.cleaned_data.get("decision")
+        if decision is None:
+            raise ValueError("Form harus divalidasi sebelum diproses.")
+        booking = self.booking
+
+        if decision == self.APPROVE:
+            booking.approve(approver)
+        elif decision == self.CANCEL:
+            booking.cancel()
+            if hasattr(booking, "payment"):
+                booking.payment.status = "waiting"
+                booking.payment.save(update_fields=["status", "updated_at"])
+        else:  # pragma: no cover - guarded by ChoiceField
+            raise ValueError("Keputusan tidak valid.")
+
+        return booking, decision

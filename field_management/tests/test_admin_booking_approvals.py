@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from datetime import timedelta
 from decimal import Decimal
+from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
@@ -87,3 +88,56 @@ class AdminBookingApprovalViewTests(TestCase):
         self.assertIsNone(booking.approved_by)
         self.assertTrue(hasattr(booking, "payment"))
         self.assertEqual(booking.payment.status, "waiting")
+
+    def test_missing_booking_id_returns_error(self) -> None:
+        booking = self._create_booking()
+        self.client.force_login(self.admin)
+
+        response = self.client.post(
+            reverse("admin-bookings"),
+            {"decision": "approve"},
+            follow=True,
+        )
+
+        self.assertRedirects(response, reverse("admin-bookings"))
+        booking.refresh_from_db()
+        self.assertEqual(booking.status, Booking.STATUS_PENDING)
+        messages = list(response.context["messages"])
+        self.assertTrue(any("This field is required" in str(message) for message in messages))
+
+    def test_cannot_process_already_handled_booking(self) -> None:
+        booking = self._create_booking()
+        booking.cancel()
+        self.client.force_login(self.admin)
+
+        response = self.client.post(
+            reverse("admin-bookings"),
+            {"booking_id": booking.pk, "decision": "approve"},
+            follow=True,
+        )
+
+        self.assertRedirects(response, reverse("admin-bookings"))
+        messages = list(response.context["messages"])
+        self.assertTrue(any("sudah diproses" in str(message) for message in messages))
+
+    def test_unexpected_error_is_surface_as_message(self) -> None:
+        booking = self._create_booking()
+        self.client.force_login(self.admin)
+
+        with patch(
+            "field_management.views.BookingDecisionForm.apply_decision",
+            side_effect=RuntimeError("boom"),
+        ):
+            response = self.client.post(
+                reverse("admin-bookings"),
+                {"booking_id": booking.pk, "decision": "approve"},
+                follow=True,
+            )
+
+        self.assertRedirects(response, reverse("admin-bookings"))
+        booking.refresh_from_db()
+        self.assertEqual(booking.status, Booking.STATUS_PENDING)
+        messages = list(response.context["messages"])
+        self.assertTrue(
+            any("Terjadi kesalahan" in str(message) for message in messages)
+        )

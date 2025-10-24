@@ -1,6 +1,7 @@
 """Admin workspace views for managing venues."""
 from __future__ import annotations
 
+import logging
 from typing import Any
 
 from django.contrib import messages
@@ -19,10 +20,12 @@ from addons.forms import AddOnForm
 from addons.models import AddOn
 from field_booking.models import Booking, Payment
 
-from .forms import VenueForm
+from .forms import BookingDecisionForm, VenueForm
 from .models import Venue
 
 AddOnFormSet = inlineformset_factory(Venue, AddOn, form=AddOnForm, extra=3, can_delete=True)
+
+logger = logging.getLogger(__name__)
 
 
 class AdminDashboardView(AdminRequiredMixin, LoginRequiredMixin, TemplateView):
@@ -168,20 +171,27 @@ class AdminBookingApprovalView(AdminRequiredMixin, LoginRequiredMixin, TemplateV
         return context
 
     def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        booking = get_object_or_404(Booking.objects.select_related("payment"), pk=request.POST.get("booking_id"))
-        decision = request.POST.get("decision")
-        if booking.status != Booking.STATUS_PENDING:
-            messages.error(request, "This booking has already been processed.")
+        form = BookingDecisionForm(request.POST)
+
+        if not form.is_valid():
+            error_messages = list(form.non_field_errors())
+            for field_errors in form.errors.values():
+                error_messages.extend(field_errors)
+            if not error_messages:
+                error_messages.append("Unable to process the booking request.")
+            for error in error_messages:
+                messages.error(request, error)
             return redirect("admin-bookings")
-        if decision == "approve":
-            booking.approve(request.user)
+
+        try:
+            _, decision = form.apply_decision(request.user)
+        except Exception:  # pragma: no cover - defensive guard
+            logger.exception("Failed to process booking decision", extra={"booking_id": form.data.get("booking_id")})
+            messages.error(request, "Terjadi kesalahan saat memproses permintaan booking. Silakan coba lagi.")
+            return redirect("admin-bookings")
+
+        if decision == BookingDecisionForm.APPROVE:
             messages.success(request, "Booking approved successfully.")
-        elif decision == "cancel":
-            booking.cancel()
-            if hasattr(booking, "payment"):
-                booking.payment.status = "waiting"
-                booking.payment.save(update_fields=["status", "updated_at"])
-            messages.success(request, "Booking request cancelled.")
         else:
-            messages.error(request, "Invalid action.")
+            messages.success(request, "Booking request cancelled.")
         return redirect("admin-bookings")
