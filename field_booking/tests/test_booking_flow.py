@@ -112,3 +112,23 @@ class BookingFlowTests(TestCase):
         self.assertEqual(booking.status, Booking.STATUS_CONFIRMED)
         self.assertEqual(booking.payment.status, "confirmed")
         self.assertEqual(booking.payment.method, "gopay")
+
+    def test_approved_booking_visible_on_booked_places(self) -> None:
+        self.client.force_login(self.user)
+        start = timezone.now() + timedelta(days=5)
+        end = start + timedelta(hours=2)
+        self.client.post(
+            reverse("venue-detail", kwargs={"slug": self.venue.slug}),
+            {
+                "start_datetime": start.strftime("%Y-%m-%dT%H:%M"),
+                "end_datetime": end.strftime("%Y-%m-%dT%H:%M"),
+            },
+        )
+        booking = Booking.objects.get(user=self.user, venue=self.venue)
+        booking.approve(self.admin)
+        booking.refresh_from_db()
+
+        response = self.client.get(reverse("booked-places"))
+        self.assertContains(response, booking.venue.name)
+        self.assertContains(response, "Awaiting payment")
+        self.assertContains(response, reverse("payment", args=[booking.pk]))

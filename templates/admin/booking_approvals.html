@@ -96,13 +96,13 @@
           {% endif %}
         </div>
         <div class="mt-6 grid gap-3 sm:grid-cols-2">
-          <form method="post" class="space-y-3">
+          <form method="post" action="{% url 'admin-bookings' %}" class="space-y-3">
             {% csrf_token %}
             <input type="hidden" name="booking_id" value="{{ booking.pk }}" />
             <input type="hidden" name="decision" value="approve" />
             <button type="submit" class="w-full rounded-2xl bg-emerald-500 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-emerald-500/40 transition hover:bg-emerald-400">Approve booking</button>
           </form>
-          <form method="post" class="space-y-3">
+          <form method="post" action="{% url 'admin-bookings' %}" class="space-y-3">
             {% csrf_token %}
             <input type="hidden" name="booking_id" value="{{ booking.pk }}" />
             <input type="hidden" name="decision" value="cancel" />
