@@ -11,6 +11,7 @@
     {% csrf_token %}
     <div class="grid gap-6 rounded-[2rem] border border-white/10 bg-white/5 p-6 backdrop-blur-xl md:grid-cols-2">
       {% for field in form %}
+      {% if field.name != 'category' %}
       <div class="flex flex-col gap-2">
         <label for="{{ field.id_for_label }}" class="text-sm font-medium text-white/70">{{ field.label }}</label>
         {{ field }}
@@ -21,6 +22,19 @@
         <p class="text-sm text-rose-300">{{ field.errors|striptags }}</p>
         {% endif %}
       </div>
+      {% if field.name == 'name' %}
+      <div class="flex flex-col gap-2">
+        <label for="{{ form.category.id_for_label }}" class="text-sm font-medium text-white/70">{{ form.category.label }}</label>
+        {{ form.category }}
+        {% if form.category.help_text %}
+        <p class="text-xs text-white/50">{{ form.category.help_text }}</p>
+        {% endif %}
+        {% if form.category.errors %}
+        <p class="text-sm text-rose-300">{{ form.category.errors|striptags }}</p>
+        {% endif %}
+      </div>
+      {% endif %}
+      {% endif %}
       {% endfor %}
     </div>
 
