@@ -53,6 +53,7 @@ class WishlistToggleAPITests(TestCase):
         self.assertIn(str(self.venue.pk), first_payload["wishlist_item_html"])
         self.assertEqual(first_payload["venue"]["id"], str(self.venue.pk))
         self.assertEqual(first_payload["venue"]["name"], self.venue.name)
+        self.assertEqual(first_payload["venue"]["toggle_url"], toggle_url)
         self.assertTrue(Wishlist.objects.filter(user=self.user, venue=self.venue).exists())
 
         second_response = self.client.post(
@@ -67,6 +68,7 @@ class WishlistToggleAPITests(TestCase):
         self.assertEqual(second_payload["wishlist_count"], 0)
         self.assertIsNone(second_payload["wishlist_item_html"])
         self.assertEqual(second_payload["venue"]["id"], str(self.venue.pk))
+        self.assertEqual(second_payload["venue"]["toggle_url"], toggle_url)
         self.assertFalse(Wishlist.objects.filter(user=self.user, venue=self.venue).exists())
 
     def test_toggle_requires_authentication(self) -> None:

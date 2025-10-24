@@ -22,6 +22,7 @@
       data-venue-url="{% url 'venue-detail' slug=venue.slug %}"
       data-venue-image="{{ venue.image_url|escape }}"
       data-venue-description="{{ description|default:''|escape }}"
+      data-toggle-url="{% url 'wishlist-toggle-api' venue.id %}"
       class="wishlist-button wishlist-button--active rounded-full border border-white/20 bg-white/10 p-2 text-white transition hover:bg-white/20"
       aria-label="Remove from wishlist"
       aria-pressed="true"

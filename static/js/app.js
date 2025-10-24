@@ -89,6 +89,7 @@ const extractVenueData = (button) => {
     venueUrl: url,
     venueImage: image,
     venueDescription: description,
+    toggleUrl,
   } = button.dataset;
   if (!id) {
     return null;
@@ -102,6 +103,7 @@ const extractVenueData = (button) => {
     url: url || '',
     image: image || '',
     description: description || '',
+    toggleUrl: toggleUrl || '',
   };
 };
 
@@ -120,6 +122,7 @@ const applyVenueDataset = (button, venueData) => {
     venueUrl: 'url',
     venueImage: 'image',
     venueDescription: 'description',
+    toggleUrl: 'toggleUrl',
   };
   Object.entries(mapping).forEach(([datasetKey, sourceKey]) => {
     if (Object.prototype.hasOwnProperty.call(venueData, sourceKey)) {
@@ -181,6 +184,10 @@ const createWishlistCard = (venueData) => {
   button.dataset.venueUrl = venueData.url || '';
   button.dataset.venueImage = venueData.image || '';
   button.dataset.venueDescription = venueData.description || '';
+  const toggleUrl = venueData.toggleUrl || venueData.toggle_url || (venueData.id ? `/api/wishlist/${venueData.id}/toggle/` : '');
+  if (toggleUrl) {
+    button.dataset.toggleUrl = toggleUrl;
+  }
   header.appendChild(button);
 
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -326,11 +333,12 @@ function toggleWishlist(button) {
   const previousState = button.getAttribute('aria-pressed') === 'true';
   const desiredState = !previousState;
   const csrfToken = getCsrfToken();
+  const toggleUrl = button.dataset.toggleUrl || `/api/wishlist/${venueId}/toggle/`;
 
   button.dataset.loading = 'true';
   updateWishlistButton(button, desiredState);
 
-  fetch(`/api/wishlist/${venueId}/toggle/`, {
+  fetch(toggleUrl, {
     method: 'POST',
     headers: {
       'X-Requested-With': 'XMLHttpRequest',
@@ -365,6 +373,12 @@ function toggleWishlist(button) {
       };
       if (!venueData.id) {
         venueData.id = venueId;
+      }
+      if (serverVenue && typeof serverVenue.toggle_url === 'string') {
+        venueData.toggleUrl = serverVenue.toggle_url;
+      }
+      if (!venueData.toggleUrl && venueData.id) {
+        venueData.toggleUrl = `/api/wishlist/${venueData.id}/toggle/`;
       }
       const wishlistItemHtml =
         data && typeof data.wishlist_item_html === 'string' ? data.wishlist_item_html : null;
@@ -676,7 +690,7 @@ if (filterForm) {
           card.innerHTML = `
             <div class="relative">
               <img src="${escapeHtml(venue.image_url)}" alt="${escapeHtml(venue.name)}" class="h-48 w-full rounded-2xl object-cover" />
-              <button data-venue="${escapeHtml(venue.id)}" data-wishlisted="${wishlistedState}" data-venue-name="${escapeHtml(venue.name)}" data-venue-city="${escapeHtml(venue.city)}" data-venue-category="${escapeHtml(venue.category)}" data-venue-price="${escapeHtml(venue.price)}" data-venue-url="${escapeHtml(venue.url)}" data-venue-image="${escapeHtml(venue.image_url)}" data-venue-description="${escapeHtml(venue.description || '')}" class="wishlist-button ${wishlistedClass} absolute right-3 top-3 rounded-full border border-white/30 bg-white/10 p-2 text-white transition hover:bg-white/20" aria-label="Toggle wishlist" aria-pressed="${wishlistedState}">
+              <button data-venue="${escapeHtml(venue.id)}" data-wishlisted="${wishlistedState}" data-venue-name="${escapeHtml(venue.name)}" data-venue-city="${escapeHtml(venue.city)}" data-venue-category="${escapeHtml(venue.category)}" data-venue-price="${escapeHtml(venue.price)}" data-venue-url="${escapeHtml(venue.url)}" data-venue-image="${escapeHtml(venue.image_url)}" data-venue-description="${escapeHtml(venue.description || '')}" data-toggle-url="${escapeHtml(venue.toggle_url)}" class="wishlist-button ${wishlistedClass} absolute right-3 top-3 rounded-full border border-white/30 bg-white/10 p-2 text-white transition hover:bg-white/20" aria-label="Toggle wishlist" aria-pressed="${wishlistedState}">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="${heartFill}" viewBox="0 0 24 24" stroke-width="1.5" stroke="${heartStroke}" class="h-6 w-6">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
                 </svg>
