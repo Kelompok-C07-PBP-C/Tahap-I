@@ -169,9 +169,3 @@ select.custom-select::-webkit-scrollbar-thumb,
   fill: #ef4444;
   stroke: #ef4444;
 }
-
-.wishlist-button--active svg,
-.wishlist-button--active svg path {
-  fill: #ef4444;
-  stroke: #ef4444;
-}
