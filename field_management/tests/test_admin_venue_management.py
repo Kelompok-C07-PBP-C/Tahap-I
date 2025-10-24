@@ -110,3 +110,39 @@ class AdminVenueManagementTests(TestCase):
 
         self.assertRedirects(response, reverse("home"))
         self.assertTrue(Venue.objects.filter(pk=venue.pk).exists())
+
+    def test_duplicate_slug_on_create_view_returns_error(self):
+        Venue.objects.create(
+            category=self.category,
+            name="Existing Arena",
+            slug="sky-arena",
+            description="Existing venue",
+            location="Central",
+            city="Metropolis",
+            address="1 Main Street",
+            price_per_hour="150000.00",
+            capacity=200,
+            facilities="wifi",
+            image_url="https://example.com/existing.jpg",
+            available_start_time=time(8, 0),
+            available_end_time=time(22, 0),
+        )
+
+        self.client.force_login(self.admin)
+        payload = self._valid_payload(name="Sky Arena")
+        payload.update(
+            {
+                "addons-TOTAL_FORMS": "0",
+                "addons-INITIAL_FORMS": "0",
+                "addons-MIN_NUM_FORMS": "0",
+                "addons-MAX_NUM_FORMS": "1000",
+            }
+        )
+
+        response = self.client.post(reverse("admin-venue-create"), payload)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("slug", response.context["form"].errors)
+        self.assertIn(
+            "Slug venue ini sudah digunakan.", response.context["form"].errors["slug"][0]
+        )

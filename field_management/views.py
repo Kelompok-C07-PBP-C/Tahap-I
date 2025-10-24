@@ -7,6 +7,7 @@ from typing import Any
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import IntegrityError
 from django.forms import inlineformset_factory
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -80,9 +81,16 @@ class AdminVenueListView(AdminRequiredMixin, LoginRequiredMixin, ListView):
 
         form = self.form_class(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, "Venue created successfully.")
-            return redirect("admin-venues")
+            try:
+                form.save()
+            except IntegrityError:
+                form.add_error(
+                    "slug",
+                    "Slug venue ini sudah digunakan. Gunakan nama atau slug lain.",
+                )
+            else:
+                messages.success(request, "Venue created successfully.")
+                return redirect("admin-venues")
         messages.error(request, "Please fix the errors below to create the venue.")
         self.object_list = self.get_queryset()
         return self.render_to_response(
@@ -107,11 +115,18 @@ class AdminVenueCreateView(AdminRequiredMixin, LoginRequiredMixin, View):
         form = VenueForm(request.POST)
         formset = AddOnFormSet(request.POST, instance=form.instance)
         if form.is_valid() and formset.is_valid():
-            venue = form.save()
-            formset.instance = venue
-            formset.save()
-            messages.success(request, "Venue created successfully.")
-            return redirect(self.success_url)
+            try:
+                venue = form.save()
+            except IntegrityError:
+                form.add_error(
+                    "slug",
+                    "Slug venue ini sudah digunakan. Gunakan nama atau slug lain.",
+                )
+            else:
+                formset.instance = venue
+                formset.save()
+                messages.success(request, "Venue created successfully.")
+                return redirect(self.success_url)
         messages.error(request, "Please fix the errors below to create the venue.")
         return render(request, self.template_name, {"form": form, "formset": formset})
 
@@ -134,11 +149,18 @@ class AdminVenueUpdateView(AdminRequiredMixin, LoginRequiredMixin, View):
         form = VenueForm(request.POST, instance=venue)
         formset = AddOnFormSet(request.POST, instance=venue)
         if form.is_valid() and formset.is_valid():
-            venue = form.save()
-            formset.instance = venue
-            formset.save()
-            messages.success(request, "Venue updated successfully.")
-            return redirect(self.success_url)
+            try:
+                venue = form.save()
+            except IntegrityError:
+                form.add_error(
+                    "slug",
+                    "Slug venue ini sudah digunakan. Gunakan nama atau slug lain.",
+                )
+            else:
+                formset.instance = venue
+                formset.save()
+                messages.success(request, "Venue updated successfully.")
+                return redirect(self.success_url)
         messages.error(request, "Please correct the errors below.")
         return render(request, self.template_name, {"form": form, "formset": formset, "venue": venue})
 

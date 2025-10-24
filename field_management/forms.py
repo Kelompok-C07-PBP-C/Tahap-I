@@ -132,7 +132,15 @@ class VenueForm(forms.ModelForm):
         name = self.cleaned_data.get("name")
         base = slug or name
         if base:
-            return slugify(base)
+            normalized_slug = slugify(base)
+            existing = Venue.objects.filter(slug=normalized_slug)
+            if self.instance.pk:
+                existing = existing.exclude(pk=self.instance.pk)
+            if existing.exists():
+                raise forms.ValidationError(
+                    "Slug venue ini sudah digunakan. Gunakan nama atau slug lain."
+                )
+            return normalized_slug
         return slug
 
 
