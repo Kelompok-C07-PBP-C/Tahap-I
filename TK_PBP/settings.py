@@ -36,14 +36,20 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1", "haekal-alexander-tkpbp.pbp.cs.ui.ac.
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'rest_framework',
-    'main',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "django.contrib.humanize",
+    "django_filters",
+    "authentication",
+    "add_on",
+    "manajemen_lapangan",
+    "katalog",
+    "rent",
+    "interaksi",
 ]
 CSRF_COOKIE_SECURE = True
 MIDDLEWARE = [
@@ -71,13 +77,15 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                "katalog.context_processors.global_filters",
+                "authentication.context_processors.csrf_token_context",
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'TK_PBP.wsgi.application'
-
+ASGI_APPLICATION = "TK_PBP.asgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -129,7 +137,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Jakarta'
 
 USE_I18N = True
 
@@ -150,4 +158,14 @@ else:
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+LOGIN_REDIRECT_URL = "home"
+LOGOUT_REDIRECT_URL = "authentication:login"
+LOGIN_URL = "authentication:login"
+
+CSRF_COOKIE_SECURE = os.getenv("DJANGO_CSRF_COOKIE_SECURE", "0") == "1"
+SESSION_COOKIE_SECURE = os.getenv("DJANGO_SESSION_COOKIE_SECURE", "0") == "1"
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_REFERRER_POLICY = "strict-origin"
