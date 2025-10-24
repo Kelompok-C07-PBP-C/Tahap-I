@@ -26,6 +26,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/forms.css' %}" />
     <link rel="stylesheet" href="{% static 'css/ragaspace.css' %}" />
     <script src="{% static 'js/app.js' %}" defer></script>
@@ -42,7 +43,8 @@
       <nav class="flex w-full items-center px-4 py-3 sm:px-6 lg:px-10">
         <div class="flex flex-1 items-center justify-start">
           <a href="{% url 'home' %}" class="flex items-center justify-center">
-            <img src="{% static 'images/ragaspace-logo.svg' %}" alt="RagaSpace logo" class="h-10 w-10 object-contain" />
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgeV4Qyp82p5rnziDdyVVrgMupxo1jWOGGMHdAMAWP3xjP0kZMc9F9fbiyGDTKRgzSgxv1dLhzvF2ZmlQf7b1QNzsAzof7KiV6_ycJ8uDQXwB0z3jiaC7B8h8e5gAPTWxC2arx9kyr6WIIqv0PfKgT6nULG0HTaXymh4tnva8oJvrJ-hHvnx1pp3teX7Vw/s320/ragaspace_logo_black.PNG" style="transform:scale(1.1)" alt="RagaSpace logo" class="h-10 w-10 object-contain" />
+              <p style="margin-left:10px;font-family: 'Lilita One', sans-serif;font-size:1.3rem">RagaSpace</p>
           </a>
         </div>
         <div class="flex items-center justify-end md:hidden">
@@ -63,10 +65,10 @@
           <a href="{% url 'home' %}" class="font-medium text-slate-900 transition hover:text-[#1B89AE]">Home</a>
           <a href="{% url 'catalog' %}" class="font-medium text-slate-900 transition hover:text-[#1B89AE]">Catalog</a>
           <a href="{% url 'wishlist' %}" class="font-medium text-slate-900 transition hover:text-[#1B89AE]">Wishlist</a>
-          <a href="{% url 'booked-places' %}" class="font-medium text-slate-900 transition hover:text-[#1B89AE]">Booked places</a>
+          <a href="{% url 'booked-places' %}" class="font-medium text-slate-900 transition hover:text-[#1B89AE]" style="text-wrap:nowrap">Booked places</a>
           {% if request.user.is_staff %}
           <a href="{% url 'admin-dashboard' %}" class="font-medium text-slate-900 transition hover:text-[#1B89AE]">Admin workspace</a>
-          <a href="{% url 'admin-bookings' %}" class="font-medium text-slate-900 transition hover:text-[#1B89AE]">Booking approvals</a>
+          <a href="{% url 'admin-bookings' %}" style="text-wrap:nowrap" class="font-medium text-slate-900 transition hover:text-[#1B89AE]">Booking approvals</a>
           <a
             href="{% url 'admin-venues' %}?show=create"
             data-modal-target="venue-create-modal"
