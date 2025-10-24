@@ -242,6 +242,145 @@ const bootstrapToasts = () => {
 
 onDocumentReady(bootstrapToasts);
 
+const resolveBookingElements = () => {
+  if (typeof document === 'undefined') {
+    return { list: null, empty: null };
+  }
+  return {
+    list: document.querySelector('[data-booking-list]'),
+    empty: document.querySelector('[data-booking-empty]'),
+  };
+};
+
+const showBookingEmptyState = (elements) => {
+  const { empty } = elements;
+  if (!empty) {
+    return;
+  }
+  empty.classList.remove('hidden');
+};
+
+const updateBookingEmptyState = (elements) => {
+  const { list } = elements;
+  if (!list) {
+    return;
+  }
+  const remaining = list.querySelectorAll('[data-booking-card]').length;
+  if (remaining === 0) {
+    showBookingEmptyState(elements);
+  }
+};
+
+const removeBookingCard = (bookingId, form) => {
+  const elements = resolveBookingElements();
+  const { list } = elements;
+  if (!list) {
+    return;
+  }
+  let card = null;
+  if (bookingId) {
+    const selectorId = escapeSelector(bookingId);
+    card = list.querySelector(`[data-booking-card][data-booking-id="${selectorId}"]`);
+  }
+  if (!card && form) {
+    card = form.closest('[data-booking-card]');
+  }
+  if (!card) {
+    updateBookingEmptyState(elements);
+    return;
+  }
+  card.classList.add('opacity-0', 'scale-95');
+  card.addEventListener(
+    'transitionend',
+    () => {
+      card.remove();
+      updateBookingEmptyState(elements);
+    },
+    { once: true }
+  );
+  window.setTimeout(() => {
+    if (card.isConnected) {
+      card.remove();
+      updateBookingEmptyState(elements);
+    }
+  }, 350);
+};
+
+const closeContainingModal = (element) => {
+  if (!element) {
+    return;
+  }
+  const modal = element.closest('[data-modal]');
+  if (!modal) {
+    return;
+  }
+  const dismissTrigger = modal.querySelector('[data-modal-close]');
+  if (dismissTrigger) {
+    dismissTrigger.click();
+  } else {
+    modal.classList.add('hidden');
+    modal.setAttribute('aria-hidden', 'true');
+  }
+};
+
+const prepareCancelBookingForm = (form) => {
+  if (!(form instanceof HTMLFormElement) || form.dataset.cancelPrepared === 'true') {
+    return;
+  }
+  form.dataset.cancelPrepared = 'true';
+  form.addEventListener('submit', async (submitEvent) => {
+    submitEvent.preventDefault();
+    if (form.dataset.submitting === 'true') {
+      return;
+    }
+    form.dataset.submitting = 'true';
+    const submitButton = form.querySelector('[type="submit"]');
+    if (submitButton) {
+      submitButton.setAttribute('disabled', 'true');
+    }
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: new FormData(form),
+        credentials: 'same-origin',
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      if (!data || data.success !== true) {
+        throw new Error('Invalid response');
+      }
+      const message = data.message || 'Booking cancelled successfully.';
+      removeBookingCard(data.booking_id, form);
+      showToast(message, { level: 'success' });
+      closeContainingModal(form);
+    } catch (error) {
+      showToast('Could not cancel this booking. Please try again.', { level: 'error' });
+    } finally {
+      form.dataset.submitting = 'false';
+      if (submitButton) {
+        submitButton.removeAttribute('disabled');
+      }
+    }
+  });
+};
+
+const prepareCancelBookingForms = (root = document) => {
+  if (!root) {
+    return;
+  }
+  const forms = root.querySelectorAll('[data-cancel-booking-form]');
+  forms.forEach((form) => prepareCancelBookingForm(form));
+};
+
+onDocumentReady(() => {
+  prepareCancelBookingForms();
+});
+
 const prepareWishlistButton = (button) => {
   if (!(button instanceof HTMLButtonElement)) {
     return;
