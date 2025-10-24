@@ -4,6 +4,8 @@ from django import forms
 from django.db.models import Case, IntegerField, When
 
 from manajemen_lapangan.constants import CATEGORY_SLUG_SEQUENCE
+
+from katalog.constants import PREFERRED_CITY_ORDER
 from manajemen_lapangan.models import Category, Venue
 
 
@@ -43,34 +45,25 @@ class SearchFilterForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        preferred_city_order = [
-            "Jakarta",
-            "Bandung",
-            "Tangerang",
-            "Yogyakarta",
-            "Surabaya",
-            "Makassar",
-            "Denpasar",
-            "Palembang",
-            "Semarang",
-            "Medan",
-        ]
-
-        city_choices = [("", "All cities")]
-        for city in preferred_city_order:
-            city_choices.append((city, city))
+        city_choices = [(city, city) for city in PREFERRED_CITY_ORDER]
 
         remaining_cities = (
-            Venue.objects.exclude(city__in=preferred_city_order)
+            Venue.objects.exclude(city__in=PREFERRED_CITY_ORDER)
             .order_by("city")
             .values_list("city", flat=True)
             .distinct()
         )
-        for city in remaining_cities:
-            if city:
-                city_choices.append((city, city))
+        city_choices.extend((city, city) for city in remaining_cities if city)
 
-        self.fields["city"].choices = city_choices
+        city_field = self.fields["city"]
+        city_field.choices = city_choices
+
+        widget_choices = list(city_field.widget.choices)
+        if widget_choices and widget_choices[0][0] == "":
+            widget_choices[0] = ("", "All cities")
+        else:
+            widget_choices.insert(0, ("", "All cities"))
+        city_field.widget.choices = widget_choices
 
         order_expression = Case(
             *[When(slug=slug, then=position) for position, slug in enumerate(CATEGORY_SLUG_SEQUENCE)],
