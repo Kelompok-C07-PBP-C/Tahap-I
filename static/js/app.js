@@ -71,7 +71,7 @@ const toastLevelClassNames = {
   error: 'border-rose-500/40 bg-rose-500/20 text-rose-50',
 };
 
-const DEFAULT_TOAST_DURATION = 4500;
+const DEFAULT_TOAST_DURATION = 3000;
 
 const ensureToastRoot = () => {
   if (typeof document === 'undefined') {
@@ -512,6 +512,22 @@ function toggleWishlist(button) {
     return;
   }
 
+  const initialScrollX = typeof window !== 'undefined' ? window.scrollX : 0;
+  const initialScrollY = typeof window !== 'undefined' ? window.scrollY : 0;
+  const restoreScrollPosition = () => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    const applyScroll = () => {
+      window.scrollTo(initialScrollX, initialScrollY);
+    };
+    if (typeof window.requestAnimationFrame === 'function') {
+      window.requestAnimationFrame(applyScroll);
+    } else {
+      window.setTimeout(applyScroll, 0);
+    }
+  };
+
   const previousState = button.getAttribute('aria-pressed') === 'true';
   const desiredState = !previousState;
   const csrfToken = getCsrfToken();
@@ -524,6 +540,7 @@ function toggleWishlist(button) {
 
   button.dataset.loading = 'true';
   updateWishlistButton(button, desiredState);
+  restoreScrollPosition();
 
   const payload = {};
   if (nextValue) {
@@ -604,6 +621,7 @@ function toggleWishlist(button) {
       showToast('Unable to update your wishlist right now. Please try again.', { level: 'error' });
     })
     .finally(() => {
+      restoreScrollPosition();
       delete button.dataset.loading;
     });
 }
