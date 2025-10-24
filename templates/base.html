@@ -129,45 +129,43 @@
       </main>
       {% block footer %}
       <footer class="mt-24 w-full" data-animate>
-        <div class="overflow-hidden rounded-t-[3rem] bg-white text-slate-900 shadow-2xl shadow-slate-950/20">
-          <div class="mx-auto flex w-full max-w-7xl flex-col gap-12 px-6 py-12 sm:px-10 lg:px-16">
-            <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-              <div class="flex items-center gap-4">
-                <span class="flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-900 text-white">
-                  <img src="{% static 'images/ragaspace-logo.svg' %}" alt="RagaSpace" class="h-10 w-10" />
-                </span>
-                <h2 class="text-2xl font-semibold md:text-3xl">Your Next Game is Just a Tap Away.</h2>
-              </div>
-              <div class="text-sm font-medium text-slate-600">
+        <div class="w-full overflow-hidden bg-white text-slate-900">
+          <div class="flex w-full flex-col items-center gap-6 px-6 pb-8 pt-12 text-center sm:px-10">
+            <img src="{% static 'images/ragaspace-logo.svg' %}" alt="RagaSpace" class="h-16 w-16" />
+            <h2 class="text-2xl font-semibold uppercase tracking-wide sm:text-3xl">Your Next Game is Just a Tap Away.</h2>
+          </div>
+          <div class="border-t border-slate-200">
+            <div class="grid w-full gap-10 px-6 py-12 text-sm sm:px-10 md:grid-cols-2 lg:grid-cols-4">
+              <div class="space-y-3">
+                <p class="text-base font-semibold">RagaSpace</p>
                 <p>021 - 1234 5678</p>
-                <p class="mt-1">@ragaspace</p>
-                <p class="mt-1">ragaspace</p>
-                <p class="mt-1">ragaspace@gmail.com</p>
-              </div>
-            </div>
-            <div class="grid gap-10 text-sm text-slate-600 md:grid-cols-2 lg:grid-cols-[1.2fr_repeat(2,minmax(0,1fr))]">
-              <div class="space-y-3">
-                <p class="text-base font-semibold text-slate-900">RagaSpace</p>
-                <p>Jl. Wahid Hasyim No. 10D</p>
-                <p>Jakarta Pusat 10340</p>
-                <p>DKI Jakarta, Indonesia</p>
+                <p>@ragaspace</p>
+                <p>ragaspace</p>
+                <p>ragaspace@gmail.com</p>
               </div>
               <div class="space-y-3">
-                <p class="text-base font-semibold text-slate-900">Company</p>
+                <p class="text-base font-semibold">Company</p>
                 <a href="#" class="block transition hover:text-slate-900">About RagaSpace</a>
                 <a href="#" class="block transition hover:text-slate-900">Careers</a>
                 <a href="#" class="block transition hover:text-slate-900">Log and Media</a>
               </div>
               <div class="space-y-3">
-                <p class="text-base font-semibold text-slate-900">Support</p>
+                <p class="text-base font-semibold">Support</p>
                 <a href="#" class="block transition hover:text-slate-900">Support Docs</a>
                 <a href="#" class="block transition hover:text-slate-900">Contact</a>
                 <a href="#" class="block transition hover:text-slate-900">Partnership</a>
               </div>
+              <div class="space-y-3">
+                <p class="text-base font-semibold">Social Media</p>
+                <a href="#" class="block transition hover:text-slate-900">Instagram</a>
+                <a href="#" class="block transition hover:text-slate-900">Twitter</a>
+                <a href="#" class="block transition hover:text-slate-900">YouTube</a>
+                <a href="#" class="block transition hover:text-slate-900">Email</a>
+              </div>
             </div>
           </div>
           <div class="border-t border-slate-200 bg-slate-900 text-white">
-            <div class="mx-auto flex w-full max-w-7xl flex-col gap-4 px-6 py-4 text-xs sm:flex-row sm:items-center sm:justify-between sm:px-10 lg:px-16">
+            <div class="flex w-full flex-col gap-4 px-6 py-4 text-xs sm:flex-row sm:items-center sm:justify-between sm:px-10">
               <p class="text-white/80">© 2025 RagaSpace All Right Served</p>
               <div class="flex flex-wrap items-center gap-4 text-white/70">
                 <a href="#" class="transition hover:text-white">Privacy Policy</a>
