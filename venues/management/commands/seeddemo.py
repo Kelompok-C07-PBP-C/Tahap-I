@@ -22,6 +22,74 @@ from ...models import (
 )
 
 
+CATEGORY_ADDONS: dict[str, list[tuple[str, str, Decimal]]] = {
+    "futsal": [
+        (
+            "Premium lighting",
+            "Enhanced lighting package for night matches",
+            Decimal("50000"),
+        ),
+        (
+            "Match futsal balls",
+            "Set of 4 FIFA-quality futsal balls for crisp passing.",
+            Decimal("75000"),
+        ),
+        (
+            "Goalkeeper kit rental",
+            "Protective gloves and pads for one goalkeeper.",
+            Decimal("65000"),
+        ),
+    ],
+    "basketball": [
+        (
+            "Premium lighting",
+            "Enhanced lighting package for televised-quality games.",
+            Decimal("65000"),
+        ),
+        (
+            "Scoreboard operator",
+            "Dedicated staff to run the digital scoreboard.",
+            Decimal("85000"),
+        ),
+        (
+            "Basketball bundle",
+            "Six indoor composite leather basketballs ready for play.",
+            Decimal("60000"),
+        ),
+    ],
+    "badminton": [
+        (
+            "LED court lighting",
+            "Shadow-free LED lighting tuned for shuttle visibility.",
+            Decimal("40000"),
+        ),
+        (
+            "Feather shuttlecocks",
+            "Tube of 12 tournament grade feather shuttlecocks.",
+            Decimal("55000"),
+        ),
+        (
+            "Racket restring service",
+            "On-site restringing for up to two rackets during your session.",
+            Decimal("90000"),
+        ),
+    ],
+}
+
+DEFAULT_ADDONS: list[tuple[str, str, Decimal]] = [
+    (
+        "Premium lighting",
+        "Enhanced lighting package for night matches",
+        Decimal("50000"),
+    ),
+    (
+        "Professional referee",
+        "Certified referee service for competitive games",
+        Decimal("150000"),
+    ),
+]
+
+
 class Command(BaseCommand):
     help = "Populate the database with demo venues, users, and bookings."
 
@@ -116,10 +184,13 @@ class Command(BaseCommand):
         return created_venues
 
     def _ensure_addons(self, venue: Venue):
-        addons = [
-            ("Premium lighting", "Enhanced lighting package for night matches", Decimal("50000")),
-            ("Professional referee", "Certified referee service for competitive games", Decimal("150000")),
-        ]
+        category_slug = getattr(venue.category, "slug", "") or ""
+        addons = CATEGORY_ADDONS.get(category_slug, DEFAULT_ADDONS)
+        keep_names = [name for name, *_ in addons]
+
+        # Remove stale add-ons that are no longer part of the curated list.
+        venue.addons.exclude(name__in=keep_names).delete()
+
         for name, description, price in addons:
             AddOn.objects.update_or_create(
                 venue=venue,
