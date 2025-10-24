@@ -1,0 +1,33 @@
+<div class="rounded-[2rem] border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
+  <h2 class="text-xl font-semibold text-white">Add-ons</h2>
+  <p class="mt-2 text-sm text-white/70">Optional upgrades will be shown on the booking page.</p>
+  {{ formset.management_form }}
+  {% if formset.non_form_errors %}
+  <p class="mt-2 rounded-xl border border-rose-300/40 bg-rose-400/10 px-4 py-2 text-sm text-rose-200">{{ formset.non_form_errors|striptags }}</p>
+  {% endif %}
+  <div class="mt-4 space-y-4">
+    {% for addon_form in formset %}
+    <div class="grid gap-4 rounded-2xl border border-white/10 bg-white/10 p-4 md:grid-cols-3">
+      {% for hidden in addon_form.hidden_fields %}
+      {{ hidden }}
+      {% endfor %}
+      {% for field in addon_form.visible_fields %}
+      <div class="flex flex-col gap-2">
+        <label for="{{ field.id_for_label }}" class="text-sm font-medium text-white/70">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+        <p class="text-sm text-rose-300">{{ field.errors|striptags }}</p>
+        {% endif %}
+      </div>
+      {% endfor %}
+      {% if addon_form.can_delete %}
+      <div class="flex items-center justify-end">
+        <label class="flex items-center gap-2 text-sm text-rose-200">
+          {{ addon_form.delete }} Remove
+        </label>
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</div>

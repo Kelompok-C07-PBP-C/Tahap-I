@@ -27,12 +27,12 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.humanize",
     "django_filters",
-    "accounts",
-    "addons",
-    "field_management",
-    "field_catalog",
-    "field_booking",
-    "user_interactions",
+    "authentication",
+    "add_on",
+    "manajemen_lapangan",
+    "katalog",
+    "rent",
+    "interaksi",
 ]
 
 MIDDLEWARE = [
@@ -58,8 +58,8 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "field_catalog.context_processors.global_filters",
-                "accounts.context_processors.csrf_token_context",
+                "katalog.context_processors.global_filters",
+                "authentication.context_processors.csrf_token_context",
             ],
         },
     },
@@ -98,8 +98,8 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 LOGIN_REDIRECT_URL = "home"
-LOGOUT_REDIRECT_URL = "auth:login"
-LOGIN_URL = "auth:login"
+LOGOUT_REDIRECT_URL = "authentication:login"
+LOGIN_URL = "authentication:login"
 
 CSRF_COOKIE_SECURE = os.getenv("DJANGO_CSRF_COOKIE_SECURE", "0") == "1"
 SESSION_COOKIE_SECURE = os.getenv("DJANGO_SESSION_COOKIE_SECURE", "0") == "1"
