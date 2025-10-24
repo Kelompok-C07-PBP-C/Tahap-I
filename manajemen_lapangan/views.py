@@ -249,12 +249,7 @@ def build_form_errors(form: VenueForm) -> dict[str, list[str]]:
 
 
 def is_ajax(request: HttpRequest) -> bool:
-    """Return True when the request originated from an AJAX call."""
-
-    header_value = request.headers.get("x-requested-with")
-    if not header_value:
-        return False
-    return header_value.lower() == "xmlhttprequest"
+    return request.headers.get("x-requested-with") == "XMLHttpRequest"
 
 
 class AdminVenueApiView(AdminRequiredMixin, LoginRequiredMixin, View):
