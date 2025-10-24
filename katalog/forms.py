@@ -55,8 +55,15 @@ class SearchFilterForm(forms.Form):
         )
         city_choices.extend((city, city) for city in remaining_cities if city)
 
-        self.fields["city"].choices = city_choices
-        self.fields["city"].widget.choices = [("", "All cities"), *city_choices]
+        city_field = self.fields["city"]
+        city_field.choices = city_choices
+
+        widget_choices = list(city_field.widget.choices)
+        if widget_choices and widget_choices[0][0] == "":
+            widget_choices[0] = ("", "All cities")
+        else:
+            widget_choices.insert(0, ("", "All cities"))
+        city_field.widget.choices = widget_choices
 
         order_expression = Case(
             *[When(slug=slug, then=position) for position, slug in enumerate(CATEGORY_SLUG_SEQUENCE)],
