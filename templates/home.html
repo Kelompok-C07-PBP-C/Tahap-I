@@ -124,7 +124,7 @@
       <h2 class="text-3xl font-semibold text-white drop-shadow-[0_8px_30px_rgba(14,165,233,0.4)]">Top 3 Venues</h2>
       <p class="text-sm text-white/70">Handpicked places loved by the RagaSpace community.</p>
     </div>
-    <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <div id="catalog-grid" class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {% for venue in popular_venues|slice:":3" %}
       {% include 'partials/venue_card.html' with venue=venue wishlist_ids=wishlist_ids %}
       {% empty %}
