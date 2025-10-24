@@ -1,6 +1,7 @@
 """Admin workspace views for managing venues."""
 from __future__ import annotations
 
+import logging
 from typing import Any
 
 from django.contrib import messages
@@ -23,6 +24,8 @@ from .forms import BookingDecisionForm, VenueForm
 from .models import Venue
 
 AddOnFormSet = inlineformset_factory(Venue, AddOn, form=AddOnForm, extra=3, can_delete=True)
+
+logger = logging.getLogger(__name__)
 
 
 class AdminDashboardView(AdminRequiredMixin, LoginRequiredMixin, TemplateView):
