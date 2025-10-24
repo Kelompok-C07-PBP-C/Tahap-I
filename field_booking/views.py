@@ -80,7 +80,11 @@ class BookedPlacesView(LoginRequiredMixin, ListView):
         return (
             Booking.objects.filter(
                 user=self.request.user,
-                status__in=[Booking.STATUS_CONFIRMED, Booking.STATUS_COMPLETED],
+                status__in=[
+                    Booking.STATUS_ACTIVE,
+                    Booking.STATUS_CONFIRMED,
+                    Booking.STATUS_COMPLETED,
+                ],
             )
             .select_related("venue")
             .prefetch_related("addons")
