@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
 from django.views.generic import ListView
@@ -21,9 +21,17 @@ class BookingCancelView(LoginRequiredMixin, View):
             messages.error(request, "This booking can no longer be cancelled.")
             return redirect("booked-places")
         booking.cancel()
-        if hasattr(booking, "payment"):
-            booking.payment.status = "waiting"
-            booking.payment.save(update_fields=["status", "updated_at"])
+
+        payment = None
+        try:
+            payment = booking.payment
+        except Payment.DoesNotExist:
+            # Ensure a payment record exists so the user can book again later.
+            payment = booking.ensure_payment()
+
+        if payment is not None:
+            payment.status = "waiting"
+            payment.save(update_fields=["status", "updated_at"])
         messages.success(request, "Booking cancelled successfully.")
         return redirect("booked-places")
 

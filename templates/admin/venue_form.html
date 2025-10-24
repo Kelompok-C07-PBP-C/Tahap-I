@@ -21,6 +21,7 @@
         {% if field.errors %}
         <p class="text-sm text-rose-300">{{ field.errors|striptags }}</p>
         {% endif %}
+        {% endfor %}
       </div>
       {% if field.name == 'name' %}
       <div class="flex flex-col gap-2">
