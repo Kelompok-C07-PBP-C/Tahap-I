@@ -1,6 +1,7 @@
 """Admin workspace views for managing venues."""
 from __future__ import annotations
 
+import json
 import logging
 from typing import Any
 
@@ -8,10 +9,12 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import IntegrityError
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic import ListView, TemplateView
 
 from authentication.forms import AdminCreationForm
@@ -207,3 +210,149 @@ class AdminBookingApprovalView(AdminRequiredMixin, LoginRequiredMixin, TemplateV
         else:
             messages.success(request, "Booking request cancelled.")
         return redirect("admin-bookings")
+
+
+def serialize_venue(venue: Venue) -> dict[str, Any]:
+    """Return a JSON-serialisable representation of a venue."""
+
+    return {
+        "id": venue.pk,
+        "name": venue.name,
+        "slug": venue.slug,
+        "description": venue.description,
+        "location": venue.location,
+        "city": venue.city,
+        "address": venue.address,
+        "price_per_hour": str(venue.price_per_hour),
+        "capacity": venue.capacity,
+        "facilities": venue.facilities,
+        "image_url": venue.image_url,
+        "available_start_time": venue.available_start_time.strftime("%H:%M"),
+        "available_end_time": venue.available_end_time.strftime("%H:%M"),
+        "category": {
+            "id": venue.category_id,
+            "name": venue.category.name,
+        },
+        "detail_url": reverse("venue-detail", kwargs={"slug": venue.slug}),
+        "edit_url": reverse("admin-venue-edit", kwargs={"pk": venue.pk}),
+        "delete_url": reverse("admin-venue-delete", kwargs={"pk": venue.pk}),
+    }
+
+
+def build_form_errors(form: VenueForm) -> dict[str, list[str]]:
+    """Normalise Django form errors for JSON responses."""
+
+    error_data: dict[str, list[str]] = {}
+    for field, errors in form.errors.get_json_data().items():
+        error_data[field] = [entry.get("message", "") for entry in errors]
+    return error_data
+
+
+def is_ajax(request: HttpRequest) -> bool:
+    return request.headers.get("x-requested-with") == "XMLHttpRequest"
+
+
+class AdminVenueApiView(AdminRequiredMixin, LoginRequiredMixin, View):
+    """Provide JSON CRUD operations for venues."""
+
+    http_method_names = ["get", "post"]
+
+    @method_decorator(ensure_csrf_cookie)
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request: HttpRequest) -> JsonResponse:
+        if not is_ajax(request):
+            return JsonResponse({"success": False, "error": "AJAX request required."}, status=400)
+
+        venues = (
+            Venue.objects.select_related("category")
+            .order_by("name")
+        )
+        payload = [serialize_venue(venue) for venue in venues]
+        return JsonResponse({"success": True, "venues": payload})
+
+    def post(self, request: HttpRequest) -> JsonResponse:
+        if not is_ajax(request):
+            return JsonResponse({"success": False, "error": "AJAX request required."}, status=400)
+
+        if not request.user.has_perm("manajemen_lapangan.add_venue"):
+            return JsonResponse({"success": False, "error": "Permission denied."}, status=403)
+
+        data = self._extract_payload(request)
+        form = VenueForm(data)
+        if form.is_valid():
+            venue = form.save()
+            return JsonResponse({"success": True, "venue": serialize_venue(venue)})
+        return JsonResponse({"success": False, "errors": build_form_errors(form)}, status=400)
+
+    def _extract_payload(self, request: HttpRequest) -> dict[str, Any]:
+        if request.content_type and "application/json" in request.content_type:
+            try:
+                payload = json.loads(request.body.decode("utf-8") or "{}")
+            except json.JSONDecodeError:
+                return {}
+            return {key: value for key, value in payload.items() if value is not None}
+        return request.POST.dict()
+
+
+class AdminVenueDetailApiView(AdminRequiredMixin, LoginRequiredMixin, View):
+    """Handle JSON operations for a single venue."""
+
+    http_method_names = ["get", "put", "patch", "delete"]
+
+    @method_decorator(ensure_csrf_cookie)
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_object(self, pk: int) -> Venue:
+        return get_object_or_404(Venue.objects.select_related("category"), pk=pk)
+
+    def get(self, request: HttpRequest, pk: int) -> JsonResponse:
+        if not is_ajax(request):
+            return JsonResponse({"success": False, "error": "AJAX request required."}, status=400)
+
+        venue = self.get_object(pk)
+        return JsonResponse({"success": True, "venue": serialize_venue(venue)})
+
+    def put(self, request: HttpRequest, pk: int) -> JsonResponse:
+        return self._update(request, pk)
+
+    def patch(self, request: HttpRequest, pk: int) -> JsonResponse:
+        return self._update(request, pk)
+
+    def delete(self, request: HttpRequest, pk: int) -> JsonResponse:
+        if not is_ajax(request):
+            return JsonResponse({"success": False, "error": "AJAX request required."}, status=400)
+
+        if not request.user.has_perm("manajemen_lapangan.delete_venue"):
+            return JsonResponse({"success": False, "error": "Permission denied."}, status=403)
+
+        venue = self.get_object(pk)
+        venue.delete()
+        return JsonResponse({"success": True})
+
+    def _update(self, request: HttpRequest, pk: int) -> JsonResponse:
+        if not is_ajax(request):
+            return JsonResponse({"success": False, "error": "AJAX request required."}, status=400)
+
+        if not request.user.has_perm("manajemen_lapangan.change_venue"):
+            return JsonResponse({"success": False, "error": "Permission denied."}, status=403)
+
+        venue = self.get_object(pk)
+        data = self._extract_payload(request)
+        form = VenueForm(data, instance=venue)
+        if form.is_valid():
+            venue = form.save()
+            venue.refresh_from_db()
+            return JsonResponse({"success": True, "venue": serialize_venue(venue)})
+        return JsonResponse({"success": False, "errors": build_form_errors(form)}, status=400)
+
+    def _extract_payload(self, request: HttpRequest) -> dict[str, Any]:
+        if request.content_type and "application/json" in request.content_type:
+            try:
+                payload = json.loads(request.body.decode("utf-8") or "{}")
+            except json.JSONDecodeError:
+                return {}
+            return {key: value for key, value in payload.items() if value is not None}
+        return request.POST.dict()
