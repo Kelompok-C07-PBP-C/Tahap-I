@@ -132,3 +132,31 @@ class BookingFlowTests(TestCase):
         self.assertContains(response, booking.venue.name)
         self.assertContains(response, "Awaiting payment")
         self.assertContains(response, reverse("payment", args=[booking.pk]))
+
+    def test_user_can_cancel_confirmed_booking(self) -> None:
+        self.client.force_login(self.user)
+        start = timezone.now() + timedelta(days=4)
+        end = start + timedelta(hours=1)
+        self.client.post(
+            reverse("venue-detail", kwargs={"slug": self.venue.slug}),
+            {
+                "start_datetime": start.strftime("%Y-%m-%dT%H:%M"),
+                "end_datetime": end.strftime("%Y-%m-%dT%H:%M"),
+            },
+        )
+
+        booking = Booking.objects.get(user=self.user, venue=self.venue)
+        booking.approve(self.admin)
+        booking.refresh_from_db()
+
+        self.client.post(reverse("payment", args=[booking.pk]), {"method": "gopay"})
+        booking.refresh_from_db()
+        self.assertEqual(booking.status, Booking.STATUS_CONFIRMED)
+        self.assertEqual(booking.payment.status, "confirmed")
+
+        response = self.client.post(reverse("booking-cancel", args=[booking.pk]))
+        self.assertRedirects(response, reverse("booked-places"))
+
+        booking.refresh_from_db()
+        self.assertEqual(booking.status, Booking.STATUS_CANCELLED)
+        self.assertEqual(booking.payment.status, "waiting")
