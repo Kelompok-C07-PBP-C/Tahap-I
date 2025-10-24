@@ -12,6 +12,7 @@ from django.utils.text import slugify
 
 from addons.models import AddOn
 from field_booking.models import Booking, Payment
+from field_management.constants import CATEGORY_DEFINITIONS
 from field_management.models import Category, Venue, VenueAvailability
 from user_interactions.models import Review, Wishlist
 
@@ -34,7 +35,7 @@ CATEGORY_ADDONS: dict[str, list[tuple[str, str, Decimal]]] = {
             Decimal("65000"),
         ),
     ],
-    "basketball": [
+    "basket": [
         (
             "Premium lighting",
             "Enhanced lighting package for televised-quality games.",
@@ -116,14 +117,12 @@ class Command(BaseCommand):
         return user
 
     def _create_catalog(self) -> list[Venue]:
-        categories = {
-            "futsal": "Futsal Arenas",
-            "basketball": "Basketball Courts",
-            "badminton": "Badminton Halls",
-        }
         category_objs = {}
-        for slug, name in categories.items():
+        for slug, name in CATEGORY_DEFINITIONS:
             category, _ = Category.objects.get_or_create(slug=slug, defaults={"name": name})
+            if category.name != name:
+                category.name = name
+                category.save(update_fields=["name"])
             category_objs[slug] = category
 
         venue_specs = [
@@ -141,7 +140,7 @@ class Command(BaseCommand):
             },
             {
                 "name": "Aurora Hoops Pavilion",
-                "category": category_objs["basketball"],
+                "category": category_objs["basket"],
                 "description": "Glass-roofed basketball court with viewing gallery and digital scoreboard.",
                 "location": "Bandung",
                 "city": "Bandung",
