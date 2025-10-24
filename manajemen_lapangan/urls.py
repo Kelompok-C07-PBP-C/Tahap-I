@@ -4,8 +4,10 @@ from django.urls import path
 from .views import (
     AdminBookingApprovalView,
     AdminDashboardView,
+    AdminVenueApiView,
     AdminVenueCreateView,
     AdminVenueDeleteView,
+    AdminVenueDetailApiView,
     AdminVenueListView,
     AdminVenueUpdateView,
 )
@@ -17,4 +19,6 @@ urlpatterns = [
     path("venues/add/", AdminVenueCreateView.as_view(), name="admin-venue-create"),
     path("venues/<int:pk>/edit/", AdminVenueUpdateView.as_view(), name="admin-venue-edit"),
     path("venues/<int:pk>/delete/", AdminVenueDeleteView.as_view(), name="admin-venue-delete"),
+    path("venues/api/", AdminVenueApiView.as_view(), name="admin-venues-api"),
+    path("venues/api/<int:pk>/", AdminVenueDetailApiView.as_view(), name="admin-venue-detail-api"),
 ]
