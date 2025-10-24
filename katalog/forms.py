@@ -45,9 +45,7 @@ class SearchFilterForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        city_choices = [("", "All cities")]
-        for city in PREFERRED_CITY_ORDER:
-            city_choices.append((city, city))
+        city_choices = [(city, city) for city in PREFERRED_CITY_ORDER]
 
         remaining_cities = (
             Venue.objects.exclude(city__in=PREFERRED_CITY_ORDER)
@@ -55,11 +53,10 @@ class SearchFilterForm(forms.Form):
             .values_list("city", flat=True)
             .distinct()
         )
-        for city in remaining_cities:
-            if city:
-                city_choices.append((city, city))
+        city_choices.extend((city, city) for city in remaining_cities if city)
 
         self.fields["city"].choices = city_choices
+        self.fields["city"].widget.choices = [("", "All cities"), *city_choices]
 
         order_expression = Case(
             *[When(slug=slug, then=position) for position, slug in enumerate(CATEGORY_SLUG_SEQUENCE)],
