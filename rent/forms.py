@@ -94,4 +94,8 @@ class PaymentForm(forms.ModelForm):
                     "class": "flex flex-col gap-3 text-white",
                 }
             )
+<<<<<<< HEAD
         }
+=======
+        }
+>>>>>>> origin/dev

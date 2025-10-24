@@ -59,4 +59,8 @@ class AdminVenueAddOnManageView(AdminRequiredMixin, LoginRequiredMixin, View):
 
         messages.error(request, "Please correct the errors below to save the add-ons.")
         context = {"venue": venue, "formset": formset}
+<<<<<<< HEAD
         return render(request, self.template_name, context)
+=======
+        return render(request, self.template_name, context)
+>>>>>>> origin/dev

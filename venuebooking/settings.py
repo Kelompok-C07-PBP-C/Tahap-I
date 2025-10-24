@@ -11,6 +11,12 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 import os
+<<<<<<< HEAD:venuebooking/settings.py
+=======
+from dotenv import load_dotenv
+# Load environment variables from .env file
+load_dotenv()
+>>>>>>> origin/dev:TK_PBP/settings.py
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -24,9 +30,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-1$#+olrn+28c-rf##&de2b9wa)u9$e%&%&*_@&ef$9#&a@81vi'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+PRODUCTION = os.getenv('PRODUCTION', 'False').lower() == 'true'
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "haekal-alexander-tkpbp.pbp.cs.ui.ac.id"]
 
 
 # Application definition
@@ -47,7 +54,7 @@ INSTALLED_APPS = [
     "rent",
     "interaksi",
 ]
-
+CSRF_COOKIE_SECURE = True
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -58,6 +65,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+<<<<<<< HEAD:venuebooking/settings.py
 
 ROOT_URLCONF = "venuebooking.urls"
 
@@ -72,6 +80,23 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+=======
+CSRF_TRUSTED_ORIGINS = [
+    "https://haekal-alexander-tkpbp.pbp.cs.ui.ac.id"
+]
+ROOT_URLCONF = 'TK_PBP.urls'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [BASE_DIR / 'templates'],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+>>>>>>> origin/dev:TK_PBP/settings.py
                 "katalog.context_processors.global_filters",
                 "authentication.context_processors.csrf_token_context",
             ],
@@ -79,6 +104,7 @@ TEMPLATES = [
     },
 ]
 
+<<<<<<< HEAD:venuebooking/settings.py
 WSGI_APPLICATION = "venuebooking.wsgi.application"
 ASGI_APPLICATION = "venuebooking.asgi.application"
 
@@ -96,6 +122,36 @@ DATABASES = {
         "PORT": os.getenv("DJANGO_DB_PORT", ""),
     }
 }
+=======
+WSGI_APPLICATION = 'TK_PBP.wsgi.application'
+ASGI_APPLICATION = "TK_PBP.asgi.application"
+
+# Database
+# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+if PRODUCTION:
+    # Production: gunakan PostgreSQL dengan kredensial dari environment variables
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('DB_NAME'),
+            'USER': os.getenv('DB_USER'),
+            'PASSWORD': os.getenv('DB_PASSWORD'),
+            'HOST': os.getenv('DB_HOST'),
+            'PORT': os.getenv('DB_PORT'),
+            'OPTIONS': {
+                'options': f"-c search_path={os.getenv('SCHEMA', 'public')}"
+            }
+        }
+    }
+else:
+    # Development: gunakan SQLite
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+>>>>>>> origin/dev:TK_PBP/settings.py
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -121,7 +177,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Jakarta'
 
 USE_I18N = True
 
@@ -152,4 +208,8 @@ CSRF_COOKIE_SECURE = os.getenv("DJANGO_CSRF_COOKIE_SECURE", "0") == "1"
 SESSION_COOKIE_SECURE = os.getenv("DJANGO_SESSION_COOKIE_SECURE", "0") == "1"
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
+<<<<<<< HEAD:venuebooking/settings.py
 SECURE_REFERRER_POLICY = "strict-origin"
+=======
+SECURE_REFERRER_POLICY = "strict-origin"
+>>>>>>> origin/dev:TK_PBP/settings.py

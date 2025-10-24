@@ -4,12 +4,20 @@ from __future__ import annotations
 from typing import Any
 
 from django.contrib import messages
+<<<<<<< HEAD
 from django.contrib.auth import login as auth_login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.db.models import Count
 from django.forms.forms import NON_FIELD_ERRORS
 from django.http import HttpRequest, HttpResponse, JsonResponse
+=======
+from django.contrib.auth import logout
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView
+from django.db.models import Count
+from django.http import HttpRequest, HttpResponse
+>>>>>>> origin/dev
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views import View
@@ -24,13 +32,18 @@ from .forms import LoginForm, RegistrationForm
 from .mixins import AdminRequiredMixin, EnsureCsrfCookieMixin
 
 
+<<<<<<< HEAD
 class AuthLoginView(EnsureCsrfCookieMixin, LoginView):
+=======
+class AuthLoginView(LoginView):
+>>>>>>> origin/dev
     template_name = "authentication/login.html"
     authentication_form = LoginForm
 
     def get_success_url(self) -> str:
         return reverse("home")
 
+<<<<<<< HEAD
     def _is_ajax_request(self) -> bool:
         request_header = self.request.headers.get("X-Requested-With", "")
         return request_header.lower() == "xmlhttprequest"
@@ -69,6 +82,8 @@ class AuthLoginView(EnsureCsrfCookieMixin, LoginView):
             )
         return super().form_invalid(form)
 
+=======
+>>>>>>> origin/dev
 
 class AuthLogoutView(LoginRequiredMixin, View):
     """Log out the current user and redirect them to the login page."""

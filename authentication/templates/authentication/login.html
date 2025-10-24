@@ -7,14 +7,18 @@
 {% block page_shell_class %}relative mx-auto flex min-h-screen w-full max-w-7xl flex-col items-center justify-center px-4 py-0 sm:px-6 lg:px-8{% endblock %}
 {% block main_class %}flex flex-1 flex-col items-center justify-center gap-6{% endblock %}
 {% block footer %}{% endblock %}
+<<<<<<< HEAD
 {% block head_extra %}
   {{ block.super }}
   <script src="{% static 'js/auth-login.js' %}" defer></script>
 {% endblock %}
+=======
+>>>>>>> origin/dev
 {% block content %}
 <div class="w-full max-w-xl rounded-3xl border border-white/10 bg-white/5 p-12 shadow-2xl shadow-slate-950/60 backdrop-blur-xl">
   <div class="mb-4 flex justify-center">
     <span class="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400/80 to-sky-500/60 p-3 shadow-lg shadow-cyan-500/40">
+<<<<<<< HEAD
       <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgeV4Qyp82p5rnziDdyVVrgMupxo1jWOGGMHdAMAWP3xjP0kZMc9F9fbiyGDTKRgzSgxv1dLhzvF2ZmlQf7b1QNzsAzof7KiV6_ycJ8uDQXwB0z3jiaC7B8h8e5gAPTWxC2arx9kyr6WIIqv0PfKgT6nULG0HTaXymh4tnva8oJvrJ-hHvnx1pp3teX7Vw/s320/ragaspace_logo_black.PNG" alt="RagaSpace" class="h-full w-full object-contain" />
     </span>
   </div>
@@ -44,10 +48,24 @@
         <p>{{ error }}</p>
         {% endfor %}
       </div>
+=======
+      <img src="{% static 'images/ragaspace-logo.svg' %}" alt="RagaSpace" class="h-full w-full object-contain" />
+    </span>
+  </div>
+  <h1 class="mb-6 text-center text-[36px] font-bold text-white">Login to RagaSpace</h1>
+  <form method="post" class="space-y-6">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="space-y-2">
+      <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-white/80">Username:</label>
+      {{ form.username }}
+      {{ form.username.errors }}
+>>>>>>> origin/dev
     </div>
     <div class="space-y-2">
       <label for="{{ form.password.id_for_label }}" class="block text-sm font-medium text-white/80">Password:</label>
       {{ form.password }}
+<<<<<<< HEAD
       <div
         class="text-sm text-rose-300 {% if not form.password.errors %}hidden{% endif %}"
         data-field-error="password"
@@ -65,6 +83,11 @@
       <span data-login-submit-label>Login</span>
       <span class="hidden" aria-hidden="true" data-login-submit-spinner>Processing…</span>
     </button>
+=======
+      {{ form.password.errors }}
+    </div>
+    <button type="submit" class="w-full rounded-2xl bg-[#1B89AE] px-4 py-3 text-lg font-semibold text-white transition-colors duration-150 hover:bg-[#15647F]">Login</button>
+>>>>>>> origin/dev
   </form>
   <p class="mt-6 text-center text-sm text-white/70">
     Don't have an account?
