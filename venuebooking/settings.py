@@ -27,7 +27,12 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.humanize",
     "django_filters",
-    "venues",
+    "accounts",
+    "addons",
+    "field_management",
+    "field_catalog",
+    "field_booking",
+    "user_interactions",
 ]
 
 MIDDLEWARE = [
@@ -53,8 +58,8 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "venues.context_processors.global_filters",
-                "venues.context_processors.csrf_token_context",
+                "field_catalog.context_processors.global_filters",
+                "accounts.context_processors.csrf_token_context",
             ],
         },
     },
