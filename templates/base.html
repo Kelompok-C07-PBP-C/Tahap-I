@@ -31,77 +31,95 @@
     <script src="{% static 'js/app.js' %}" defer></script>
     {% block head_extra %}{% endblock %}
   </head>
-  <body class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 font-sans text-slate-100">
+  <body class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 font-sans text-slate-100 {% block body_class %}{% endblock %}">
     <div class="fixed inset-0 -z-10 overflow-hidden">
       <div class="absolute -left-40 top-20 h-96 w-96 rounded-full bg-primary/20 blur-3xl"></div>
       <div class="absolute right-0 top-0 h-[32rem] w-[32rem] rounded-full bg-cyan-500/10 blur-3xl"></div>
       <div class="absolute bottom-0 left-1/2 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full bg-emerald-400/10 blur-3xl"></div>
     </div>
-    <div class="relative mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-6 sm:px-8" data-page-shell>
-      <nav class="mb-8 rounded-3xl border border-white/10 bg-white/5 px-6 py-4 shadow-xl shadow-slate-900/50 backdrop-blur-xl" data-animate>
-        <div class="flex items-center justify-between gap-4">
-          <a href="{% url 'home' %}" class="flex items-center gap-3 text-2xl font-semibold tracking-tight text-white" data-ripple>
-            <span class="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400/80 to-sky-500/60 p-1 shadow-lg shadow-cyan-500/40 sm:h-12 sm:w-12">
-              <img src="{% static 'images/ragaspace-logo.svg' %}" alt="RagaSpace logo" class="h-full w-full object-contain" />
-            </span>
-            <span class="hidden sm:inline">RagaSpace</span>
+    {% block navbar %}
+    <header class="sticky top-0 z-40 w-full border-b border-slate-200 bg-white text-slate-900 shadow-lg shadow-slate-900/5" data-animate>
+      <nav class="flex w-full items-center px-4 py-3 sm:px-6 lg:px-10">
+        <div class="flex flex-1 items-center justify-start">
+          <a href="{% url 'home' %}" class="flex items-center justify-center">
+            <img src="{% static 'images/ragaspace-logo.svg' %}" alt="RagaSpace logo" class="h-10 w-10 object-contain" />
           </a>
-          <button type="button" class="rounded-2xl border border-white/20 bg-white/10 p-2 text-white transition hover:bg-white/20 md:hidden" data-nav-toggle aria-controls="primary-nav-menu" aria-expanded="false">
+        </div>
+        <div class="flex items-center justify-end md:hidden">
+          <button
+            type="button"
+            class="flex items-center justify-center rounded-lg p-2 text-slate-900 transition hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-300"
+            aria-expanded="false"
+            aria-controls="mobile-navigation"
+            data-nav-toggle
+          >
             <span class="sr-only">Toggle navigation</span>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="h-6 w-6">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 7.5h16.5M3.75 12h16.5M3.75 16.5h16.5" />
+            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
         </div>
-        <div id="primary-nav-menu" class="mt-6 hidden flex-col gap-6 text-sm font-medium text-white/80 md:mt-4 md:flex md:flex-row md:items-center md:justify-between md:gap-8">
-          <div class="flex flex-col gap-4 md:flex-row md:items-center md:gap-6">
-            <a href="{% url 'home' %}" class="interactive-glow rounded-xl px-3 py-2 transition-colors hover:text-white" data-ripple>Home</a>
-            {% if not request.user.is_staff %}
-            <a href="{% url 'catalog' %}" class="interactive-glow rounded-xl px-3 py-2 transition-colors hover:text-white" data-ripple>Catalog</a>
-            {% endif %}
-            {% if user.is_authenticated and not request.user.is_staff %}
-            <a href="{% url 'wishlist' %}" class="interactive-glow rounded-xl px-3 py-2 transition-colors hover:text-white" data-ripple>Wishlist</a>
-            {% endif %}
-            {% if user.is_authenticated %}
-            <a href="{% url 'booked-places' %}" class="interactive-glow rounded-xl px-3 py-2 transition-colors hover:text-white" data-ripple>Booked places</a>
-            {% endif %}
+        <div id="primary-navigation" class="hidden flex-1 items-center justify-center gap-24 text-base font-medium md:flex">
+          <a href="{% url 'home' %}" class="font-medium text-slate-900 transition hover:text-[#1B89AE]">Home</a>
+          <a href="{% url 'catalog' %}" class="font-medium text-slate-900 transition hover:text-[#1B89AE]">Catalog</a>
+          <a href="{% url 'wishlist' %}" class="font-medium text-slate-900 transition hover:text-[#1B89AE]">Wishlist</a>
+          <a href="{% url 'booked-places' %}" class="font-medium text-slate-900 transition hover:text-[#1B89AE]">Booked places</a>
+          {% if request.user.is_staff %}
+          <a href="{% url 'admin-dashboard' %}" class="font-medium text-slate-900 transition hover:text-[#1B89AE]">Admin workspace</a>
+          <a href="{% url 'admin-bookings' %}" class="font-medium text-slate-900 transition hover:text-[#1B89AE]">Booking approvals</a>
+          <a
+            href="{% url 'admin-venues' %}?show=create"
+            data-modal-target="venue-create-modal"
+            class="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
+            >Add venue</a
+          >
+          {% endif %}
+        </div>
+        <div class="hidden flex-1 items-center justify-end gap-4 text-base font-medium md:flex">
+          {% if user.is_authenticated %}
+          <span class="text-base font-medium text-slate-900">{{ request.user.username }}</span>
+          <span aria-hidden="true" class="text-slate-300">|</span>
+          <a href="{% url 'auth:logout' %}" class="font-medium text-red-500 transition hover:text-red-600">Logout</a>
+          {% else %}
+          <a href="{% url 'auth:login' %}" class="font-medium text-slate-900 transition hover:text-[#1B89AE]">Login</a>
+          <a href="{% url 'auth:register' %}" class="rounded-xl bg-[#1B89AE] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#15647F]">Register</a>
+          {% endif %}
+        </div>
+      </nav>
+      <div id="mobile-navigation" class="hidden border-t border-slate-200 bg-white px-4 pb-4 pt-2 text-sm font-medium text-slate-900 md:hidden">
+        <div class="space-y-4">
+          <div class="flex flex-col gap-2">
+            <a href="{% url 'home' %}" class="transition hover:text-[#1B89AE]">Home</a>
+            <a href="{% url 'catalog' %}" class="transition hover:text-[#1B89AE]">Catalog</a>
+            <a href="{% url 'wishlist' %}" class="transition hover:text-[#1B89AE]">Wishlist</a>
+            <a href="{% url 'booked-places' %}" class="transition hover:text-[#1B89AE]">Booked places</a>
             {% if request.user.is_staff %}
-            <a href="{% url 'admin-dashboard' %}" class="interactive-glow rounded-xl px-3 py-2 transition-colors hover:text-white" data-ripple>Admin workspace</a>
-            <a href="{% url 'admin-bookings' %}" class="interactive-glow rounded-xl px-3 py-2 transition-colors hover:text-white" data-ripple>Booking approvals</a>
+            <a href="{% url 'admin-dashboard' %}" class="transition hover:text-[#1B89AE]">Admin workspace</a>
+            <a href="{% url 'admin-bookings' %}" class="transition hover:text-[#1B89AE]">Booking approvals</a>
             <a
               href="{% url 'admin-venues' %}?show=create"
               data-modal-target="venue-create-modal"
-              class="interactive-glow rounded-2xl bg-primary px-4 py-2 text-sm font-semibold text-white shadow-md shadow-cyan-500/40 transition hover:bg-primary/80"
-              data-ripple
+              class="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
               >Add venue</a
             >
             {% endif %}
           </div>
-          <div class="flex flex-col gap-4 md:flex-row md:items-center md:gap-6">
-            <form method="get" action="{% url 'catalog' %}" class="grid gap-2 rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-lg md:flex md:items-center md:gap-2 md:border-0 md:bg-transparent md:p-0 md:backdrop-blur-none">
-              {{ global_filter_form.city }}
-              {{ global_filter_form.category }}
-              {{ global_filter_form.max_price }}
-              <button type="submit" class="interactive-glow rounded-xl bg-primary/80 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-cyan-500/40 transition hover:bg-primary" data-ripple>
-                Search
-              </button>
-            </form>
+          <div class="flex flex-col gap-2 border-t border-slate-200 pt-3">
             {% if user.is_authenticated %}
-            <div class="flex flex-col gap-2 text-white md:items-end">
-              <p class="text-xs uppercase tracking-wider text-white/60">Signed in</p>
-              <p class="text-lg font-semibold text-white">{{ request.user.username }}</p>
-            </div>
-            <a href="{% url 'auth:logout' %}" class="interactive-glow rounded-2xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-slate-900/40 transition hover:bg-white/20" data-ripple>Logout</a>
+            <span class="text-base font-medium text-slate-900">{{ request.user.username }}</span>
+            <a href="{% url 'auth:logout' %}" class="font-medium text-red-500 transition hover:text-red-600">Logout</a>
             {% else %}
-            <div class="flex flex-col gap-2 md:flex-row md:items-center md:gap-3">
-              <a href="{% url 'auth:login' %}" class="interactive-glow rounded-2xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-slate-900/40 transition hover:bg-white/20" data-ripple>Login</a>
-              <a href="{% url 'auth:register' %}" class="interactive-glow rounded-2xl bg-primary px-4 py-2 text-sm font-semibold text-white shadow-md shadow-cyan-500/40 transition hover:bg-primary/80" data-ripple>Register</a>
-            </div>
+            <a href="{% url 'auth:login' %}" class="transition hover:text-[#1B89AE]">Login</a>
+            <a href="{% url 'auth:register' %}" class="rounded-xl bg-[#1B89AE] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#15647F]">Register</a>
             {% endif %}
           </div>
         </div>
-      </nav>
-      <main class="flex-1">
+      </div>
+    </header>
+    {% endblock %}
+    {% block navbar_extra %}{% endblock %}
+    <div class="{% block page_shell_class %}relative mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 pb-6 pt-20 sm:px-8 lg:pt-28{% endblock %}" data-page-shell>
+      <main class="{% block main_class %}flex-1{% endblock %}">
         {% for message in messages %}
         <div class="flash-message mb-4 rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-sm text-white shadow-lg shadow-slate-900/40 backdrop-blur" data-animate>
           {{ message }}
@@ -109,9 +127,66 @@
         {% endfor %}
         {% block content %}{% endblock %}
       </main>
-      <footer class="mt-12 rounded-3xl border border-white/10 bg-white/5 px-6 py-4 text-center text-xs text-white/60 backdrop-blur-xl" data-animate>
-        Crafted for athletes • RagaSpace © {% now 'Y' %}
+      {% block footer %}
+      <footer class="mt-24 w-full" data-animate>
+        <div class="w-full overflow-hidden bg-white text-slate-900">
+          <div class="flex w-full flex-col items-center gap-3 px-6 py-6 text-center sm:flex-row sm:justify-center sm:gap-6 sm:px-10">
+            <img
+              src="https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=300&q=80"
+              alt="Colorful sport ball"
+              class="h-12 w-12 rounded-2xl object-cover shadow-md shadow-slate-900/10"
+            />
+            <h2 class="text-2xl font-semibold uppercase tracking-wide leading-tight sm:text-[26px]">Your Next Game is Just a Tap Away.</h2>
+          </div>
+          <div class="border-y border-slate-200">
+            <div class="mx-auto w-full max-w-6xl px-6 py-8 sm:px-10">
+              <div class="grid gap-8 text-left text-sm sm:grid-cols-2 lg:grid-cols-4">
+                <div class="space-y-3">
+                  <img src="{% static 'images/ragaspace-logo.svg' %}" alt="RagaSpace" class="h-12 w-12" />
+                  <div class="text-xs leading-relaxed text-slate-700">
+                    <p>Jl. Wahid Hasyim No. 100</p>
+                    <p>Jakarta Pusat</p>
+                    <p>DKI Jakarta, Indonesia</p>
+                    <p>10340</p>
+                  </div>
+                </div>
+                <div class="space-y-2">
+                  <p class="text-sm font-semibold uppercase tracking-wide text-slate-900">Contact</p>
+                  <p class="text-xs leading-tight text-slate-700">021 - 1234 5678</p>
+                  <p class="text-xs leading-tight text-slate-700">@ragaspace</p>
+                  <p class="text-xs leading-tight text-slate-700">ragaspace</p>
+                  <p class="text-xs leading-tight text-slate-700">ragaspace@gmail.com</p>
+                </div>
+                <div class="space-y-2">
+                  <p class="text-sm font-semibold uppercase tracking-wide text-slate-900">Company</p>
+                  <a href="#" class="block text-xs leading-tight text-slate-700 transition hover:text-slate-900">About RagaSpace</a>
+                  <a href="#" class="block text-xs leading-tight text-slate-700 transition hover:text-slate-900">Careers</a>
+                  <a href="#" class="block text-xs leading-tight text-slate-700 transition hover:text-slate-900">Log and Media</a>
+                </div>
+                <div class="space-y-2">
+                  <p class="text-sm font-semibold uppercase tracking-wide text-slate-900">Support</p>
+                  <a href="#" class="block text-xs leading-tight text-slate-700 transition hover:text-slate-900">Support Docs</a>
+                  <a href="#" class="block text-xs leading-tight text-slate-700 transition hover:text-slate-900">Contact</a>
+                  <a href="#" class="block text-xs leading-tight text-slate-700 transition hover:text-slate-900">Partnership</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-slate-900 text-white">
+            <div class="flex w-full flex-col gap-3 px-6 py-3 text-[11px] sm:flex-row sm:items-center sm:justify-between sm:px-10">
+              <p class="text-white/80">© 2025 RagaSpace All Right Served</p>
+              <div class="flex flex-wrap items-center gap-3 text-white/70">
+                <a href="#" class="transition hover:text-white">Privacy Policy</a>
+                <span aria-hidden="true">•</span>
+                <a href="#" class="transition hover:text-white">Terms</a>
+                <span aria-hidden="true">•</span>
+                <a href="#" class="transition hover:text-white">Code of Conduct</a>
+              </div>
+            </div>
+          </div>
+        </div>
       </footer>
+      {% endblock %}
     </div>
     <div
       id="page-transition"
