@@ -28,18 +28,23 @@ def show_login(request):
     context = {'form': form}
     return render(request, "html.html", context)
 
-
 def show_register(request):
     if request.user.is_authenticated:
         return show_landing(request)
-    error = []
-    form = UserCreationForm()
+
     if request.method == "POST":
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
-            return show_landing(request)
+            user = form.save()
+            return HttpResponseRedirect(reverse("main:login"))
+        else:
+            # kirim form dengan error ke template
+            return render(request, "html2.html", {"form": form})
+    else:
+        form = UserCreationForm()
+
     return render(request, "html2.html", {"form": form})
+
 
 
 @login_required(login_url='/login')
