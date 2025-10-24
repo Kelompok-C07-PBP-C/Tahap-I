@@ -68,6 +68,7 @@ def _build_wishlist_response(request: HttpRequest, venue: Venue, wishlisted: boo
         "url": reverse("venue-detail", kwargs={"slug": venue.slug}),
         "image": venue.image_url,
         "description": description,
+        "toggle_url": reverse("wishlist-toggle-api", kwargs={"pk": venue.pk}),
     }
     response: dict[str, Any] = {
         "wishlisted": wishlisted,

@@ -50,6 +50,7 @@ def catalog_filter(request: HttpRequest) -> JsonResponse:
             "url": reverse("venue-detail", kwargs={"slug": venue.slug}),
             "description": Truncator(venue.description).chars(120),
             "wishlisted": venue.id in wishlist_ids,
+            "toggle_url": reverse("wishlist-toggle-api", args=[venue.id]),
         }
         for venue in filterset.qs
     ]

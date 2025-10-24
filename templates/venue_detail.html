@@ -105,6 +105,7 @@
           data-venue-url="{% url 'venue-detail' slug=venue.slug %}"
           data-venue-image="{{ venue.image_url|escape }}"
           data-venue-description="{{ venue.description|truncatechars:120|escape }}"
+          data-toggle-url="{% url 'wishlist-toggle-api' venue.id %}"
           class="wishlist-button {% if venue.id in wishlist_ids %}wishlist-button--active{% endif %} rounded-full border border-white/20 bg-white/10 p-3 text-white transition hover:bg-white/20"
           aria-label="Toggle wishlist"
           aria-pressed="{% if venue.id in wishlist_ids %}true{% else %}false{% endif %}"
