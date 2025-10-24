@@ -51,9 +51,7 @@ class VenueFilter(django_filters.FilterSet):
             queryset = Venue.objects.all()
         super().__init__(data=data, queryset=queryset, request=request, prefix=prefix)
 
-        city_choices = [("", "All cities")]
-        for city in PREFERRED_CITY_ORDER:
-            city_choices.append((city, city))
+        city_choices = [(city, city) for city in PREFERRED_CITY_ORDER]
 
         city_values = (
             self.queryset.exclude(city__in=PREFERRED_CITY_ORDER)
@@ -62,6 +60,9 @@ class VenueFilter(django_filters.FilterSet):
             .distinct()
         )
         city_choices.extend((value, value) for value in city_values if value)
+
+        # django-filter injects the configured empty_label automatically, so avoid
+        # adding an extra blank option when preparing the list of cities.
 
         if "city" in self.filters:
             self.filters["city"].field.choices = city_choices
