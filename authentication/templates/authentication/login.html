@@ -7,6 +7,10 @@
 {% block page_shell_class %}relative mx-auto flex min-h-screen w-full max-w-7xl flex-col items-center justify-center px-4 py-0 sm:px-6 lg:px-8{% endblock %}
 {% block main_class %}flex flex-1 flex-col items-center justify-center gap-6{% endblock %}
 {% block footer %}{% endblock %}
+{% block head_extra %}
+  {{ block.super }}
+  <script src="{% static 'js/auth-login.js' %}" defer></script>
+{% endblock %}
 {% block content %}
 <div class="w-full max-w-xl rounded-3xl border border-white/10 bg-white/5 p-12 shadow-2xl shadow-slate-950/60 backdrop-blur-xl">
   <div class="mb-4 flex justify-center">
@@ -15,20 +19,52 @@
     </span>
   </div>
   <h1 class="mb-6 text-center text-[36px] font-bold text-white">Login to RagaSpace</h1>
-  <form method="post" class="space-y-6">
+  <form method="post" class="space-y-6" data-login-form novalidate>
     {% csrf_token %}
-    {{ form.non_field_errors }}
+    {% if redirect_field_value %}
+    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+    {% endif %}
+    <div
+      class="rounded-2xl border border-rose-500/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-100 {% if not form.non_field_errors %}hidden{% endif %}"
+      role="alert"
+      data-login-feedback
+    >
+      {% for error in form.non_field_errors %}
+      <p>{{ error }}</p>
+      {% endfor %}
+    </div>
     <div class="space-y-2">
       <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-white/80">Username:</label>
       {{ form.username }}
-      {{ form.username.errors }}
+      <div
+        class="text-sm text-rose-300 {% if not form.username.errors %}hidden{% endif %}"
+        data-field-error="username"
+      >
+        {% for error in form.username.errors %}
+        <p>{{ error }}</p>
+        {% endfor %}
+      </div>
     </div>
     <div class="space-y-2">
       <label for="{{ form.password.id_for_label }}" class="block text-sm font-medium text-white/80">Password:</label>
       {{ form.password }}
-      {{ form.password.errors }}
+      <div
+        class="text-sm text-rose-300 {% if not form.password.errors %}hidden{% endif %}"
+        data-field-error="password"
+      >
+        {% for error in form.password.errors %}
+        <p>{{ error }}</p>
+        {% endfor %}
+      </div>
     </div>
-    <button type="submit" class="w-full rounded-2xl bg-[#1B89AE] px-4 py-3 text-lg font-semibold text-white transition-colors duration-150 hover:bg-[#15647F]">Login</button>
+    <button
+      type="submit"
+      class="w-full rounded-2xl bg-[#1B89AE] px-4 py-3 text-lg font-semibold text-white transition-colors duration-150 hover:bg-[#15647F]"
+      data-login-submit
+    >
+      <span data-login-submit-label>Login</span>
+      <span class="hidden" aria-hidden="true" data-login-submit-spinner>Processing…</span>
+    </button>
   </form>
   <p class="mt-6 text-center text-sm text-white/70">
     Don't have an account?
