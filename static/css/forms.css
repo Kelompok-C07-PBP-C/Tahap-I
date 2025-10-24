@@ -9,16 +9,18 @@ body {
   <select> element – inherits the same dark styling.
 */
 :root {
-  --custom-select-bg: rgba(75, 85, 99, 0.95);
-  --custom-select-bg-hover: rgba(55, 65, 81, 0.96);
-  --custom-select-bg-focus: rgba(31, 41, 55, 0.98);
+  --custom-select-bg: rgba(30, 41, 59, 0.96);
+  --custom-select-bg-hover: rgba(30, 41, 59, 0.98);
+  --custom-select-bg-focus: rgba(15, 23, 42, 0.98);
   --custom-select-border: rgba(148, 163, 184, 0.45);
   --custom-select-border-hover: rgba(226, 232, 240, 0.75);
   --custom-select-highlight: rgba(37, 99, 235, 0.92);
   --custom-select-highlight-text: #f8fafc;
-  --custom-select-text: #f1f5f9;
-  --custom-select-shadow: 0 18px 45px rgba(30, 41, 59, 0.45);
-  --custom-select-shadow-focus: 0 0 0 4px rgba(226, 232, 240, 0.25), 0 24px 60px rgba(30, 41, 59, 0.55);
+  --custom-select-text: #f8fafc;
+  --custom-select-shadow: 0 18px 45px rgba(15, 23, 42, 0.55);
+  --custom-select-shadow-focus: 0 0 0 4px rgba(148, 163, 184, 0.25), 0 24px 60px rgba(15, 23, 42, 0.65);
+  --custom-select-surface: linear-gradient(160deg, rgba(51, 65, 85, 0.95), rgba(30, 41, 59, 0.95));
+  --custom-select-surface-focus: linear-gradient(160deg, rgba(30, 41, 59, 0.98), rgba(15, 23, 42, 0.98));
 }
 
 /*
@@ -35,7 +37,7 @@ select.custom-select,
   -moz-appearance: none;
   background-color: var(--custom-select-bg) !important;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%23e2e8f0'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M6 9l6 6 6-6'/%3E%3C/svg%3E"),
-    linear-gradient(150deg, rgba(107, 114, 128, 0.95), rgba(55, 65, 81, 0.95));
+    var(--custom-select-surface);
   background-repeat: no-repeat, no-repeat;
   background-position: right 1.25rem center, center;
   background-size: 1rem, 100%;
@@ -75,7 +77,7 @@ select.custom-select:focus-visible,
   border-color: rgba(226, 232, 240, 0.85);
   box-shadow: var(--custom-select-shadow-focus);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%23f8fafc'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M6 9l6 6 6-6'/%3E%3C/svg%3E"),
-    linear-gradient(150deg, rgba(75, 85, 99, 0.98), rgba(55, 65, 81, 0.96));
+    var(--custom-select-surface-focus);
   transform: translateY(-1px);
 }
 
@@ -83,7 +85,7 @@ select.custom-select:hover,
 .custom-select:hover {
   border-color: var(--custom-select-border-hover);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%23f8fafc'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M6 9l6 6 6-6'/%3E%3C/svg%3E"),
-    linear-gradient(150deg, var(--custom-select-bg-hover), rgba(55, 65, 81, 0.95));
+    var(--custom-select-surface);
 }
 
 select.custom-select option,

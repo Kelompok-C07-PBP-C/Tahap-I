@@ -14,7 +14,7 @@ class VenueFilter(django_filters.FilterSet):
         empty_label="All cities",
         widget=forms.Select(
             attrs={
-                "class": "custom-select w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-sm text-white backdrop-blur",
+                "class": "custom-select w-full rounded-xl border border-white/20 px-4 py-3 text-sm text-white",
             }
         ),
     )
@@ -24,7 +24,7 @@ class VenueFilter(django_filters.FilterSet):
         empty_label="All categories",
         widget=forms.Select(
             attrs={
-                "class": "custom-select w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-sm text-white backdrop-blur",
+                "class": "custom-select w-full rounded-xl border border-white/20 px-4 py-3 text-sm text-white",
             }
         ),
     )
