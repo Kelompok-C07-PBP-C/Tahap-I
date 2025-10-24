@@ -18,55 +18,319 @@ from user_interactions.models import Review, Wishlist
 
 
 CATEGORY_ADDONS: dict[str, list[tuple[str, str, Decimal]]] = {
-    "futsal": [
+    "badminton": [
         (
-            "Premium lighting",
-            "Enhanced lighting package for night matches",
-            Decimal("50000"),
+            "Shuttlecock premium (Tube)",
+            "Satu tube berisi 12 shuttlecock bulu angsa turnamen.",
+            Decimal("55000"),
         ),
         (
-            "Match futsal balls",
-            "Set of 4 FIFA-quality futsal balls for crisp passing.",
-            Decimal("75000"),
+            "Sewa raket badminton",
+            "Paket dua raket karbon siap pakai dengan tas pelindung.",
+            Decimal("40000"),
         ),
         (
-            "Goalkeeper kit rental",
-            "Protective gloves and pads for one goalkeeper.",
-            Decimal("65000"),
+            "Sewa net turnamen",
+            "Pemasangan net standar BWF untuk satu lapangan.",
+            Decimal("30000"),
+        ),
+        (
+            "Grip pengganti",
+            "Set grip anti-slip baru untuk dua raket.",
+            Decimal("15000"),
+        ),
+        (
+            "Jasa fotografer",
+            "Fotografer profesional untuk mendokumentasikan permainan Anda.",
+            Decimal("400000"),
+        ),
+        (
+            "Wasit badminton",
+            "Wasit berlisensi untuk pertandingan kompetitif.",
+            Decimal("200000"),
         ),
     ],
     "basket": [
         (
-            "Premium lighting",
-            "Enhanced lighting package for televised-quality games.",
-            Decimal("65000"),
+            "Bola basket (sewa)",
+            "Satu bola indoor komposit siap bertanding.",
+            Decimal("50000"),
         ),
         (
-            "Scoreboard operator",
-            "Dedicated staff to run the digital scoreboard.",
-            Decimal("85000"),
+            "Rompi tim (2 set)",
+            "Rompi dua warna untuk membedakan tim selama scrimmage.",
+            Decimal("50000"),
         ),
         (
-            "Basketball bundle",
-            "Six indoor composite leather basketballs ready for play.",
-            Decimal("60000"),
+            "Papan skor & operator",
+            "Operator profesional berikut papan skor dan shot clock digital.",
+            Decimal("150000"),
+        ),
+        (
+            "Wasit basket (2 orang)",
+            "Dua wasit berlisensi untuk mengawal jalannya pertandingan.",
+            Decimal("500000"),
+        ),
+        (
+            "Sepatu basket (sewa)",
+            "Sewa sepasang sepatu basket premium.",
+            Decimal("50000"),
+        ),
+        (
+            "Fotografer/Videografer",
+            "Dokumentasi foto dan video profesional pertandingan.",
+            Decimal("500000"),
         ),
     ],
-    "badminton": [
+    "billiard": [
         (
-            "LED court lighting",
-            "Shadow-free LED lighting tuned for shuttle visibility.",
+            "Stik premium (sewa)",
+            "Sewa stik berkualitas turnamen dengan perawatan rutin.",
+            Decimal("50000"),
+        ),
+        (
+            "Kapur cue",
+            "Satu kotak kapur cue profesional.",
+            Decimal("15000"),
+        ),
+        (
+            "Sarung tangan billiard",
+            "Sarung tangan microfiber anti-slip.",
+            Decimal("25000"),
+        ),
+        (
+            "Jasa wasit/marker",
+            "Pengawas pertandingan untuk menjaga jalannya game.",
+            Decimal("50000"),
+        ),
+        (
+            "Pelatih billiard",
+            "Sesi pelatih profesional per jam.",
+            Decimal("150000"),
+        ),
+    ],
+    "futsal": [
+        (
+            "Bola futsal (sewa)",
+            "Sewa bola futsal standar pertandingan.",
+            Decimal("50000"),
+        ),
+        (
+            "Rompi tim (2 set)",
+            "Rompi latihan dua warna untuk dua tim.",
+            Decimal("50000"),
+        ),
+        (
+            "Sarung tangan kiper",
+            "Sewa sarung tangan kiper profesional.",
+            Decimal("30000"),
+        ),
+        (
+            "Sepatu futsal (sewa)",
+            "Pilihan ukuran lengkap sepatu futsal premium.",
             Decimal("40000"),
         ),
         (
-            "Feather shuttlecocks",
-            "Tube of 12 tournament grade feather shuttlecocks.",
-            Decimal("55000"),
+            "Papan skor digital",
+            "Papan skor digital portabel untuk menghitung skor real-time.",
+            Decimal("75000"),
         ),
         (
-            "Racket restring service",
-            "On-site restringing for up to two rackets during your session.",
+            "Wasit futsal",
+            "Wasit profesional untuk memimpin pertandingan.",
+            Decimal("200000"),
+        ),
+        (
+            "Fotografer",
+            "Fotografer olahraga untuk dokumentasi pertandingan.",
+            Decimal("400000"),
+        ),
+    ],
+    "mini-soccer": [
+        (
+            "Bola mini soccer (sewa)",
+            "Sewa bola mini soccer berkualitas match day.",
+            Decimal("60000"),
+        ),
+        (
+            "Rompi tim (2 set)",
+            "Rompi latihan dua warna untuk membedakan tim.",
+            Decimal("60000"),
+        ),
+        (
+            "Sarung tangan kiper",
+            "Sewa sarung tangan kiper profesional.",
+            Decimal("30000"),
+        ),
+        (
+            "Sepatu mini soccer (sewa)",
+            "Sewa sepatu turf untuk permukaan rumput sintetis.",
+            Decimal("40000"),
+        ),
+        (
+            "Papan skor",
+            "Papan skor portabel untuk pertandingan Anda.",
+            Decimal("100000"),
+        ),
+        (
+            "Wasit mini soccer",
+            "Wasit profesional untuk memimpin pertandingan.",
+            Decimal("250000"),
+        ),
+        (
+            "Fotografer/Videografer",
+            "Dokumentasi foto dan video profesional.",
+            Decimal("500000"),
+        ),
+    ],
+    "padel": [
+        (
+            "Bola padel (kaleng)",
+            "Satu kaleng berisi tiga bola padel premium.",
             Decimal("90000"),
+        ),
+        (
+            "Raket padel (sewa)",
+            "Sewa raket padel grafit dengan grip baru.",
+            Decimal("60000"),
+        ),
+        (
+            "Pelatih padel",
+            "Pelatih/partner tanding profesional per jam.",
+            Decimal("200000"),
+        ),
+        (
+            "Fotografer",
+            "Fotografer olahraga untuk dokumentasi pertandingan.",
+            Decimal("400000"),
+        ),
+    ],
+    "sepak-bola": [
+        (
+            "Bola sepak (sewa)",
+            "Sewa bola pertandingan standar FIFA.",
+            Decimal("75000"),
+        ),
+        (
+            "Rompi latihan (2 set)",
+            "Rompi latihan dua warna untuk sesi drill.",
+            Decimal("75000"),
+        ),
+        (
+            "Sarung tangan kiper",
+            "Sewa sarung tangan kiper profesional.",
+            Decimal("40000"),
+        ),
+        (
+            "Cone & marker latihan",
+            "Satu set cone dan marker untuk latihan taktik.",
+            Decimal("50000"),
+        ),
+        (
+            "Wasit sepak bola (3 orang)",
+            "Tim wasit lengkap (referee + 2 asisten).",
+            Decimal("1000000"),
+        ),
+        (
+            "Tim medis/P3K",
+            "Tim medis profesional berikut peralatan P3K.",
+            Decimal("300000"),
+        ),
+        (
+            "Fotografer/Videografer",
+            "Paket dokumentasi profesional foto dan video.",
+            Decimal("700000"),
+        ),
+    ],
+    "tenis-meja": [
+        (
+            "Bola pingpong (kotak)",
+            "Satu kotak bola seluloid turnamen.",
+            Decimal("30000"),
+        ),
+        (
+            "Bet tenis meja (sewa)",
+            "Sewa dua bet karet profesional.",
+            Decimal("20000"),
+        ),
+        (
+            "Robot pelontar bola",
+            "Sewa robot pelontar bola per jam.",
+            Decimal("75000"),
+        ),
+        (
+            "Wasit/Penghitung skor",
+            "Wasit sekaligus penghitungan skor per jam.",
+            Decimal("50000"),
+        ),
+        (
+            "Pelatih tenis meja",
+            "Pelatih atau sparring partner profesional per jam.",
+            Decimal("150000"),
+        ),
+    ],
+    "tennis": [
+        (
+            "Bola tenis (kaleng)",
+            "Kaleng isi tiga bola tenis premium.",
+            Decimal("80000"),
+        ),
+        (
+            "Raket tenis (sewa)",
+            "Sewa raket grafit siap tanding.",
+            Decimal("50000"),
+        ),
+        (
+            "Mesin pelontar bola",
+            "Mesin pelontar otomatis per jam.",
+            Decimal("100000"),
+        ),
+        (
+            "Pemungut bola",
+            "Ball boy/girl per jam untuk membantu latihan.",
+            Decimal("50000"),
+        ),
+        (
+            "Pelatih tenis",
+            "Pelatih atau partner tanding profesional per jam.",
+            Decimal("200000"),
+        ),
+        (
+            "Fotografer",
+            "Fotografer olahraga untuk mendokumentasikan sesi Anda.",
+            Decimal("400000"),
+        ),
+    ],
+    "volly-ball": [
+        (
+            "Bola voli (sewa)",
+            "Sewa bola voli standar turnamen.",
+            Decimal("40000"),
+        ),
+        (
+            "Net turnamen (sewa)",
+            "Sewa net voli standar turnamen lengkap dengan tiang.",
+            Decimal("50000"),
+        ),
+        (
+            "Papan skor digital",
+            "Papan skor digital dengan operator.",
+            Decimal("75000"),
+        ),
+        (
+            "Wasit voli",
+            "Wasit profesional untuk pertandingan resmi.",
+            Decimal("250000"),
+        ),
+        (
+            "Pelindung lutut & lengan",
+            "Sewa pelindung lutut dan lengan untuk dua pemain.",
+            Decimal("25000"),
+        ),
+        (
+            "Fotografer",
+            "Fotografer profesional untuk dokumentasi laga.",
+            Decimal("400000"),
         ),
     ],
 }
