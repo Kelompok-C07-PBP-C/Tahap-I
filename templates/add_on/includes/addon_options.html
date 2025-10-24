@@ -1,0 +1,35 @@
+<h3 class="mb-2 text-sm font-semibold text-white">Enhance your booking</h3>
+{% if field|length %}
+<div class="space-y-2">
+  {% for checkbox in field %}
+  <label class="addon-option">
+    <input
+      type="checkbox"
+      name="{{ field.name }}"
+      value="{{ checkbox.choice_value }}"
+      id="{{ checkbox.id_for_label }}"
+      class="{{ checkbox.attrs.class|default:'addon-option__input' }}"
+      {% if checkbox.is_checked %}checked{% endif %}
+      {% for attr, value in checkbox.attrs.items %}{% if attr != 'class' and attr != 'id' %} {{ attr }}="{{ value }}"{% endif %}{% endfor %}
+    />
+    <div class="addon-option__content">
+      <span class="addon-option__check" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-3.5 w-3.5">
+          <path
+            fill-rule="evenodd"
+            d="M16.704 5.29a1 1 0 0 1 0 1.42l-7.25 7.25a1 1 0 0 1-1.42 0l-3.25-3.25a1 1 0 1 1 1.42-1.42l2.54 2.54 6.54-6.54a1 1 0 0 1 1.42 0z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </span>
+      <span class="leading-snug">
+        <span class="font-semibold text-white">{{ checkbox.choice_label }}</span>
+      </span>
+    </div>
+  </label>
+  {% endfor %}
+</div>
+{% else %}
+<p class="text-sm text-white/60">No add-ons are available for this venue.</p>
+{% endif %}
+{{ field.errors }}
