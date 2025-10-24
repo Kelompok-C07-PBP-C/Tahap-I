@@ -6,10 +6,12 @@ from typing import Any
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.forms.forms import NON_FIELD_ERRORS
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.text import Truncator
+from django.views.decorators.http import require_GET
 from django.views.generic import DetailView, ListView
 
 from authentication.mixins import EnsureCsrfCookieMixin
@@ -42,9 +44,43 @@ class CatalogView(EnsureCsrfCookieMixin, LoginRequiredMixin, ListView):
         return context
 
 
+def _serialise_filter_errors(filterset: VenueFilter) -> tuple[dict[str, list[str]], list[str]]:
+    """Convert filter validation errors into a JSON serialisable structure."""
+
+    error_data = filterset.form.errors.get_json_data()
+    field_errors: dict[str, list[str]] = {}
+    non_field_errors: list[str] = []
+
+    for field, messages in error_data.items():
+        parsed_messages = [
+            message.get("message", "") for message in messages if message.get("message")
+        ]
+        if field == NON_FIELD_ERRORS:
+            non_field_errors.extend(parsed_messages)
+            continue
+        field_errors[field] = parsed_messages
+
+    return field_errors, non_field_errors
+
+
 @login_required
+@require_GET
 def catalog_filter(request: HttpRequest) -> JsonResponse:
-    filterset = VenueFilter(request.GET, queryset=Venue.objects.all())
+    queryset = Venue.objects.select_related("category").prefetch_related("addons")
+    filterset = VenueFilter(request.GET, queryset=queryset)
+
+    if not filterset.is_valid():
+        field_errors, non_field_errors = _serialise_filter_errors(filterset)
+        return JsonResponse(
+            {
+                "success": False,
+                "message": "Invalid filter values submitted.",
+                "errors": field_errors,
+                "non_field_errors": non_field_errors,
+            },
+            status=400,
+        )
+
     wishlist_ids = set(
         Wishlist.objects.filter(user=request.user).values_list("venue_id", flat=True)
     )
@@ -63,7 +99,13 @@ def catalog_filter(request: HttpRequest) -> JsonResponse:
         }
         for venue in filterset.qs
     ]
-    return JsonResponse({"venues": rendered_cards})
+    return JsonResponse(
+        {
+            "success": True,
+            "count": len(rendered_cards),
+            "venues": rendered_cards,
+        }
+    )
 
 
 class VenueDetailView(EnsureCsrfCookieMixin, LoginRequiredMixin, DetailView):

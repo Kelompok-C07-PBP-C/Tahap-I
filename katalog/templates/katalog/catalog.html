@@ -7,7 +7,10 @@
     <p class="mt-2 max-w-2xl text-white/70">Fine-tune your search with precise filters for city, category, and budget. Results update instantly without leaving the page.</p>
     <form
       id="catalog-filter-form"
+      method="get"
+      data-search-endpoint="{% url 'catalog-filter' %}"
       class="mt-8 flex w-full flex-wrap items-center justify-center gap-6 rounded-[2.75rem] border border-white/15 bg-slate-950/70 px-6 py-6 text-white/90 shadow-2xl shadow-slate-950/50 backdrop-blur-2xl md:flex-nowrap md:justify-between md:gap-10 md:px-10"
+      aria-live="polite"
     >
       <div class="flex w-full flex-col gap-3 md:w-auto">
         <span class="flex items-center gap-2 text-sm font-medium text-white">
@@ -41,13 +44,51 @@
       </div>
       <button
         type="submit"
-        class="w-full rounded-2xl bg-[#1B89AE] px-6 py-3 text-sm font-semibold text-white transition-colors duration-150 hover:bg-[#15647F] md:w-auto"
+        class="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#1B89AE] px-6 py-3 text-sm font-semibold text-white transition-colors duration-150 hover:bg-[#15647F] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#93D9ED] md:w-auto"
+        data-search-submit
       >
-        Search
+        <span data-search-submit-label>Search</span>
+        <span class="hidden items-center gap-2" data-search-submit-spinner>
+          <svg
+            class="h-5 w-5 animate-spin text-white"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            role="img"
+            aria-hidden="true"
+          >
+            <circle
+              class="opacity-30"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            ></circle>
+            <path
+              class="opacity-90"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+            ></path>
+          </svg>
+          <span>Searching…</span>
+        </span>
       </button>
     </form>
+    <div
+      class="mt-6 hidden rounded-2xl border border-white/15 bg-slate-950/60 px-5 py-4 text-sm font-medium text-white/80 backdrop-blur"
+      id="catalog-feedback"
+      data-search-feedback
+      role="status"
+      aria-live="polite"
+    ></div>
   </div>
-  <div id="catalog-grid" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+  <div
+    id="catalog-grid"
+    class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+    aria-live="polite"
+    aria-busy="false"
+  >
     {% for venue in venues %}
     {% include 'partials/venue_card.html' with venue=venue wishlist_ids=wishlist_ids wishlist_next_url=request.get_full_path %}
     {% empty %}
