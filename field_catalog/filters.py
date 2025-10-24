@@ -1,6 +1,8 @@
 from django import forms
+from django.db.models import Case, IntegerField, When
 import django_filters
 
+from field_management.constants import CATEGORY_SLUG_SEQUENCE
 from field_management.models import Category, Venue
 
 
@@ -17,7 +19,7 @@ class VenueFilter(django_filters.FilterSet):
     )
     category = django_filters.ModelChoiceFilter(
         field_name="category",
-        queryset=Category.objects.all(),
+        queryset=Category.objects.none(),
         empty_label="All categories",
         widget=forms.Select(
             attrs={
@@ -60,3 +62,18 @@ class VenueFilter(django_filters.FilterSet):
             self.filters["city"].field.choices = city_choices
         if "city" in self.form.fields:
             self.form.fields["city"].choices = city_choices
+
+        order_expression = Case(
+            *[When(slug=slug, then=position) for position, slug in enumerate(CATEGORY_SLUG_SEQUENCE)],
+            default=len(CATEGORY_SLUG_SEQUENCE),
+            output_field=IntegerField(),
+        )
+        category_queryset = (
+            Category.objects.filter(slug__in=CATEGORY_SLUG_SEQUENCE)
+            .annotate(_display_order=order_expression)
+            .order_by("_display_order")
+        )
+        if "category" in self.filters:
+            self.filters["category"].field.queryset = category_queryset
+        if "category" in self.form.fields:
+            self.form.fields["category"].queryset = category_queryset

@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from django import forms
+from django.db.models import Case, IntegerField, When
 
+from field_management.constants import CATEGORY_SLUG_SEQUENCE
 from field_management.models import Category, Venue
 
 
@@ -69,6 +71,14 @@ class SearchFilterForm(forms.Form):
                 city_choices.append((city, city))
 
         self.fields["city"].choices = city_choices
+
+        order_expression = Case(
+            *[When(slug=slug, then=position) for position, slug in enumerate(CATEGORY_SLUG_SEQUENCE)],
+            default=len(CATEGORY_SLUG_SEQUENCE),
+            output_field=IntegerField(),
+        )
         self.fields["category"].queryset = (
-            Category.objects.exclude(name__iexact="Basketball Courts").order_by("name")
+            Category.objects.filter(slug__in=CATEGORY_SLUG_SEQUENCE)
+            .annotate(_display_order=order_expression)
+            .order_by("_display_order")
         )
