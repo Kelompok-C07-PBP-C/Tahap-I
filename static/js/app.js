@@ -606,7 +606,7 @@ function toggleWishlist(button) {
 
   button.dataset.loading = 'true';
   updateWishlistButton(button, desiredState);
-  restoreScrollPosition();
+  
 
   const payload = {};
   if (nextValue) {
@@ -676,7 +676,7 @@ function toggleWishlist(button) {
       const toastMessage = wishlisted
         ? `Added ${venueName} to your wishlist.`
         : `Removed ${venueName} from your wishlist.`;
-      showToast(toastMessage, { level: wishlisted ? 'success' : 'info', duration: 4000 });
+      showToast(toastMessage, { level: wishlisted ? 'success' : 'info', duration: 1000 });
     })
     .catch((error) => {
       updateWishlistButton(button, previousState);
