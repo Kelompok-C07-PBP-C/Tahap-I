@@ -63,18 +63,21 @@
         </div>
         <div id="primary-navigation" class="hidden flex-1 items-center justify-center gap-24 text-base font-medium md:flex">
           <a href="{% url 'home' %}" class="font-medium text-slate-900 transition hover:text-[#1B89AE]">Home</a>
-          <a href="{% url 'catalog' %}" class="font-medium text-slate-900 transition hover:text-[#1B89AE]">Catalog</a>
-          <a href="{% url 'wishlist' %}" class="font-medium text-slate-900 transition hover:text-[#1B89AE]">Wishlist</a>
-          <a href="{% url 'booked-places' %}" class="font-medium text-slate-900 transition hover:text-[#1B89AE]" style="text-wrap:nowrap">Booked places</a>
+         
           {% if request.user.is_staff %}
-          <a href="{% url 'admin-dashboard' %}" class="font-medium text-slate-900 transition hover:text-[#1B89AE]">Admin workspace</a>
+          <a href="{% url 'admin-dashboard' %}" class="font-medium text-slate-900 transition hover:text-[#1B89AE]" style="text-wrap:nowrap">Admin workspace</a>
           <a href="{% url 'admin-bookings' %}" style="text-wrap:nowrap" class="font-medium text-slate-900 transition hover:text-[#1B89AE]">Booking approvals</a>
           <a
             href="{% url 'admin-venues' %}?show=create"
             data-modal-target="venue-create-modal"
+            style="text-wrap:nowrap"
             class="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
             >Add venue</a
           >
+          {% else %}
+           <a href="{% url 'catalog' %}" class="font-medium text-slate-900 transition hover:text-[#1B89AE]">Catalog</a>
+          <a href="{% url 'wishlist' %}" class="font-medium text-slate-900 transition hover:text-[#1B89AE]">Wishlist</a>
+          <a href="{% url 'booked-places' %}" class="font-medium text-slate-900 transition hover:text-[#1B89AE]" style="text-wrap:nowrap">Booked places</a>
           {% endif %}
         </div>
         <div class="hidden flex-1 items-center justify-end gap-4 text-base font-medium md:flex">
@@ -92,9 +95,6 @@
         <div class="space-y-4">
           <div class="flex flex-col gap-2">
             <a href="{% url 'home' %}" class="transition hover:text-[#1B89AE]">Home</a>
-            <a href="{% url 'catalog' %}" class="transition hover:text-[#1B89AE]">Catalog</a>
-            <a href="{% url 'wishlist' %}" class="transition hover:text-[#1B89AE]">Wishlist</a>
-            <a href="{% url 'booked-places' %}" class="transition hover:text-[#1B89AE]">Booked places</a>
             {% if request.user.is_staff %}
             <a href="{% url 'admin-dashboard' %}" class="transition hover:text-[#1B89AE]">Admin workspace</a>
             <a href="{% url 'admin-bookings' %}" class="transition hover:text-[#1B89AE]">Booking approvals</a>
@@ -104,6 +104,10 @@
               class="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
               >Add venue</a
             >
+            {% else %}
+            <a href="{% url 'catalog' %}" class="transition hover:text-[#1B89AE]">Catalog</a>
+            <a href="{% url 'wishlist' %}" class="transition hover:text-[#1B89AE]">Wishlist</a>
+            <a href="{% url 'booked-places' %}" class="transition hover:text-[#1B89AE]">Booked places</a>
             {% endif %}
           </div>
           <div class="flex flex-col gap-2 border-t border-slate-200 pt-3">
