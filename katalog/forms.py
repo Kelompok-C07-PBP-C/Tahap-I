@@ -4,6 +4,8 @@ from django import forms
 from django.db.models import Case, IntegerField, When
 
 from manajemen_lapangan.constants import CATEGORY_SLUG_SEQUENCE
+
+from katalog.constants import PREFERRED_CITY_ORDER
 from manajemen_lapangan.models import Category, Venue
 
 
@@ -43,25 +45,12 @@ class SearchFilterForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        preferred_city_order = [
-            "Jakarta",
-            "Bandung",
-            "Tangerang",
-            "Yogyakarta",
-            "Surabaya",
-            "Makassar",
-            "Denpasar",
-            "Palembang",
-            "Semarang",
-            "Medan",
-        ]
-
         city_choices = [("", "All cities")]
-        for city in preferred_city_order:
+        for city in PREFERRED_CITY_ORDER:
             city_choices.append((city, city))
 
         remaining_cities = (
-            Venue.objects.exclude(city__in=preferred_city_order)
+            Venue.objects.exclude(city__in=PREFERRED_CITY_ORDER)
             .order_by("city")
             .values_list("city", flat=True)
             .distinct()
