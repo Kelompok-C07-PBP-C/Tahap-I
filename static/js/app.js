@@ -59,7 +59,7 @@ const escapeSelector = (value) => {
 };
 
 const toastRootClassName =
-  'pointer-events-none fixed inset-x-0 top-4 z-50 flex flex-col items-center gap-3 px-4 sm:px-6';
+  'pointer-events-none fixed inset-x-0 bottom-4 z-50 flex flex-col items-center gap-3 px-4 sm:px-6';
 
 const baseToastClassName =
   'pointer-events-auto w-full max-w-md rounded-3xl border px-5 py-4 text-sm font-medium shadow-2xl shadow-slate-950/40 backdrop-blur transition-all duration-300';
@@ -71,7 +71,7 @@ const toastLevelClassNames = {
   error: 'border-rose-500/40 bg-rose-500/20 text-rose-50',
 };
 
-const DEFAULT_TOAST_DURATION = 3000;
+const DEFAULT_TOAST_DURATION = 4500;
 
 const ensureToastRoot = () => {
   if (typeof document === 'undefined') {
@@ -132,7 +132,7 @@ const hideToast = (toast) => {
     window.clearTimeout(Number(toast.dataset.toastTimer));
     delete toast.dataset.toastTimer;
   }
-  toast.classList.add('opacity-0', '-translate-y-2', 'pointer-events-none');
+  toast.classList.add('opacity-0', 'translate-y-2', 'pointer-events-none');
   toast.addEventListener(
     'transitionend',
     () => {
@@ -170,9 +170,9 @@ const registerToastElement = (toast, { level, duration = DEFAULT_TOAST_DURATION,
     hideToast(toast);
   });
   if (animateIn) {
-    toast.classList.add('opacity-0', '-translate-y-2');
+    toast.classList.add('opacity-0', 'translate-y-2');
     requestAnimationFrame(() => {
-      toast.classList.remove('opacity-0', '-translate-y-2');
+      toast.classList.remove('opacity-0', 'translate-y-2');
     });
   }
   scheduleToastRemoval(toast, duration);
