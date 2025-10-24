@@ -38,7 +38,7 @@
       <div class="absolute bottom-0 left-1/2 h-[28rem] w-[28rem] -translate-x-1/2 rounded-full bg-emerald-400/10 blur-3xl"></div>
     </div>
     {% block navbar %}
-    <header class="sticky top-0 z-40 w-full bg-white text-slate-900 shadow-md" data-animate>
+    <header class="sticky top-0 z-40 w-full border-b border-white/10 bg-white/5 text-white backdrop-blur-2xl shadow-lg shadow-slate-950/30" data-animate>
       <nav class="flex w-full items-center px-4 py-3 sm:px-6 lg:px-10">
         <div class="flex flex-1 items-center justify-start">
           <a href="{% url 'home' %}" class="flex items-center justify-center">
@@ -48,7 +48,7 @@
         <div class="flex items-center justify-end md:hidden">
           <button
             type="button"
-            class="flex items-center justify-center rounded-lg p-2 text-slate-600 transition hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-400"
+            class="flex items-center justify-center rounded-lg p-2 text-white transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-cyan-300"
             aria-expanded="false"
             aria-controls="mobile-navigation"
             data-nav-toggle
@@ -59,58 +59,58 @@
             </svg>
           </button>
         </div>
-        <div id="primary-navigation" class="hidden flex-1 items-center justify-center gap-16 text-base font-medium md:flex">
-          <a href="{% url 'home' %}" class="font-medium transition hover:text-sky-600">Home</a>
-          <a href="{% url 'catalog' %}" class="font-medium transition hover:text-sky-600">Catalog</a>
-          <a href="{% url 'wishlist' %}" class="font-medium transition hover:text-sky-600">Wishlist</a>
-          <a href="{% url 'booked-places' %}" class="font-medium transition hover:text-sky-600">Booked places</a>
+        <div id="primary-navigation" class="hidden flex-1 items-center justify-center gap-20 text-base font-medium md:flex">
+          <a href="{% url 'home' %}" class="font-medium transition hover:text-cyan-300">Home</a>
+          <a href="{% url 'catalog' %}" class="font-medium transition hover:text-cyan-300">Catalog</a>
+          <a href="{% url 'wishlist' %}" class="font-medium transition hover:text-cyan-300">Wishlist</a>
+          <a href="{% url 'booked-places' %}" class="font-medium transition hover:text-cyan-300">Booked places</a>
           {% if request.user.is_staff %}
-          <a href="{% url 'admin-dashboard' %}" class="font-medium transition hover:text-sky-600">Admin workspace</a>
-          <a href="{% url 'admin-bookings' %}" class="font-medium transition hover:text-sky-600">Booking approvals</a>
+          <a href="{% url 'admin-dashboard' %}" class="font-medium transition hover:text-cyan-300">Admin workspace</a>
+          <a href="{% url 'admin-bookings' %}" class="font-medium transition hover:text-cyan-300">Booking approvals</a>
           <a
             href="{% url 'admin-venues' %}?show=create"
             data-modal-target="venue-create-modal"
-            class="rounded-xl bg-sky-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-sky-600"
+            class="rounded-xl bg-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/25"
             >Add venue</a
           >
           {% endif %}
         </div>
         <div class="hidden flex-1 items-center justify-end gap-4 text-base font-medium md:flex">
           {% if user.is_authenticated %}
-          <span class="text-base font-medium">{{ request.user.username }}</span>
-          <span aria-hidden="true" class="text-slate-300">|</span>
-          <a href="{% url 'auth:logout' %}" class="font-medium text-red-600 transition hover:text-red-700">Logout</a>
+          <span class="text-base font-medium text-white">{{ request.user.username }}</span>
+          <span aria-hidden="true" class="text-white/40">|</span>
+          <a href="{% url 'auth:logout' %}" class="font-medium text-red-500 transition hover:text-red-400">Logout</a>
           {% else %}
-          <a href="{% url 'auth:login' %}" class="font-medium transition hover:text-sky-600">Login</a>
-          <a href="{% url 'auth:register' %}" class="rounded-xl bg-sky-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-sky-600">Register</a>
+          <a href="{% url 'auth:login' %}" class="font-medium transition hover:text-cyan-300">Login</a>
+          <a href="{% url 'auth:register' %}" class="rounded-xl bg-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/25">Register</a>
           {% endif %}
         </div>
       </nav>
-      <div id="mobile-navigation" class="hidden border-t border-slate-200 bg-white px-4 pb-4 pt-2 text-sm font-medium text-slate-900 md:hidden">
+      <div id="mobile-navigation" class="hidden border-t border-white/10 bg-slate-950/80 px-4 pb-4 pt-2 text-sm font-medium text-white md:hidden backdrop-blur-xl">
         <div class="space-y-4">
           <div class="flex flex-col gap-2">
-            <a href="{% url 'home' %}" class="transition hover:text-sky-600">Home</a>
-            <a href="{% url 'catalog' %}" class="transition hover:text-sky-600">Catalog</a>
-            <a href="{% url 'wishlist' %}" class="transition hover:text-sky-600">Wishlist</a>
-            <a href="{% url 'booked-places' %}" class="transition hover:text-sky-600">Booked places</a>
+            <a href="{% url 'home' %}" class="transition hover:text-cyan-300">Home</a>
+            <a href="{% url 'catalog' %}" class="transition hover:text-cyan-300">Catalog</a>
+            <a href="{% url 'wishlist' %}" class="transition hover:text-cyan-300">Wishlist</a>
+            <a href="{% url 'booked-places' %}" class="transition hover:text-cyan-300">Booked places</a>
             {% if request.user.is_staff %}
-            <a href="{% url 'admin-dashboard' %}" class="transition hover:text-sky-600">Admin workspace</a>
-            <a href="{% url 'admin-bookings' %}" class="transition hover:text-sky-600">Booking approvals</a>
+            <a href="{% url 'admin-dashboard' %}" class="transition hover:text-cyan-300">Admin workspace</a>
+            <a href="{% url 'admin-bookings' %}" class="transition hover:text-cyan-300">Booking approvals</a>
             <a
               href="{% url 'admin-venues' %}?show=create"
               data-modal-target="venue-create-modal"
-              class="rounded-xl bg-sky-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-sky-600"
+              class="rounded-xl bg-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/25"
               >Add venue</a
             >
             {% endif %}
           </div>
-          <div class="flex flex-col gap-2 border-t border-slate-200 pt-3">
+          <div class="flex flex-col gap-2 border-t border-white/10 pt-3">
             {% if user.is_authenticated %}
-            <span class="text-base font-medium">{{ request.user.username }}</span>
-            <a href="{% url 'auth:logout' %}" class="font-medium text-red-600 transition hover:text-red-700">Logout</a>
+            <span class="text-base font-medium text-white">{{ request.user.username }}</span>
+            <a href="{% url 'auth:logout' %}" class="font-medium text-red-500 transition hover:text-red-400">Logout</a>
             {% else %}
-            <a href="{% url 'auth:login' %}" class="transition hover:text-sky-600">Login</a>
-            <a href="{% url 'auth:register' %}" class="rounded-xl bg-sky-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-sky-600">Register</a>
+            <a href="{% url 'auth:login' %}" class="transition hover:text-cyan-300">Login</a>
+            <a href="{% url 'auth:register' %}" class="rounded-xl bg-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/25">Register</a>
             {% endif %}
           </div>
         </div>
@@ -130,44 +130,47 @@
       {% block footer %}
       <footer class="mt-24 w-full" data-animate>
         <div class="w-full overflow-hidden bg-white text-slate-900">
-          <div class="flex w-full flex-col items-center gap-6 px-6 pb-8 pt-12 text-center sm:px-10">
-            <img src="{% static 'images/ragaspace-logo.svg' %}" alt="RagaSpace" class="h-16 w-16" />
-            <h2 class="text-2xl font-semibold uppercase tracking-wide sm:text-3xl">Your Next Game is Just a Tap Away.</h2>
+          <div class="flex w-full flex-col items-center gap-2 px-6 pb-6 pt-8 text-center sm:px-10">
+            <h2 class="text-2xl font-semibold uppercase tracking-wide sm:text-[26px]">Your Next Game is Just a Tap Away.</h2>
           </div>
           <div class="border-t border-slate-200">
-            <div class="grid w-full gap-10 px-6 py-12 text-sm sm:px-10 md:grid-cols-2 lg:grid-cols-4">
-              <div class="space-y-3">
-                <p class="text-base font-semibold">RagaSpace</p>
-                <p>021 - 1234 5678</p>
-                <p>@ragaspace</p>
-                <p>ragaspace</p>
-                <p>ragaspace@gmail.com</p>
+            <div class="mx-auto flex w-full max-w-6xl flex-col gap-6 px-6 py-8 text-sm sm:px-10 lg:flex-row lg:items-start lg:gap-12">
+              <div class="flex flex-1 flex-col gap-3">
+                <img src="{% static 'images/ragaspace-logo.svg' %}" alt="RagaSpace" class="h-12 w-12" />
+                <div class="text-xs leading-relaxed text-slate-700">
+                  <p>Jl. Wahid Hasyim No. 100</p>
+                  <p>Jakarta Pusat</p>
+                  <p>DKI Jakarta, Indonesia</p>
+                  <p>10340</p>
+                </div>
               </div>
-              <div class="space-y-3">
-                <p class="text-base font-semibold">Company</p>
-                <a href="#" class="block transition hover:text-slate-900">About RagaSpace</a>
-                <a href="#" class="block transition hover:text-slate-900">Careers</a>
-                <a href="#" class="block transition hover:text-slate-900">Log and Media</a>
-              </div>
-              <div class="space-y-3">
-                <p class="text-base font-semibold">Support</p>
-                <a href="#" class="block transition hover:text-slate-900">Support Docs</a>
-                <a href="#" class="block transition hover:text-slate-900">Contact</a>
-                <a href="#" class="block transition hover:text-slate-900">Partnership</a>
-              </div>
-              <div class="space-y-3">
-                <p class="text-base font-semibold">Social Media</p>
-                <a href="#" class="block transition hover:text-slate-900">Instagram</a>
-                <a href="#" class="block transition hover:text-slate-900">Twitter</a>
-                <a href="#" class="block transition hover:text-slate-900">YouTube</a>
-                <a href="#" class="block transition hover:text-slate-900">Email</a>
+              <div class="grid flex-[2] gap-6 text-sm sm:grid-cols-3">
+                <div class="space-y-2">
+                  <p class="text-sm font-semibold uppercase tracking-wide text-slate-900">Contact</p>
+                  <p class="text-xs text-slate-700">021 - 1234 5678</p>
+                  <p class="text-xs text-slate-700">@ragaspace</p>
+                  <p class="text-xs text-slate-700">ragaspace</p>
+                  <p class="text-xs text-slate-700">ragaspace@gmail.com</p>
+                </div>
+                <div class="space-y-2">
+                  <p class="text-sm font-semibold uppercase tracking-wide text-slate-900">Company</p>
+                  <a href="#" class="block text-xs text-slate-700 transition hover:text-slate-900">About RagaSpace</a>
+                  <a href="#" class="block text-xs text-slate-700 transition hover:text-slate-900">Careers</a>
+                  <a href="#" class="block text-xs text-slate-700 transition hover:text-slate-900">Log and Media</a>
+                </div>
+                <div class="space-y-2">
+                  <p class="text-sm font-semibold uppercase tracking-wide text-slate-900">Support</p>
+                  <a href="#" class="block text-xs text-slate-700 transition hover:text-slate-900">Support Docs</a>
+                  <a href="#" class="block text-xs text-slate-700 transition hover:text-slate-900">Contact</a>
+                  <a href="#" class="block text-xs text-slate-700 transition hover:text-slate-900">Partnership</a>
+                </div>
               </div>
             </div>
           </div>
           <div class="border-t border-slate-200 bg-slate-900 text-white">
-            <div class="flex w-full flex-col gap-4 px-6 py-4 text-xs sm:flex-row sm:items-center sm:justify-between sm:px-10">
+            <div class="flex w-full flex-col gap-3 px-6 py-3 text-[11px] sm:flex-row sm:items-center sm:justify-between sm:px-10">
               <p class="text-white/80">© 2025 RagaSpace All Right Served</p>
-              <div class="flex flex-wrap items-center gap-4 text-white/70">
+              <div class="flex flex-wrap items-center gap-3 text-white/70">
                 <a href="#" class="transition hover:text-white">Privacy Policy</a>
                 <span aria-hidden="true">•</span>
                 <a href="#" class="transition hover:text-white">Terms</a>

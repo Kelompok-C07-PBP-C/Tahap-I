@@ -61,8 +61,8 @@
 {% endblock %}
 {% block content %}
 <section class="flex w-full flex-col" data-animate>
-  <div class="w-full bg-white py-16 text-slate-900" data-animate>
-    <div class="flex w-full flex-col gap-12 px-6 sm:px-10 lg:flex-row lg:items-center lg:justify-between">
+  <div class="w-full bg-white py-6 text-slate-900" data-animate>
+    <div class="mx-auto flex w-full max-w-7xl flex-col gap-12 px-6 sm:px-10 lg:flex-row lg:items-center lg:justify-between">
       <div class="flex flex-1 flex-wrap items-center justify-center gap-6 lg:flex-nowrap lg:justify-start">
         <img
           src="https://images.unsplash.com/photo-1526401485004-46910ecc8e51?auto=format&fit=crop&w=600&q=80"
@@ -81,25 +81,34 @@
         />
       </div>
       <div class="flex-1 lg:max-w-2xl lg:pl-16">
-        <h1 class="text-4xl font-semibold text-slate-900 md:text-5xl">From Court to Field</h1>
-        <p class="mt-4 text-base text-slate-700">
-          Discover fields that inspire, gear that performs, and moments that keep your game alive.
-        </p>
-        <form method="get" action="{% url 'catalog' %}" class="mt-10 inline-flex items-center gap-6">
-          <button
-            type="submit"
-            class="interactive-glow inline-flex items-center justify-center rounded-3xl bg-[#1B89AE] px-10 py-4 text-base font-semibold text-white shadow-lg shadow-cyan-500/40 transition hover:bg-[#177493]"
-            data-ripple
-          >
-            Explore venues
-          </button>
-        </form>
+        <div class="flex flex-col items-end gap-6 text-right">
+          <div class="space-y-4">
+            <h1 class="text-4xl font-semibold text-slate-900 md:text-5xl">From Court to Field</h1>
+            <p class="text-base text-slate-700">
+              Discover fields that inspire, gear that performs, and moments that keep your game alive.
+            </p>
+          </div>
+          <form method="get" action="{% url 'catalog' %}" class="flex w-full justify-end">
+            <button
+              type="submit"
+              class="interactive-glow group inline-flex items-center justify-center gap-3 rounded-full bg-gradient-to-r from-[#1B89AE] via-sky-500 to-[#15647F] px-12 py-4 text-lg font-semibold uppercase tracking-[0.2em] text-white shadow-[0_18px_45px_rgba(14,116,144,0.35)] transition"
+              data-ripple
+            >
+              <span class="inline-flex items-center gap-2">
+                Explore venues
+                <svg class="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                </svg>
+              </span>
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
   <div class="w-full px-6 py-16 sm:px-10" data-animate>
-    <div class="flex flex-col gap-3">
-      <h2 class="text-3xl font-semibold text-white">Top 3 Venues</h2>
+    <div class="flex flex-col items-center gap-3 text-center">
+      <h2 class="text-4xl font-semibold text-white drop-shadow-[0_8px_35px_rgba(14,165,233,0.45)]">Top 3 Venues</h2>
       <p class="text-sm text-white/70">Handpicked places loved by the RagaSpace community.</p>
     </div>
     <div class="mt-10 grid gap-6 md:grid-cols-3 md:gap-8">
@@ -151,6 +160,34 @@
       {% empty %}
       <p class="text-white/70">No popular venues yet.</p>
       {% endfor %}
+    </div>
+  </div>
+  <div class="w-full px-6 pb-20 sm:px-10" data-animate>
+    <div class="mx-auto flex w-full max-w-6xl flex-col items-center gap-10">
+      <h2 class="text-3xl font-semibold text-white drop-shadow-[0_8px_30px_rgba(14,165,233,0.35)]">What She said about RagaSpace?</h2>
+      <div class="w-full overflow-hidden rounded-[3rem] bg-gradient-to-br from-white/10 via-white/5 to-cyan-500/10 p-[1px] shadow-2xl shadow-slate-950/50 backdrop-blur-2xl">
+        <div class="flex flex-col gap-8 rounded-[3rem] bg-slate-950/70 px-8 py-10 sm:px-12 lg:flex-row lg:items-center lg:gap-12">
+          <div class="flex justify-center lg:w-[40%]">
+            <img
+              src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=600&q=80"
+              alt="Happy athlete testimonial"
+              class="h-64 w-64 rounded-[3rem] object-cover shadow-xl shadow-cyan-500/30"
+            />
+          </div>
+          <div class="flex-1 space-y-6 text-white/90">
+            <div>
+              <p class="text-2xl font-semibold text-white">Rindu Aurellia</p>
+              <p class="text-sm uppercase tracking-[0.35em] text-cyan-200/80">Anak Padi</p>
+            </div>
+            <p class="leading-relaxed text-white/80">
+              “Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus viverra diam vel ultricies vehicula. Suspendisse ultrices mi in venenatis luctus. Integer sed risus eget eros sagittis accumsan. Fusce leo lectus, eleifend nec mi ut, rhoncus posuere magna.”
+            </p>
+            <p class="leading-relaxed text-white/80">
+              “Proin tincidunt, arcu nec mollis dapibus, sapien est accumsan orci, at iaculis ligula nisl tristique metus. Duis sagittis ipsum metus, feugiat lobortis lacus placerat eget.”
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
