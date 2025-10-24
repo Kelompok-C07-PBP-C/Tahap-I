@@ -73,6 +73,20 @@ const toastLevelClassNames = {
 
 const DEFAULT_TOAST_DURATION = 3000;
 
+const onDocumentReady = (callback) => {
+  if (typeof document === 'undefined') {
+    return;
+  }
+  if (typeof callback !== 'function') {
+    return;
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', callback, { once: true });
+  } else {
+    callback();
+  }
+};
+
 const ensureToastRoot = () => {
   if (typeof document === 'undefined') {
     return null;
@@ -149,6 +163,22 @@ const hideToast = (toast) => {
   }, 400);
 };
 
+const resolveToastDuration = (toast, fallbackDuration) => {
+  if (!toast) {
+    return DEFAULT_TOAST_DURATION;
+  }
+  const attributeDuration = toast.getAttribute('data-toast-duration') || toast.dataset.toastDuration;
+  const parsedAttribute = Number(attributeDuration);
+  if (!Number.isNaN(parsedAttribute) && parsedAttribute > 0) {
+    return parsedAttribute;
+  }
+  const parsedFallback = Number(fallbackDuration);
+  if (!Number.isNaN(parsedFallback) && parsedFallback > 0) {
+    return parsedFallback;
+  }
+  return DEFAULT_TOAST_DURATION;
+};
+
 const scheduleToastRemoval = (toast, duration) => {
   const timeout = Number(duration);
   if (!toast || Number.isNaN(timeout) || timeout <= 0) {
@@ -169,13 +199,15 @@ const registerToastElement = (toast, { level, duration = DEFAULT_TOAST_DURATION,
   toast.addEventListener('click', () => {
     hideToast(toast);
   });
+  const resolvedDuration = resolveToastDuration(toast, duration);
+  toast.dataset.toastDuration = String(resolvedDuration);
   if (animateIn) {
     toast.classList.add('opacity-0', 'translate-y-2');
     requestAnimationFrame(() => {
       toast.classList.remove('opacity-0', 'translate-y-2');
     });
   }
-  scheduleToastRemoval(toast, duration);
+  scheduleToastRemoval(toast, resolvedDuration);
   return toast;
 };
 
@@ -208,13 +240,36 @@ const bootstrapToasts = () => {
   });
 };
 
-if (typeof document !== 'undefined') {
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', bootstrapToasts, { once: true });
-  } else {
-    bootstrapToasts();
+onDocumentReady(bootstrapToasts);
+
+const prepareWishlistButton = (button) => {
+  if (!(button instanceof HTMLButtonElement)) {
+    return;
   }
-}
+  if (button.dataset.wishlistPrepared === 'true') {
+    return;
+  }
+  const currentType = button.getAttribute('type');
+  if (!currentType || currentType.toLowerCase() === 'submit') {
+    button.setAttribute('type', 'button');
+  }
+  button.dataset.wishlistPrepared = 'true';
+};
+
+const prepareWishlistButtons = (root = document) => {
+  if (!root || typeof root.querySelectorAll !== 'function') {
+    return;
+  }
+  root.querySelectorAll('.wishlist-button').forEach((button) => {
+    if (button instanceof HTMLButtonElement) {
+      prepareWishlistButton(button);
+    }
+  });
+};
+
+onDocumentReady(() => {
+  prepareWishlistButtons(document);
+});
 
 const updateWishlistButton = (button, wishlisted) => {
   if (!button) return;
@@ -355,7 +410,7 @@ const createWishlistCard = (venueData) => {
   const button = document.createElement('button');
   button.className =
     'wishlist-button wishlist-button--active rounded-full border border-white/20 bg-white/10 p-2 text-white transition hover:bg-white/20';
-  button.type = 'submit';
+  button.type = 'button';
   button.setAttribute('aria-label', 'Unlove');
   button.setAttribute('aria-pressed', 'true');
   button.dataset.venue = String(venueData.id || '');
@@ -371,6 +426,7 @@ const createWishlistCard = (venueData) => {
     button.dataset.toggleUrl = toggleUrl;
   }
   form.appendChild(button);
+  prepareWishlistButton(button);
 
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
@@ -452,12 +508,17 @@ const syncWishlistGrid = ({ venueId, wishlisted, venueData, wishlistItemHtml }) 
     const trimmed = wishlistItemHtml.trim();
     if (existingCard) {
       existingCard.outerHTML = trimmed;
+      const replacedCard = grid.querySelector(selector);
+      if (replacedCard) {
+        prepareWishlistButtons(replacedCard);
+      }
     } else {
       const template = document.createElement('template');
       template.innerHTML = trimmed;
       const newCard = template.content.firstElementChild;
       if (newCard) {
         grid.prepend(newCard);
+        prepareWishlistButtons(newCard);
       }
     }
     if (window.RagaSpace && typeof window.RagaSpace.refreshInteractive === 'function') {
@@ -476,6 +537,7 @@ const syncWishlistGrid = ({ venueId, wishlisted, venueData, wishlistItemHtml }) 
   }
   const card = createWishlistCard(venueData);
   grid.prepend(card);
+  prepareWishlistButtons(card);
   if (window.RagaSpace && typeof window.RagaSpace.refreshInteractive === 'function') {
     window.RagaSpace.refreshInteractive(card);
   }
@@ -491,6 +553,9 @@ const syncWishlistButtons = ({ venueId, wishlisted, venueData }) => {
     if (!(button instanceof HTMLElement)) {
       return;
     }
+    if (button instanceof HTMLButtonElement) {
+      prepareWishlistButton(button);
+    }
     if (venueData) {
       applyVenueDataset(button, venueData);
     }
@@ -504,6 +569,7 @@ document.addEventListener('wishlist:changed', (event) => {
   }
   syncWishlistGrid(event.detail);
   syncWishlistButtons(event.detail);
+  prepareWishlistButtons(document);
 });
 
 function toggleWishlist(button) {
@@ -610,7 +676,7 @@ function toggleWishlist(button) {
       const toastMessage = wishlisted
         ? `Added ${venueName} to your wishlist.`
         : `Removed ${venueName} from your wishlist.`;
-      showToast(toastMessage, { level: wishlisted ? 'success' : 'info' });
+      showToast(toastMessage, { level: wishlisted ? 'success' : 'info', duration: 4000 });
     })
     .catch((error) => {
       updateWishlistButton(button, previousState);
@@ -618,7 +684,7 @@ function toggleWishlist(button) {
       if (error && error.message === 'Authentication required') {
         return;
       }
-      showToast('Unable to update your wishlist right now. Please try again.', { level: 'error' });
+      showToast('Unable to update your wishlist right now. Please try again.', { level: 'error', duration: 4500 });
     })
     .finally(() => {
       restoreScrollPosition();
