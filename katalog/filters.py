@@ -5,6 +5,8 @@ import django_filters
 from manajemen_lapangan.constants import CATEGORY_SLUG_SEQUENCE
 from manajemen_lapangan.models import Category, Venue
 
+from katalog.constants import PREFERRED_CITY_ORDER
+
 
 class VenueFilter(django_filters.FilterSet):
     city = django_filters.ChoiceFilter(
@@ -49,14 +51,18 @@ class VenueFilter(django_filters.FilterSet):
             queryset = Venue.objects.all()
         super().__init__(data=data, queryset=queryset, request=request, prefix=prefix)
 
+        city_choices = [(city, city) for city in PREFERRED_CITY_ORDER]
+
         city_values = (
-            self.queryset.order_by("city")
+            self.queryset.exclude(city__in=PREFERRED_CITY_ORDER)
+            .order_by("city")
             .values_list("city", flat=True)
             .distinct()
         )
-        city_choices = [("", "All cities")] + [
-            (value, value) for value in city_values if value
-        ]
+        city_choices.extend((value, value) for value in city_values if value)
+
+        # django-filter injects the configured empty_label automatically, so avoid
+        # adding an extra blank option when preparing the list of cities.
 
         if "city" in self.filters:
             self.filters["city"].field.choices = city_choices
