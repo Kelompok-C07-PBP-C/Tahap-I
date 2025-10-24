@@ -2,10 +2,12 @@
 from __future__ import annotations
 
 from django import forms
+from django.db.models import Case, IntegerField, When
 from django.utils.text import slugify
 
 from field_booking.models import Booking
 
+from .constants import CATEGORY_SLUG_SEQUENCE
 from .models import Category, Venue
 
 
@@ -32,7 +34,7 @@ class VenueForm(forms.ModelForm):
         widgets = {
             "category": forms.Select(
                 attrs={
-                    "class": "custom-select w-full rounded-xl border border-white/20 bg-white/10 px-4 py-2 text-white backdrop-blur",
+                    "class": "custom-select w-full rounded-2xl border border-white/25 bg-slate-950/70 px-5 py-3 text-sm text-white/90 backdrop-blur",
                 }
             ),
             "name": forms.TextInput(
@@ -58,7 +60,7 @@ class VenueForm(forms.ModelForm):
             ),
             "city": forms.TextInput(
                 attrs={
-                    "class": "w-full rounded-xl border border-white/20 bg-white/10 px-4 py-2 text-white placeholder-white/50 backdrop-blur",
+                    "class": "w-full rounded-2xl border border-white/25 bg-slate-950/70 px-5 py-3 text-sm text-white/90 placeholder-white/60 backdrop-blur",
                 }
             ),
             "address": forms.Textarea(
@@ -69,7 +71,7 @@ class VenueForm(forms.ModelForm):
             ),
             "price_per_hour": forms.NumberInput(
                 attrs={
-                    "class": "w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder-white/60 backdrop-blur",
+                    "class": "w-full rounded-2xl border border-white/25 bg-slate-950/70 px-5 py-3 text-sm text-white/90 placeholder-white/60 backdrop-blur",
                     "step": "0.01",
                 }
             ),
@@ -115,7 +117,14 @@ class VenueForm(forms.ModelForm):
         self.fields["facilities"].help_text = "Pisahkan setiap fasilitas dengan koma."
         self.fields["slug"].required = False
 
-        self.fields["category"].queryset = Category.objects.order_by("name")
+        order_expression = Case(
+            *[When(slug=slug, then=position) for position, slug in enumerate(CATEGORY_SLUG_SEQUENCE)],
+            default=len(CATEGORY_SLUG_SEQUENCE),
+            output_field=IntegerField(),
+        )
+        self.fields["category"].queryset = (
+            Category.objects.annotate(_display_order=order_expression).order_by("_display_order", "name")
+        )
         self.fields["category"].empty_label = "Pilih kategori olahraga"
 
     def clean_slug(self):
