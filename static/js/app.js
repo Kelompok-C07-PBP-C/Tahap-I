@@ -169,10 +169,35 @@ const createWishlistCard = (venueData) => {
   city.textContent = venueData.city || '';
   meta.appendChild(city);
 
+  const form = document.createElement('form');
+  form.method = 'post';
+  const toggleUrl = venueData.toggleUrl || venueData.toggle_url || (venueData.id ? `/api/wishlist/${venueData.id}/toggle/` : '');
+  if (toggleUrl) {
+    const fallbackAction = toggleUrl.includes('/api/') ? toggleUrl.replace('/api/', '/') : toggleUrl;
+    form.action = fallbackAction;
+  }
+  form.setAttribute('data-wishlist-form', '');
+  header.appendChild(form);
+
+  const csrfValue = getCsrfToken();
+  if (csrfValue) {
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = 'csrfmiddlewaretoken';
+    csrfInput.value = csrfValue;
+    form.appendChild(csrfInput);
+  }
+
+  const nextInput = document.createElement('input');
+  nextInput.type = 'hidden';
+  nextInput.name = 'next';
+  nextInput.value = `${window.location.pathname}${window.location.search || ''}`;
+  form.appendChild(nextInput);
+
   const button = document.createElement('button');
   button.className =
     'wishlist-button wishlist-button--active rounded-full border border-white/20 bg-white/10 p-2 text-white transition hover:bg-white/20';
-  button.type = 'button';
+  button.type = 'submit';
   button.setAttribute('aria-label', 'Unlove');
   button.setAttribute('aria-pressed', 'true');
   button.dataset.venue = String(venueData.id || '');
@@ -184,11 +209,10 @@ const createWishlistCard = (venueData) => {
   button.dataset.venueUrl = venueData.url || '';
   button.dataset.venueImage = venueData.image || '';
   button.dataset.venueDescription = venueData.description || '';
-  const toggleUrl = venueData.toggleUrl || venueData.toggle_url || (venueData.id ? `/api/wishlist/${venueData.id}/toggle/` : '');
   if (toggleUrl) {
     button.dataset.toggleUrl = toggleUrl;
   }
-  header.appendChild(button);
+  form.appendChild(button);
 
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
@@ -334,9 +358,19 @@ function toggleWishlist(button) {
   const desiredState = !previousState;
   const csrfToken = getCsrfToken();
   const toggleUrl = button.dataset.toggleUrl || `/api/wishlist/${venueId}/toggle/`;
+  const form = button.closest('[data-wishlist-form]');
+  const nextInput = form ? form.querySelector('input[name="next"]') : null;
+  const nextValue = nextInput
+    ? nextInput.value
+    : `${window.location.pathname}${window.location.search || ''}`;
 
   button.dataset.loading = 'true';
   updateWishlistButton(button, desiredState);
+
+  const payload = {};
+  if (nextValue) {
+    payload.next = nextValue;
+  }
 
   fetch(toggleUrl, {
     method: 'POST',
@@ -347,7 +381,7 @@ function toggleWishlist(button) {
       ...(csrfToken ? { 'X-CSRFToken': csrfToken } : {}),
     },
     credentials: 'same-origin',
-    body: JSON.stringify({}),
+    body: JSON.stringify(payload),
   })
     .then((response) => {
       if (response.redirected) {
@@ -412,6 +446,17 @@ document.addEventListener('click', (event) => {
   if (button) {
     event.preventDefault();
     toggleWishlist(button);
+  }
+});
+
+document.addEventListener('submit', (event) => {
+  const form = event.target;
+  if (form.matches('[data-wishlist-form]')) {
+    event.preventDefault();
+    const button = form.querySelector('.wishlist-button');
+    if (button) {
+      toggleWishlist(button);
+    }
   }
 });
 

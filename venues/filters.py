@@ -14,7 +14,7 @@ class VenueFilter(django_filters.FilterSet):
         empty_label="All cities",
         widget=forms.Select(
             attrs={
-                "class": "custom-select w-full rounded-xl border border-white/20 px-4 py-3 text-sm text-white",
+                "class": "custom-select w-full rounded-2xl border border-white/25 bg-slate-950/70 px-5 py-3 text-sm text-white/90 backdrop-blur",
             }
         ),
     )
@@ -24,7 +24,7 @@ class VenueFilter(django_filters.FilterSet):
         empty_label="All categories",
         widget=forms.Select(
             attrs={
-                "class": "custom-select w-full rounded-xl border border-white/20 px-4 py-3 text-sm text-white",
+                "class": "custom-select w-full rounded-2xl border border-white/25 bg-slate-950/70 px-5 py-3 text-sm text-white/90 backdrop-blur",
             }
         ),
     )
@@ -33,7 +33,7 @@ class VenueFilter(django_filters.FilterSet):
         lookup_expr="lte",
         widget=forms.NumberInput(
             attrs={
-                "class": "w-full rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-sm text-white placeholder-white/60 backdrop-blur",
+                "class": "w-full rounded-2xl border border-white/25 bg-slate-950/70 px-5 py-3 text-sm text-white/90 placeholder:text-white/60 backdrop-blur",
                 "placeholder": "Max Price",
                 "min": 0,
                 "step": "0.01",

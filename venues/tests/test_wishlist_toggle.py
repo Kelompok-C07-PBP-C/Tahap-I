@@ -41,7 +41,7 @@ class WishlistToggleAPITests(TestCase):
 
         first_response = self.client.post(
             toggle_url,
-            data="{}",
+            data="{\"next\": \"/catalog/\"}",
             content_type="application/json",
             HTTP_X_REQUESTED_WITH="XMLHttpRequest",
         )
@@ -54,6 +54,7 @@ class WishlistToggleAPITests(TestCase):
         self.assertEqual(first_payload["venue"]["id"], str(self.venue.pk))
         self.assertEqual(first_payload["venue"]["name"], self.venue.name)
         self.assertEqual(first_payload["venue"]["toggle_url"], toggle_url)
+        self.assertIn('name="next" value="/catalog/"', first_payload["wishlist_item_html"])
         self.assertTrue(Wishlist.objects.filter(user=self.user, venue=self.venue).exists())
 
         second_response = self.client.post(
@@ -76,3 +77,13 @@ class WishlistToggleAPITests(TestCase):
         response = self.client.post(toggle_url)
         self.assertEqual(response.status_code, 302)
         self.assertIn(reverse("auth:login"), response.url)
+
+    def test_non_ajax_toggle_redirects_with_next(self) -> None:
+        self.client.force_login(self.user)
+        next_url = reverse("catalog")
+        toggle_url = reverse("wishlist-toggle", args=[self.venue.pk])
+
+        response = self.client.post(toggle_url, data={"next": next_url})
+
+        self.assertRedirects(response, next_url, fetch_redirect_response=False)
+        self.assertTrue(Wishlist.objects.filter(user=self.user, venue=self.venue).exists())
