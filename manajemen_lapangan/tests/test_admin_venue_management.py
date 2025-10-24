@@ -4,6 +4,8 @@ from __future__ import annotations
 from datetime import time
 
 from django.contrib.auth import get_user_model
+import json
+
 from django.test import TestCase
 from django.urls import reverse
 
@@ -146,3 +148,90 @@ class AdminVenueManagementTests(TestCase):
         self.assertIn(
             "Slug venue ini sudah digunakan.", response.context["form"].errors["slug"][0]
         )
+
+    def test_ajax_list_endpoint_returns_json_payload(self):
+        self.client.force_login(self.admin)
+
+        response = self.client.get(
+            reverse("admin-venues-api"),
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertTrue(payload["success"])
+        self.assertIn("venues", payload)
+
+    def test_ajax_create_endpoint_persists_venue(self):
+        self.client.force_login(self.admin)
+        payload = self._valid_payload(name="Galaxy Court")
+
+        response = self.client.post(
+            reverse("admin-venues-api"),
+            data=json.dumps(payload),
+            content_type="application/json",
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+
+        self.assertEqual(response.status_code, 200, response.content)
+        data = response.json()
+        self.assertTrue(data["success"])
+        self.assertTrue(Venue.objects.filter(name="Galaxy Court").exists())
+
+    def test_ajax_update_endpoint_updates_fields(self):
+        venue = Venue.objects.create(
+            category=self.category,
+            name="Aurora Field",
+            slug="aurora-field",
+            description="Outdoor field",
+            location="North District",
+            city="Metropolis",
+            address="123 Aurora Lane",
+            price_per_hour="85000.00",
+            capacity=120,
+            facilities="lighting",
+            image_url="https://example.com/aurora.jpg",
+            available_start_time=time(7, 0),
+            available_end_time=time(21, 0),
+        )
+
+        self.client.force_login(self.admin)
+        update_payload = self._valid_payload(name="Aurora Field Updated", slug="aurora-field")
+
+        response = self.client.put(
+            reverse("admin-venue-detail-api", args=[venue.pk]),
+            data=json.dumps(update_payload),
+            content_type="application/json",
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+
+        self.assertEqual(response.status_code, 200, response.content)
+        venue.refresh_from_db()
+        self.assertEqual(venue.name, "Aurora Field Updated")
+
+    def test_ajax_delete_endpoint_removes_venue(self):
+        venue = Venue.objects.create(
+            category=self.category,
+            name="Starlight Arena",
+            slug="starlight-arena",
+            description="Indoor arena",
+            location="South District",
+            city="Metropolis",
+            address="1 Starlight Street",
+            price_per_hour="99000.00",
+            capacity=90,
+            facilities="locker room",
+            image_url="https://example.com/starlight.jpg",
+            available_start_time=time(8, 0),
+            available_end_time=time(22, 0),
+        )
+
+        self.client.force_login(self.admin)
+
+        response = self.client.delete(
+            reverse("admin-venue-detail-api", args=[venue.pk]),
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertFalse(Venue.objects.filter(pk=venue.pk).exists())
