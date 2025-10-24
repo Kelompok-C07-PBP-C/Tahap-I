@@ -1,14 +1,18 @@
 """Wishlist related views."""
 from __future__ import annotations
 
+import json
+from json import JSONDecodeError
 from typing import Any
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpRequest, JsonResponse
-from django.shortcuts import get_object_or_404
+from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404, redirect
 from django.template.loader import render_to_string
 from django.urls import reverse
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.utils.text import Truncator
 from django.views import View
 from django.views.generic import ListView
@@ -40,21 +44,68 @@ class WishlistView(EnsureCsrfCookieMixin, LoginRequiredMixin, ListView):
 
 
 class WishlistToggleView(LoginRequiredMixin, View):
-    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> JsonResponse:  # type: ignore[override]
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:  # type: ignore[override]
         venue = get_object_or_404(Venue, pk=kwargs["pk"])
-        wishlist, created = Wishlist.objects.get_or_create(user=request.user, venue=venue)
-        if not created:
-            wishlist.delete()
-        return JsonResponse(_build_wishlist_response(request, venue, created))
+        wishlisted = _toggle_wishlist_entry(request, venue)
+        return _wishlist_response(request, venue, wishlisted)
 
 
 @login_required
-def wishlist_toggle(request: HttpRequest, pk: int) -> JsonResponse:
+def wishlist_toggle(request: HttpRequest, pk: int) -> HttpResponse:
     venue = get_object_or_404(Venue, pk=pk)
+    wishlisted = _toggle_wishlist_entry(request, venue)
+    return _wishlist_response(request, venue, wishlisted)
+
+
+def _toggle_wishlist_entry(request: HttpRequest, venue: Venue) -> bool:
     wishlist, created = Wishlist.objects.get_or_create(user=request.user, venue=venue)
-    if not created:
-        wishlist.delete()
-    return JsonResponse(_build_wishlist_response(request, venue, created))
+    if created:
+        return True
+    wishlist.delete()
+    return False
+
+
+def _request_wants_json(request: HttpRequest) -> bool:
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+        return True
+    accept = request.headers.get("accept", "")
+    return "application/json" in accept
+
+
+def _get_next_url(request: HttpRequest) -> str:
+    fallback = reverse("wishlist")
+    candidate = (
+        request.POST.get("next")
+        or request.GET.get("next")
+        or request.META.get("HTTP_REFERER")
+    )
+    if not candidate and request.content_type and "application/json" in request.content_type:
+        try:
+            payload = json.loads(request.body.decode() or "{}")
+        except (TypeError, ValueError, JSONDecodeError):
+            payload = {}
+        candidate = payload.get("next")
+    if candidate and url_has_allowed_host_and_scheme(
+        candidate,
+        allowed_hosts={request.get_host()},
+        require_https=request.is_secure(),
+    ):
+        return candidate
+    return fallback
+
+
+def _wishlist_response(request: HttpRequest, venue: Venue, wishlisted: bool) -> HttpResponse:
+    if _request_wants_json(request):
+        return JsonResponse(_build_wishlist_response(request, venue, wishlisted))
+    _add_wishlist_message(request, venue, wishlisted)
+    return redirect(_get_next_url(request))
+
+
+def _add_wishlist_message(request: HttpRequest, venue: Venue, wishlisted: bool) -> None:
+    if wishlisted:
+        messages.success(request, f"Added {venue.name} to your wishlist.")
+    else:
+        messages.info(request, f"Removed {venue.name} from your wishlist.")
 
 
 def _build_wishlist_response(request: HttpRequest, venue: Venue, wishlisted: bool) -> dict[str, Any]:
@@ -79,7 +130,11 @@ def _build_wishlist_response(request: HttpRequest, venue: Venue, wishlisted: boo
     if wishlisted:
         response["wishlist_item_html"] = render_to_string(
             "partials/wishlist_card.html",
-            {"venue": venue, "wishlist_description": description},
+            {
+                "venue": venue,
+                "wishlist_description": description,
+                "wishlist_next_url": _get_next_url(request),
+            },
             request=request,
         )
     return response

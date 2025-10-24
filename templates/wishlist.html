@@ -55,7 +55,7 @@
     <div class="mt-6 space-y-6">
       <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" data-wishlist-grid>
         {% for item in wishlists %}
-        {% include 'partials/wishlist_card.html' with venue=item.venue wishlist_description=item.venue.description|truncatechars:120 %}
+        {% include 'partials/wishlist_card.html' with venue=item.venue wishlist_description=item.venue.description|truncatechars:120 wishlist_next_url=request.get_full_path %}
         {% endfor %}
       </div>
       <p class="text-white/70 {% if wishlists %}hidden{% endif %}" data-wishlist-empty>You haven't saved any venues yet.</p>
