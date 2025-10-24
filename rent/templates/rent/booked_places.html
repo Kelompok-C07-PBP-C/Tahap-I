@@ -26,15 +26,15 @@
       <dl class="mt-4 grid gap-2 text-sm text-white/70 sm:grid-cols-2">
         <div>
           <dt class="text-xs uppercase tracking-wider text-white/50">Start</dt>
-          <dd class="text-white">{{ booking.start_datetime|date:'M d, Y' }}</dd>
+          <dd class="text-white">{{ booking.start_datetime|date:'M d, Y H:i' }}</dd>
         </div>
         <div>
           <dt class="text-xs uppercase tracking-wider text-white/50">End</dt>
-          <dd class="text-white">{{ booking.end_datetime|date:'M d, Y' }}</dd>
+          <dd class="text-white">{{ booking.end_datetime|date:'M d, Y H:i' }}</dd>
         </div>
         <div>
           <dt class="text-xs uppercase tracking-wider text-white/50">Booked on</dt>
-          <dd class="text-white">{{ booking.created_at|date:'M d, Y' }}</dd>
+          <dd class="text-white">{{ booking.created_at|date:'M d, Y H:i' }}</dd>
         </div>
         <div>
           <dt class="text-xs uppercase tracking-wider text-white/50">Total cost</dt>
@@ -85,15 +85,7 @@
           {% elif booking.status == 'confirmed' %}
           <span class="inline-flex items-center rounded-2xl border border-white/20 bg-white/10 px-4 py-2 text-sm text-white/70">You're all set! We'll remind you before your event.</span>
           {% endif %}
-          {% if booking.status != 'completed' %}
-          <button
-            type="button"
-            data-modal-target="cancel-booking-{{ booking.pk }}"
-            class="inline-flex items-center justify-center rounded-2xl border border-white/20 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
-            data-booking-cancel-trigger
-            data-booking-id="{{ booking.pk }}"
-          >Cancel booking</button>
-          {% endif %}
+
         </div>
       </div>
     </article>
