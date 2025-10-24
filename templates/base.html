@@ -32,7 +32,7 @@
     <script src="{% static 'js/app.js' %}" defer></script>
     {% block head_extra %}{% endblock %}
   </head>
-  <body class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 font-sans text-slate-100 {% block body_class %}{% endblock %}">
+  <body style="position:relative;padding-bottom:20rem" class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 font-sans text-slate-100 {% block body_class %}{% endblock %}">
     <div class="fixed inset-0 -z-10 overflow-hidden">
       <div class="absolute -left-40 top-20 h-96 w-96 rounded-full bg-primary/20 blur-3xl"></div>
       <div class="absolute right-0 top-0 h-[32rem] w-[32rem] rounded-full bg-cyan-500/10 blur-3xl"></div>
@@ -128,8 +128,10 @@
       <main class="{% block main_class %}flex-1{% endblock %}">
         {% block content %}{% endblock %}
       </main>
-      {% block footer %}
-      <footer class="mt-24 w-full" data-animate>
+     
+    </div>
+     {% block footer %}
+      <footer class="mt-24 w-full" data-animate style="position:absolute; bottom:0;left:0;right:0;">
         <div class="w-full overflow-hidden bg-white text-slate-900">
           <div class="flex w-full flex-col items-center px-6 py-5 text-center sm:px-10">
             <h2 class="text-2xl font-semibold uppercase tracking-wide leading-tight sm:text-[26px]">Your Next Game is Just a Tap Away.</h2>
@@ -138,7 +140,7 @@
             <div class="mx-auto w-full max-w-6xl px-6 py-8 sm:px-10">
               <div class="grid gap-8 text-left text-sm sm:grid-cols-2 lg:grid-cols-4 lg:gap-12">
                 <div class="space-y-3">
-                  <img src="{% static 'images/ragaspace-logo.svg' %}" alt="RagaSpace" class="h-12 w-12" />
+                  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgeV4Qyp82p5rnziDdyVVrgMupxo1jWOGGMHdAMAWP3xjP0kZMc9F9fbiyGDTKRgzSgxv1dLhzvF2ZmlQf7b1QNzsAzof7KiV6_ycJ8uDQXwB0z3jiaC7B8h8e5gAPTWxC2arx9kyr6WIIqv0PfKgT6nULG0HTaXymh4tnva8oJvrJ-hHvnx1pp3teX7Vw/s320/ragaspace_logo_black.PNG" alt="RagaSpace" class="h-12 w-12" />
                   <div class="text-xs leading-tight text-slate-700">
                     <p>Jl. Wahid Hasyim No. 100</p>
                     <p>Jakarta Pusat</p>
@@ -183,7 +185,6 @@
         </div>
       </footer>
       {% endblock %}
-    </div>
     <div
       class="pointer-events-none fixed inset-x-0 bottom-4 z-50 flex flex-col items-center gap-3 px-4 sm:px-6"
       data-toast-root
