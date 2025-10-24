@@ -58,6 +58,164 @@ const escapeSelector = (value) => {
   return stringValue.replace(/([\0-\x1f\x7f-\x9f!"#$%&'()*+,./:;<=>?@[\\\]^`{|}~])/g, '\\$1');
 };
 
+const toastRootClassName =
+  'pointer-events-none fixed inset-x-0 bottom-4 z-50 flex flex-col items-center gap-3 px-4 sm:px-6';
+
+const baseToastClassName =
+  'pointer-events-auto w-full max-w-md rounded-3xl border px-5 py-4 text-sm font-medium shadow-2xl shadow-slate-950/40 backdrop-blur transition-all duration-300';
+
+const toastLevelClassNames = {
+  success: 'border-emerald-400/40 bg-emerald-500/20 text-emerald-50',
+  info: 'border-white/20 bg-slate-950/90 text-white',
+  warning: 'border-amber-400/40 bg-amber-500/20 text-amber-50',
+  error: 'border-rose-500/40 bg-rose-500/20 text-rose-50',
+};
+
+const DEFAULT_TOAST_DURATION = 4500;
+
+const ensureToastRoot = () => {
+  if (typeof document === 'undefined') {
+    return null;
+  }
+  let root = document.querySelector('[data-toast-root]');
+  if (!root) {
+    root = document.createElement('div');
+    root.dataset.toastRoot = 'true';
+    root.className = toastRootClassName;
+    root.setAttribute('aria-live', 'polite');
+    root.setAttribute('aria-atomic', 'false');
+    document.body.appendChild(root);
+  } else if (!root.classList.contains('pointer-events-none')) {
+    root.className = toastRootClassName;
+  }
+  return root;
+};
+
+const normaliseToastLevel = (value) => {
+  if (!value) {
+    return 'info';
+  }
+  const level = String(value).toLowerCase();
+  if (level.includes('error') || level.includes('danger') || level.includes('alert')) {
+    return 'error';
+  }
+  if (level.includes('warn')) {
+    return 'warning';
+  }
+  if (level.includes('success')) {
+    return 'success';
+  }
+  if (level.includes('info') || level.includes('notice')) {
+    return 'info';
+  }
+  return 'info';
+};
+
+const applyToastClasses = (toast, level) => {
+  const normalisedLevel = normaliseToastLevel(level);
+  const levelClasses = toastLevelClassNames[normalisedLevel] || toastLevelClassNames.info;
+  toast.className = `${baseToastClassName} ${levelClasses}`;
+  toast.dataset.toastLevel = normalisedLevel;
+  toast.dataset.toastMessage = 'true';
+  if (!toast.getAttribute('role')) {
+    toast.setAttribute('role', 'status');
+  }
+  return normalisedLevel;
+};
+
+const hideToast = (toast) => {
+  if (!toast || toast.dataset.toastHiding === 'true') {
+    return;
+  }
+  toast.dataset.toastHiding = 'true';
+  if (toast.dataset.toastTimer) {
+    window.clearTimeout(Number(toast.dataset.toastTimer));
+    delete toast.dataset.toastTimer;
+  }
+  toast.classList.add('opacity-0', 'translate-y-2', 'pointer-events-none');
+  toast.addEventListener(
+    'transitionend',
+    () => {
+      if (toast.isConnected) {
+        toast.remove();
+      }
+    },
+    { once: true }
+  );
+  window.setTimeout(() => {
+    if (toast.isConnected) {
+      toast.remove();
+    }
+  }, 400);
+};
+
+const scheduleToastRemoval = (toast, duration) => {
+  const timeout = Number(duration);
+  if (!toast || Number.isNaN(timeout) || timeout <= 0) {
+    return;
+  }
+  const timerId = window.setTimeout(() => {
+    hideToast(toast);
+  }, timeout);
+  toast.dataset.toastTimer = String(timerId);
+};
+
+const registerToastElement = (toast, { level, duration = DEFAULT_TOAST_DURATION, animateIn = false } = {}) => {
+  if (!toast) {
+    return null;
+  }
+  const normalisedLevel = applyToastClasses(toast, level || toast.dataset.messageLevel || toast.dataset.toastLevel);
+  toast.dataset.toastLevel = normalisedLevel;
+  toast.addEventListener('click', () => {
+    hideToast(toast);
+  });
+  if (animateIn) {
+    toast.classList.add('opacity-0', 'translate-y-2');
+    requestAnimationFrame(() => {
+      toast.classList.remove('opacity-0', 'translate-y-2');
+    });
+  }
+  scheduleToastRemoval(toast, duration);
+  return toast;
+};
+
+const showToast = (message, { level = 'info', duration = DEFAULT_TOAST_DURATION } = {}) => {
+  if (!message) {
+    return null;
+  }
+  const root = ensureToastRoot();
+  if (!root) {
+    return null;
+  }
+  const toast = document.createElement('div');
+  toast.textContent = message;
+  root.appendChild(toast);
+  return registerToastElement(toast, { level, duration, animateIn: true });
+};
+
+const bootstrapToasts = () => {
+  const root = ensureToastRoot();
+  if (!root) {
+    return;
+  }
+  const existingToasts = Array.from(root.querySelectorAll('[data-toast-message]'));
+  existingToasts.forEach((toast) => {
+    registerToastElement(toast, {
+      level: toast.dataset.messageLevel || toast.dataset.toastLevel || 'info',
+      duration: DEFAULT_TOAST_DURATION,
+      animateIn: false,
+    });
+  });
+};
+
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bootstrapToasts, { once: true });
+  } else {
+    bootstrapToasts();
+  }
+}
+
 const updateWishlistButton = (button, wishlisted) => {
   if (!button) return;
   const svg = button.querySelector('svg');
@@ -169,10 +327,35 @@ const createWishlistCard = (venueData) => {
   city.textContent = venueData.city || '';
   meta.appendChild(city);
 
+  const form = document.createElement('form');
+  form.method = 'post';
+  const toggleUrl = venueData.toggleUrl || venueData.toggle_url || (venueData.id ? `/api/wishlist/${venueData.id}/toggle/` : '');
+  if (toggleUrl) {
+    const fallbackAction = toggleUrl.includes('/api/') ? toggleUrl.replace('/api/', '/') : toggleUrl;
+    form.action = fallbackAction;
+  }
+  form.setAttribute('data-wishlist-form', '');
+  header.appendChild(form);
+
+  const csrfValue = getCsrfToken();
+  if (csrfValue) {
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = 'csrfmiddlewaretoken';
+    csrfInput.value = csrfValue;
+    form.appendChild(csrfInput);
+  }
+
+  const nextInput = document.createElement('input');
+  nextInput.type = 'hidden';
+  nextInput.name = 'next';
+  nextInput.value = `${window.location.pathname}${window.location.search || ''}`;
+  form.appendChild(nextInput);
+
   const button = document.createElement('button');
   button.className =
     'wishlist-button wishlist-button--active rounded-full border border-white/20 bg-white/10 p-2 text-white transition hover:bg-white/20';
-  button.type = 'button';
+  button.type = 'submit';
   button.setAttribute('aria-label', 'Unlove');
   button.setAttribute('aria-pressed', 'true');
   button.dataset.venue = String(venueData.id || '');
@@ -184,11 +367,10 @@ const createWishlistCard = (venueData) => {
   button.dataset.venueUrl = venueData.url || '';
   button.dataset.venueImage = venueData.image || '';
   button.dataset.venueDescription = venueData.description || '';
-  const toggleUrl = venueData.toggleUrl || venueData.toggle_url || (venueData.id ? `/api/wishlist/${venueData.id}/toggle/` : '');
   if (toggleUrl) {
     button.dataset.toggleUrl = toggleUrl;
   }
-  header.appendChild(button);
+  form.appendChild(button);
 
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
@@ -334,9 +516,19 @@ function toggleWishlist(button) {
   const desiredState = !previousState;
   const csrfToken = getCsrfToken();
   const toggleUrl = button.dataset.toggleUrl || `/api/wishlist/${venueId}/toggle/`;
+  const form = button.closest('[data-wishlist-form]');
+  const nextInput = form ? form.querySelector('input[name="next"]') : null;
+  const nextValue = nextInput
+    ? nextInput.value
+    : `${window.location.pathname}${window.location.search || ''}`;
 
   button.dataset.loading = 'true';
   updateWishlistButton(button, desiredState);
+
+  const payload = {};
+  if (nextValue) {
+    payload.next = nextValue;
+  }
 
   fetch(toggleUrl, {
     method: 'POST',
@@ -347,7 +539,7 @@ function toggleWishlist(button) {
       ...(csrfToken ? { 'X-CSRFToken': csrfToken } : {}),
     },
     credentials: 'same-origin',
-    body: JSON.stringify({}),
+    body: JSON.stringify(payload),
   })
     .then((response) => {
       if (response.redirected) {
@@ -397,10 +589,19 @@ function toggleWishlist(button) {
           },
         })
       );
+      const venueName = venueData.name && venueData.name.trim() ? venueData.name : 'venue';
+      const toastMessage = wishlisted
+        ? `Added ${venueName} to your wishlist.`
+        : `Removed ${venueName} from your wishlist.`;
+      showToast(toastMessage, { level: wishlisted ? 'success' : 'info' });
     })
     .catch((error) => {
       updateWishlistButton(button, previousState);
       console.error('Wishlist toggle failed', error);
+      if (error && error.message === 'Authentication required') {
+        return;
+      }
+      showToast('Unable to update your wishlist right now. Please try again.', { level: 'error' });
     })
     .finally(() => {
       delete button.dataset.loading;
@@ -412,6 +613,17 @@ document.addEventListener('click', (event) => {
   if (button) {
     event.preventDefault();
     toggleWishlist(button);
+  }
+});
+
+document.addEventListener('submit', (event) => {
+  const form = event.target;
+  if (form.matches('[data-wishlist-form]')) {
+    event.preventDefault();
+    const button = form.querySelector('.wishlist-button');
+    if (button) {
+      toggleWishlist(button);
+    }
   }
 });
 
