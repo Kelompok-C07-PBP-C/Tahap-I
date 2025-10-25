@@ -27,10 +27,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-1$#+olrn+28c-rf##&de2b9wa)u9$e%&%&*_@&ef$9#&a@81vi'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#PRODUCTION = os.getenv('PRODUCTION', 'False').lower() == 'true'
+PRODUCTION = os.getenv('PRODUCTION', 'False').lower() == 'true'
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "haekal-alexander-tkpbp.pbp.cs.ui.ac.id","*"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "haekal-alexander-tkpbp.pbp.cs.ui.ac.id"]
 
 
 # Application definition
@@ -63,7 +63,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 CSRF_TRUSTED_ORIGINS = [
-    "https://haekal-alexander-tkpbp.pbp.cs.ui.ac.id","https://*.vercel.app"
+    "https://haekal-alexander-tkpbp.pbp.cs.ui.ac.id"
 ]
 ROOT_URLCONF = 'TK_PBP.urls'
 
@@ -89,37 +89,29 @@ ASGI_APPLICATION = "TK_PBP.asgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-# #if PRODUCTION:
-#     # Production: gunakan PostgreSQL dengan kredensial dari environment variables
-#     #DATABASES = {
-#         #'default': {
-#             'ENGINE': 'django.db.backends.postgresql',
-#             'NAME': os.getenv('DB_NAME'),
-#             'USER': os.getenv('DB_USER'),
-#             'PASSWORD': os.getenv('DB_PASSWORD'),
-#             'HOST': os.getenv('DB_HOST'),
-#             'PORT': os.getenv('DB_PORT'),
-#             'OPTIONS': {
-#                 'options': f"-c search_path={os.getenv('SCHEMA', 'public')}"
-#             }
-#         }
-#     }
-# # else:
-#     # Development: gunakan SQLite
-#     DATABASES = {
-#         'default': {
-#             'ENGINE': 'django.db.backends.sqlite3',
-#             'NAME': BASE_DIR / 'db.sqlite3',
-#         }
-#     }
-
-
-DATABASES = {
-         'default': {
+if PRODUCTION:
+    # Production: gunakan PostgreSQL dengan kredensial dari environment variables
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('DB_NAME'),
+            'USER': os.getenv('DB_USER'),
+            'PASSWORD': os.getenv('DB_PASSWORD'),
+            'HOST': os.getenv('DB_HOST'),
+            'PORT': os.getenv('DB_PORT'),
+            'OPTIONS': {
+                'options': f"-c search_path={os.getenv('SCHEMA', 'public')}"
+            }
+        }
+    }
+else:
+    # Development: gunakan SQLite
+    DATABASES = {
+        'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
-         }
-}
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
