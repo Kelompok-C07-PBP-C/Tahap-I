@@ -32,11 +32,11 @@ class AdminAddOnViewTests(TestCase):
             username="regular",
             password="User123!",
         )
-        self.category = Category.objects.create(name="Sports", slug="sports")
+        self.category = Category.objects.create(name="Sports Addons", slug="sports-addons")
         self.venue = Venue.objects.create(
             category=self.category,
             name="Aurora Arena",
-            slug="aurora-arena",
+            slug="aurora-arena-addons",
             description="Indoor arena",
             location="Central City",
             city="Metropolis",

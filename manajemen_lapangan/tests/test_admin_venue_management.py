@@ -27,7 +27,7 @@ class AdminVenueManagementTests(TestCase):
             is_superuser=True,
         )
         self.user = user_model.objects.create_user(username="user", password="User123!")
-        self.category = Category.objects.create(name="Sports", slug="sports")
+        self.category = Category.objects.get(slug="padel")
 
     def _valid_payload(self, name: str = "Sky Arena", slug: str | None = None) -> dict[str, str]:
         return {
