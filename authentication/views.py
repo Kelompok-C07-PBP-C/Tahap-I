@@ -127,15 +127,6 @@ class HomeView(EnsureCsrfCookieMixin, TemplateView):
                             "Laporan transaksi bulanannya rapi, jadi mudah untuk evaluasi performa lapangan dan promo membership.",
                         ],
                     },
-                    {
-                        "name": "Arif Santosa",
-                        "role": "Owner Arena Multi-Sport Delta",
-                        "image": "https://images.unsplash.com/photo-1529665253569-6d01c0eaf7b6?auto=format&fit=crop&w=400&q=80",
-                        "paragraphs": [
-                            "Sebagai pemilik arena multi-sport, saya perlu sistem yang bisa pantau banyak lapangan sekaligus. RagaSpace memberikan kontrol penuh dan laporan real-time untuk tiap fasilitas.",
-                            "Tim operasional kami juga terbantu dengan fitur pengingat otomatis sehingga tidak ada lagi jadwal yang terlewat.",
-                        ],
-                    },
                 ],
             }
         )

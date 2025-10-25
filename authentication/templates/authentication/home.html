@@ -509,71 +509,6 @@
 </section>
 {% if testimonials %}
 {{ testimonials|json_script:"testimonials-data" }}
-<style>
-  #testimonial-card {
-    position: relative;
-  }
-
-  .testimonial-animate-out-left {
-    animation: testimonial-slide-out-left 0.45s ease forwards;
-  }
-
-  .testimonial-animate-out-right {
-    animation: testimonial-slide-out-right 0.45s ease forwards;
-  }
-
-  .testimonial-animate-in-left {
-    animation: testimonial-slide-in-left 0.45s ease forwards;
-  }
-
-  .testimonial-animate-in-right {
-    animation: testimonial-slide-in-right 0.45s ease forwards;
-  }
-
-  @keyframes testimonial-slide-out-left {
-    from {
-      opacity: 1;
-      transform: translateX(0);
-    }
-    to {
-      opacity: 0;
-      transform: translateX(-3rem);
-    }
-  }
-
-  @keyframes testimonial-slide-out-right {
-    from {
-      opacity: 1;
-      transform: translateX(0);
-    }
-    to {
-      opacity: 0;
-      transform: translateX(3rem);
-    }
-  }
-
-  @keyframes testimonial-slide-in-left {
-    from {
-      opacity: 0;
-      transform: translateX(-3rem);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-
-  @keyframes testimonial-slide-in-right {
-    from {
-      opacity: 0;
-      transform: translateX(3rem);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-</style>
 <script>
   (function () {
     const dataElement = document.getElementById("testimonials-data");
@@ -590,15 +525,13 @@
     const nameEl = document.getElementById("testimonial-name");
     const roleEl = document.getElementById("testimonial-role");
     const paragraphsEl = document.getElementById("testimonial-paragraphs");
-    const cardEl = document.getElementById("testimonial-card");
     const indicators = Array.from(document.querySelectorAll('[data-indicator]'));
     const prevButton = document.getElementById("testimonial-prev");
     const nextButton = document.getElementById("testimonial-next");
 
     let currentIndex = 0;
     let intervalId = null;
-    let isAnimating = false;
-    const intervalDuration = 2000;
+    const intervalDuration = 5000;
 
     const updateIndicators = (index) => {
       indicators.forEach((indicator, indicatorIndex) => {
@@ -631,57 +564,14 @@
       updateIndicators(index);
     };
 
-    const animateToIndex = (nextIndex, direction) => {
-      if (nextIndex === currentIndex || isAnimating) {
-        return;
-      }
-
-      if (!cardEl) {
-        currentIndex = nextIndex;
-        renderTestimonial(currentIndex);
-        return;
-      }
-
-      isAnimating = true;
-      const exitClass = direction === 1 ? "testimonial-animate-out-left" : "testimonial-animate-out-right";
-      const enterClass = direction === 1 ? "testimonial-animate-in-right" : "testimonial-animate-in-left";
-
-      const handleExitEnd = () => {
-        cardEl.classList.remove(exitClass);
-        cardEl.removeEventListener("animationend", handleExitEnd);
-
-        currentIndex = nextIndex;
-        renderTestimonial(currentIndex);
-
-        cardEl.classList.add(enterClass);
-        cardEl.addEventListener(
-          "animationend",
-          () => {
-            cardEl.classList.remove(enterClass);
-            isAnimating = false;
-          },
-          { once: true }
-        );
-      };
-
-      cardEl.classList.remove(
-        "testimonial-animate-in-left",
-        "testimonial-animate-in-right",
-        "testimonial-animate-out-left",
-        "testimonial-animate-out-right"
-      );
-      cardEl.classList.add(exitClass);
-      cardEl.addEventListener("animationend", handleExitEnd, { once: true });
-    };
-
     const showNext = () => {
-      const nextIndex = (currentIndex + 1) % testimonials.length;
-      animateToIndex(nextIndex, 1);
+      currentIndex = (currentIndex + 1) % testimonials.length;
+      renderTestimonial(currentIndex);
     };
 
     const showPrevious = () => {
-      const nextIndex = (currentIndex - 1 + testimonials.length) % testimonials.length;
-      animateToIndex(nextIndex, -1);
+      currentIndex = (currentIndex - 1 + testimonials.length) % testimonials.length;
+      renderTestimonial(currentIndex);
     };
 
     const restartInterval = () => {
