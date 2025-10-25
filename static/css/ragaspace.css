@@ -708,7 +708,7 @@ body::after {
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: linear-gradient(120deg, rgba(15, 23, 42, 0.75), rgba(8, 47, 73, 0.6));
   box-shadow: 0 28px 60px -38px rgba(15, 23, 42, 0.75);
-  --marquee-gap: clamp(1.75rem, 4vw, 2.75rem);
+  --marquee-gap: 1.75rem;
   --marquee-duration: 28s;
 }
 
@@ -748,7 +748,6 @@ body::after {
   font-size: 0.72rem;
   font-weight: 600;
   position: relative;
-  flex-shrink: 0;
 }
 
 .sports-marquee__item::after {
@@ -764,7 +763,6 @@ body::after {
   font-size: 0.78rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  white-space: nowrap;
 }
 
 .sports-marquee__icon {
@@ -826,8 +824,17 @@ body::after {
   }
 }
 
-.sports-marquee__icon--padel {
-  --icon-bg: linear-gradient(135deg, rgba(6, 182, 212, 0.5), rgba(56, 189, 248, 0.45));
+.sports-marquee__icon--soccer {
+  --icon-bg: linear-gradient(135deg, rgba(56, 189, 248, 0.45), rgba(59, 130, 246, 0.35));
+}
+
+.sports-marquee__icon--basketball {
+  --icon-bg: linear-gradient(135deg, rgba(251, 146, 60, 0.55), rgba(234, 88, 12, 0.45));
+  --icon-color: rgba(255, 247, 237, 0.92);
+}
+
+.sports-marquee__icon--badminton {
+  --icon-bg: linear-gradient(135deg, rgba(196, 181, 253, 0.55), rgba(168, 85, 247, 0.45));
 }
 
 .sports-marquee__icon--tennis {
@@ -835,42 +842,42 @@ body::after {
   --icon-color: rgba(247, 254, 231, 0.92);
 }
 
-.sports-marquee__icon--badminton {
-  --icon-bg: linear-gradient(135deg, rgba(196, 181, 253, 0.55), rgba(168, 85, 247, 0.45));
+.sports-marquee__icon--volley {
+  --icon-bg: linear-gradient(135deg, rgba(147, 197, 253, 0.55), rgba(59, 130, 246, 0.45));
 }
 
-.sports-marquee__icon--basket {
-  --icon-bg: linear-gradient(135deg, rgba(251, 146, 60, 0.55), rgba(234, 88, 12, 0.45));
-  --icon-color: rgba(255, 247, 237, 0.92);
-}
-
-.sports-marquee__icon--football {
-  --icon-bg: linear-gradient(135deg, rgba(56, 189, 248, 0.45), rgba(59, 130, 246, 0.35));
-}
-
-.sports-marquee__icon--mini-soccer {
-  --icon-bg: linear-gradient(135deg, rgba(45, 212, 191, 0.5), rgba(16, 185, 129, 0.45));
-}
-
-.sports-marquee__icon--futsal {
-  --icon-bg: linear-gradient(135deg, rgba(14, 165, 233, 0.55), rgba(99, 102, 241, 0.45));
-}
-
-.sports-marquee__icon--billiard {
-  --icon-bg: linear-gradient(135deg, rgba(34, 197, 94, 0.55), rgba(74, 222, 128, 0.45));
+.sports-marquee__icon--swim {
+  --icon-bg: linear-gradient(135deg, rgba(96, 165, 250, 0.55), rgba(14, 165, 233, 0.45));
 }
 
 .sports-marquee__icon--tabletennis {
   --icon-bg: linear-gradient(135deg, rgba(248, 113, 113, 0.55), rgba(244, 63, 94, 0.45));
 }
 
-.sports-marquee__icon--volleyball {
-  --icon-bg: linear-gradient(135deg, rgba(147, 197, 253, 0.55), rgba(59, 130, 246, 0.45));
+.sports-marquee__icon--running {
+  --icon-bg: linear-gradient(135deg, rgba(251, 191, 36, 0.55), rgba(234, 179, 8, 0.45));
+  --icon-color: rgba(255, 251, 235, 0.92);
+}
+
+.sports-marquee__icon--yoga {
+  --icon-bg: linear-gradient(135deg, rgba(129, 199, 212, 0.55), rgba(56, 189, 248, 0.45));
+}
+
+.sports-marquee__icon--boxing {
+  --icon-bg: linear-gradient(135deg, rgba(248, 113, 113, 0.55), rgba(239, 68, 68, 0.45));
+}
+
+.sports-marquee__icon--climb {
+  --icon-bg: linear-gradient(135deg, rgba(129, 140, 248, 0.55), rgba(99, 102, 241, 0.45));
+}
+
+.sports-marquee__icon--skate {
+  --icon-bg: linear-gradient(135deg, rgba(20, 184, 166, 0.55), rgba(45, 212, 191, 0.45));
 }
 
 @media (max-width: 768px) {
   .sports-marquee {
-    --marquee-gap: clamp(1.25rem, 5vw, 2rem);
+    --marquee-gap: 1.25rem;
     --marquee-duration: 22s;
     padding: 1rem 0;
   }
@@ -893,7 +900,7 @@ body::after {
 
 @media (max-width: 480px) {
   .sports-marquee {
-    --marquee-gap: clamp(1.2rem, 6vw, 1.8rem);
+    --marquee-gap: 1rem;
     --marquee-duration: 18s;
   }
 

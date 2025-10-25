@@ -6,5 +6,5 @@ class RentConfig(AppConfig):
     name = "rent"
     verbose_name = "Penyewaan Lapangan"
 
-    def ready(self):  # pragma: no cover
-        from . import signals  # noqa: F401
+    def ready(self):
+        from . import signals

@@ -1,4 +1,3 @@
-"""Models capturing likes and reviews."""
 from __future__ import annotations
 
 from django.conf import settings
@@ -7,8 +6,6 @@ from django.db import models
 
 
 class Wishlist(models.Model):
-    """Stores a user's favourite venues."""
-
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="wishlists")
     venue = models.ForeignKey("manajemen_lapangan.Venue", on_delete=models.CASCADE, related_name="wishlisted_by")
     created_at = models.DateTimeField(auto_now_add=True)

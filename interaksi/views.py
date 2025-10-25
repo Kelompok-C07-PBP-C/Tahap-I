@@ -1,6 +1,4 @@
-"""Wishlist and review helper views."""
 from __future__ import annotations
-
 import json
 from json import JSONDecodeError
 from typing import Any

@@ -1,4 +1,3 @@
-"""Routes for wishlist and review interactions."""
 from django.urls import path
 
 from .views import WishlistToggleView, WishlistView, wishlist_toggle

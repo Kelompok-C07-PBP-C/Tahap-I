@@ -51,7 +51,7 @@ class Booking(models.Model):
     class Meta:
         ordering = ["-start_datetime"]
 
-    def clean(self):  # pragma: no cover - requires Django validation
+    def clean(self):
         if self.end_datetime <= self.start_datetime:
             raise ValidationError("End datetime must be greater than start datetime")
 
@@ -144,5 +144,5 @@ class Payment(models.Model):
     class Meta:
         ordering = ["-created_at"]
 
-    def __str__(self) -> str:  # pragma: no cover - trivial
+    def __str__(self) -> str:
         return f"Payment {self.reference_code} ({self.get_status_display()})"
