@@ -2,6 +2,7 @@
 {% load static %}
 {% block head_extra %}
 {{ block.super }}
+<script src="{% static 'js/addon-formset.js' %}" defer></script>
 <script src="{% static 'js/admin-venues.js' %}" defer></script>
 {% endblock %}
 {% block title %}Manage Venues • RagaSpace{% endblock %}
@@ -26,12 +27,6 @@
         class="inline-flex items-center justify-center rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-cyan-500/40 transition hover:bg-primary/80"
       >
         Add new venue
-      </a>
-      <a
-        href="{% url 'admin-venue-create' %}"
-        class="text-xs font-medium text-white/70 transition hover:text-white"
-      >
-        Open advanced form (add-ons)
       </a>
     </div>
   </div>
@@ -229,6 +224,7 @@
             </div>
             {% endwith %}
           </div>
+          {% include 'add_on/includes/addon_formset.html' with formset=addon_formset %}
           <div class="flex justify-end gap-3 pt-2">
             <button type="button" class="rounded-xl border border-white/15 px-4 py-2 text-sm text-white transition hover:bg-white/10" data-modal-close>
               Cancel

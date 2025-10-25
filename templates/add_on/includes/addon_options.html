@@ -3,12 +3,12 @@
 {% if field and field|length %}
 <div class="space-y-3">
   {% for checkbox in field %}
-  {% with addon=addon_lookup|get_item:checkbox.choice_value %}
+  {% with addon=addon_lookup|get_item:checkbox.data.value %}
   <label class="addon-option">
     <input
       type="checkbox"
       name="{{ field.name }}"
-      value="{{ checkbox.choice_value }}"
+      value="{{ checkbox.data.value }}"
       id="{{ checkbox.id_for_label }}"
       class="{{ checkbox.attrs.class|default:'addon-option__input' }}"
       {% if checkbox.is_checked %}checked{% endif %}
