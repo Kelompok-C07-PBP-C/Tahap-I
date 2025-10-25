@@ -29,6 +29,33 @@
     transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
   }
 
+  .addon-option__body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .addon-option__header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .addon-option__title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.95);
+  }
+
+  .addon-option__price {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: rgba(56, 189, 248, 0.9);
+  }
+
   .addon-option__check {
     display: inline-flex;
     align-items: center;
@@ -201,7 +228,7 @@
           {{ booking_form.notes.errors }}
         </div>
         <div>
-          {% include 'add_on/includes/addon_options.html' with field=booking_form.addons %}
+          {% include 'add_on/includes/addon_options.html' with field=booking_form.addons addon_lookup=addon_lookup %}
         </div>
         <button type="submit" class="w-full rounded-2xl bg-primary px-5 py-3 text-base font-semibold text-white shadow-lg shadow-cyan-500/30 transition hover:bg-primary/80">Book this venue</button>
       </form>
