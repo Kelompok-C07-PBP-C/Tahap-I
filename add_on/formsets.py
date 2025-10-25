@@ -26,4 +26,4 @@ def build_addon_formset(*, data: dict[str, Any] | None = None, instance: Venue |
         extra=3,
         can_delete=True,
     )
-    return formset_class(data=data or None, instance=instance)
+    return formset_class(data=data or None, instance=instance, prefix="addons")

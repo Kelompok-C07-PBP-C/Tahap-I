@@ -18,14 +18,22 @@
       <h1 class="text-3xl font-semibold text-white">Venue manager</h1>
       <p class="mt-2 text-white/70">Create, update, and curate the venues available for booking.</p>
     </div>
-    <a
-      href="{% url 'admin-venue-create' %}"
-      data-venue-create
-      data-modal-target="admin-venue-modal"
-      class="inline-flex items-center justify-center rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-cyan-500/40 transition hover:bg-primary/80"
-    >
-      Add new venue
-    </a>
+    <div class="flex flex-col items-center gap-2 md:items-end">
+      <a
+        href="{% url 'admin-venue-create' %}"
+        data-venue-create
+        data-modal-target="admin-venue-modal"
+        class="inline-flex items-center justify-center rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-cyan-500/40 transition hover:bg-primary/80"
+      >
+        Add new venue
+      </a>
+      <a
+        href="{% url 'admin-venue-create' %}"
+        class="text-xs font-medium text-white/70 transition hover:text-white"
+      >
+        Open advanced form (add-ons)
+      </a>
+    </div>
   </div>
 
   <div class="overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 backdrop-blur-xl">

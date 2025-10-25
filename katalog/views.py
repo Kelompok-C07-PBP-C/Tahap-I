@@ -10,6 +10,7 @@ from django.forms.forms import NON_FIELD_ERRORS
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.utils.formats import number_format
 from django.utils.text import Truncator
 from django.views.decorators.http import require_GET
 from django.views.generic import DetailView, ListView
@@ -114,6 +115,14 @@ class VenueDetailView(EnsureCsrfCookieMixin, LoginRequiredMixin, DetailView):
     slug_field = "slug"
     context_object_name = "venue"
 
+    def get_queryset(self):
+        return (
+            super()
+            .get_queryset()
+            .select_related("category")
+            .prefetch_related("addons", "reviews__user")
+        )
+
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         venue: Venue = context["venue"]
@@ -122,6 +131,20 @@ class VenueDetailView(EnsureCsrfCookieMixin, LoginRequiredMixin, DetailView):
         if can_book:
             booking_form = BookingForm(self.request.POST or None, venue=venue)
         review_form = ReviewForm(self.request.POST or None)
+        addons = [
+            {
+                "id": str(addon.pk),
+                "name": addon.name,
+                "description": addon.description,
+                "price_display": number_format(
+                    addon.price,
+                    decimal_pos=0,
+                    use_l10n=True,
+                    force_grouping=True,
+                ),
+            }
+            for addon in venue.addons.all()
+        ]
         context.update(
             {
                 "booking_form": booking_form,
@@ -131,6 +154,8 @@ class VenueDetailView(EnsureCsrfCookieMixin, LoginRequiredMixin, DetailView):
                     Wishlist.objects.filter(user=self.request.user).values_list("venue_id", flat=True)
                 ),
                 "reviews": venue.reviews.select_related("user"),
+                "available_addons": addons,
+                "addon_lookup": {addon["id"]: addon for addon in addons},
             }
         )
         return context

@@ -1,4 +1,9 @@
+{% load static %}
 {% extends 'base.html' %}
+{% block head_extra %}
+{{ block.super }}
+<script src="{% static 'js/addon-formset.js' %}" defer></script>
+{% endblock %}
 {% block title %}{% if venue %}Edit Venue{% else %}Create Venue{% endif %} • RagaSpace{% endblock %}
 {% block content %}
 <section class="space-y-8">

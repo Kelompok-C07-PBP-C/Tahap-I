@@ -11,6 +11,7 @@ from django.urls import reverse
 
 from django.utils.text import slugify
 
+from add_on.models import AddOn
 from manajemen_lapangan.models import Category, Venue
 
 
@@ -59,6 +60,36 @@ class AdminVenueManagementTests(TestCase):
         self.assertEqual(response.status_code, 302, errors)
         self.assertRedirects(response, reverse("admin-venues"))
         self.assertTrue(Venue.objects.filter(name="Sky Arena").exists())
+
+    def test_admin_can_create_venue_with_addons(self):
+        self.client.force_login(self.admin)
+        payload = self._valid_payload(name="Arena Addons")
+        payload.update(
+            {
+                "addons-TOTAL_FORMS": "3",
+                "addons-INITIAL_FORMS": "0",
+                "addons-MIN_NUM_FORMS": "0",
+                "addons-MAX_NUM_FORMS": "1000",
+                "addons-0-name": "Photographer",
+                "addons-0-description": "Professional match documentation",
+                "addons-0-price": "250000.00",
+                "addons-1-name": "Bola futsal",
+                "addons-1-description": "",  # optional description
+                "addons-1-price": "50000.00",
+                "addons-2-name": "",
+                "addons-2-description": "",
+                "addons-2-price": "",
+            }
+        )
+
+        response = self.client.post(reverse("admin-venue-create"), payload)
+
+        self.assertRedirects(response, reverse("admin-venues"))
+        venue = Venue.objects.get(name="Arena Addons")
+        addon_names = list(venue.addons.order_by("name").values_list("name", flat=True))
+        self.assertIn("Photographer", addon_names)
+        self.assertIn("Bola futsal", addon_names)
+        self.assertEqual(AddOn.objects.filter(venue=venue).count(), 2)
 
     def test_non_admin_cannot_create_venue(self):
         self.client.force_login(self.user)
