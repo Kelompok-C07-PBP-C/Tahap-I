@@ -9,7 +9,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from add_on.models import AddOn
-# from manajemen_lapangan.models import Category, Venue
+from manajemen_lapangan.models import Category, Venue
 
 
 class AdminAddOnViewTests(TestCase):
@@ -61,7 +61,7 @@ class AdminAddOnViewTests(TestCase):
         response = self.client.post(
             reverse("admin-venue-addons", args=[self.venue.pk]),
             {
-                "addons-TOTAL_FORMS": "4",
+                "addons-TOTAL_FORMS": "2",
                 "addons-INITIAL_FORMS": "1",
                 "addons-MIN_NUM_FORMS": "0",
                 "addons-MAX_NUM_FORMS": "1000",
@@ -75,16 +75,6 @@ class AdminAddOnViewTests(TestCase):
                 "addons-1-name": "Water Bottles",
                 "addons-1-description": "Fresh water for teams",
                 "addons-1-price": "5000.00",
-                "addons-2-id": "",
-                "addons-2-venue": str(self.venue.pk),
-                "addons-2-name": "",
-                "addons-2-description": "",
-                "addons-2-price": "",
-                "addons-3-id": "",
-                "addons-3-venue": str(self.venue.pk),
-                "addons-3-name": "",
-                "addons-3-description": "",
-                "addons-3-price": "",
             },
             follow=False,
         )
@@ -106,7 +96,7 @@ class AdminAddOnViewTests(TestCase):
         response = self.client.post(
             reverse("admin-venue-addons", args=[self.venue.pk]),
             {
-                "addons-TOTAL_FORMS": "3",
+                "addons-TOTAL_FORMS": "1",
                 "addons-INITIAL_FORMS": "0",
                 "addons-MIN_NUM_FORMS": "0",
                 "addons-MAX_NUM_FORMS": "1000",
@@ -115,16 +105,6 @@ class AdminAddOnViewTests(TestCase):
                 "addons-0-name": "Coach",
                 "addons-0-description": "Personal coach",
                 "addons-0-price": "75000.00",
-                "addons-1-id": "",
-                "addons-1-venue": str(self.venue.pk),
-                "addons-1-name": "",
-                "addons-1-description": "",
-                "addons-1-price": "",
-                "addons-2-id": "",
-                "addons-2-venue": str(self.venue.pk),
-                "addons-2-name": "",
-                "addons-2-description": "",
-                "addons-2-price": "",
             },
         )
 

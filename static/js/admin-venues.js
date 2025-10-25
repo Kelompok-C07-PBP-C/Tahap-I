@@ -65,6 +65,16 @@
     const formErrorContainer = modal ? modal.querySelector('[data-form-error]') : null;
     const tableBody = appRoot.querySelector('[data-venue-table-body]');
     const csrfToken = typeof getCsrfToken === 'function' ? getCsrfToken() : '';
+    const addonFormsetElement = form ? form.querySelector('[data-addon-formset]') : null;
+
+    const addonControls = addonFormsetElement
+      ? {
+          formsContainer: addonFormsetElement.querySelector('[data-addon-forms]'),
+          addButton: addonFormsetElement.querySelector('[data-addon-add]'),
+          totalInput: addonFormsetElement.querySelector('input[name$="-TOTAL_FORMS"]'),
+          initialInput: addonFormsetElement.querySelector('input[name$="-INITIAL_FORMS"]'),
+        }
+      : null;
 
     if (!listUrl || !detailTemplate || !modal || !form || !tableBody) {
       return;
@@ -85,6 +95,86 @@
       form.querySelectorAll('[aria-invalid="true"]').forEach((element) => {
         element.setAttribute('aria-invalid', 'false');
       });
+    };
+
+    const resetAddonFormset = () => {
+      if (!addonControls) {
+        return;
+      }
+      const { formsContainer, totalInput, initialInput } = addonControls;
+      if (formsContainer) {
+        formsContainer.innerHTML = '';
+      }
+      if (totalInput) {
+        totalInput.value = '0';
+      }
+      if (initialInput) {
+        initialInput.value = '0';
+      }
+    };
+
+    const createAddonFormElement = () => {
+      if (!addonControls) {
+        return null;
+      }
+      const { formsContainer, addButton } = addonControls;
+      if (!formsContainer || !addButton) {
+        return null;
+      }
+      const existing = Array.from(formsContainer.querySelectorAll('[data-addon-form]'));
+      addButton.click();
+      const updated = Array.from(formsContainer.querySelectorAll('[data-addon-form]'));
+      const added = updated.find((element) => !existing.includes(element));
+      return added || updated[updated.length - 1] || null;
+    };
+
+    const populateAddonFormset = (addons, venueId) => {
+      if (!addonControls) {
+        return;
+      }
+      resetAddonFormset();
+      if (!Array.isArray(addons) || addons.length === 0) {
+        return;
+      }
+      const { formsContainer, initialInput, totalInput } = addonControls;
+      addons.forEach((addon) => {
+        const formElement = createAddonFormElement();
+        if (!formElement) {
+          return;
+        }
+        const setInputValue = (selector, value) => {
+          const input = formElement.querySelector(selector);
+          if (!input) {
+            return;
+          }
+          if (input.type === 'checkbox') {
+            input.checked = Boolean(value);
+          } else {
+            input.value = value == null ? '' : value;
+          }
+        };
+        setInputValue('input[name$="-id"]', addon.id || '');
+        if (venueId) {
+          setInputValue('input[name$="-venue"]', venueId);
+        }
+        setInputValue('input[name$="-name"]', addon.name || '');
+        setInputValue('textarea[name$="-description"]', addon.description || '');
+        setInputValue('input[name$="-price"]', addon.price != null ? addon.price : '');
+        const deleteInput = formElement.querySelector('[data-addon-delete-input]');
+        if (deleteInput) {
+          deleteInput.checked = false;
+        }
+        formElement.dataset.addonRemoved = 'false';
+      });
+      if (initialInput) {
+        initialInput.value = String(addons.length);
+      }
+      if (totalInput) {
+        const totalForms = formsContainer
+          ? formsContainer.querySelectorAll('[data-addon-form]').length
+          : addons.length;
+        totalInput.value = String(totalForms);
+      }
     };
 
     const setFormErrors = (errors) => {
@@ -113,6 +203,7 @@
 
     const resetForm = () => {
       form.reset();
+      resetAddonFormset();
       clearFormErrors();
       delete form.dataset.mode;
       delete form.dataset.venueId;
@@ -148,6 +239,8 @@
           input.value = value == null ? '' : value;
         }
       });
+      const addons = Array.isArray(venue.addons) ? venue.addons : [];
+      populateAddonFormset(addons, venue.id);
     };
 
     const renderVenueRow = (venue) => {

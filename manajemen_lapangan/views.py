@@ -9,7 +9,8 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import IntegrityError
-from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.forms import BaseInlineFormSet
+from django.http import HttpRequest, HttpResponse, JsonResponse, QueryDict
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils.decorators import method_decorator
@@ -69,7 +70,13 @@ class AdminVenueListView(AdminRequiredMixin, LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context.setdefault("venue_form", kwargs.get("venue_form") or self.form_class())
+        venue_form = kwargs.get("venue_form") or context.get("venue_form") or self.form_class()
+        context.setdefault("venue_form", venue_form)
+        instance = getattr(venue_form, "instance", None)
+        context.setdefault(
+            "addon_formset",
+            kwargs.get("addon_formset") or build_addon_formset(instance=instance),
+        )
         context["show_create_modal"] = kwargs.get("show_create_modal") or self.request.GET.get("show") == "create"
         return context
 
@@ -79,21 +86,33 @@ class AdminVenueListView(AdminRequiredMixin, LoginRequiredMixin, ListView):
             return redirect("admin-venues")
 
         form = self.form_class(request.POST)
-        if form.is_valid():
+        has_addon_data = any(key.startswith("addons-") for key in request.POST.keys())
+        formset = (
+            build_addon_formset(data=request.POST, instance=form.instance)
+            if has_addon_data
+            else build_addon_formset(instance=form.instance)
+        )
+        if form.is_valid() and formset.is_valid():
             try:
-                form.save()
+                venue = form.save()
             except IntegrityError:
                 form.add_error(
                     "slug",
                     "Slug venue ini sudah digunakan. Gunakan nama atau slug lain.",
                 )
             else:
+                formset.instance = venue
+                formset.save()
                 messages.success(request, "Venue created successfully.")
                 return redirect("admin-venues")
         messages.error(request, "Please fix the errors below to create the venue.")
         self.object_list = self.get_queryset()
         return self.render_to_response(
-            self.get_context_data(venue_form=form, show_create_modal=True)
+            self.get_context_data(
+                venue_form=form,
+                addon_formset=formset,
+                show_create_modal=True,
+            )
         )
 
 
@@ -112,7 +131,12 @@ class AdminVenueCreateView(AdminRequiredMixin, LoginRequiredMixin, View):
             return redirect(self.success_url)
 
         form = VenueForm(request.POST)
-        formset = build_addon_formset(data=request.POST, instance=form.instance)
+        has_addon_data = any(key.startswith("addons-") for key in request.POST.keys())
+        formset = (
+            build_addon_formset(data=request.POST, instance=form.instance)
+            if has_addon_data
+            else build_addon_formset(instance=form.instance)
+        )
         if form.is_valid() and formset.is_valid():
             try:
                 venue = form.save()
@@ -146,7 +170,12 @@ class AdminVenueUpdateView(AdminRequiredMixin, LoginRequiredMixin, View):
     def post(self, request: HttpRequest, pk: int) -> HttpResponse:
         venue = self.get_object(pk)
         form = VenueForm(request.POST, instance=venue)
-        formset = build_addon_formset(data=request.POST, instance=venue)
+        has_addon_data = any(key.startswith("addons-") for key in request.POST.keys())
+        formset = (
+            build_addon_formset(data=request.POST, instance=venue)
+            if has_addon_data
+            else build_addon_formset(instance=venue)
+        )
         if form.is_valid() and formset.is_valid():
             try:
                 venue = form.save()
@@ -236,6 +265,15 @@ def serialize_venue(venue: Venue) -> dict[str, Any]:
         "detail_url": reverse("venue-detail", kwargs={"slug": venue.slug}),
         "edit_url": reverse("admin-venue-edit", kwargs={"pk": venue.pk}),
         "delete_url": reverse("admin-venue-delete", kwargs={"pk": venue.pk}),
+        "addons": [
+            {
+                "id": addon.pk,
+                "name": addon.name,
+                "description": addon.description,
+                "price": str(addon.price),
+            }
+            for addon in venue.addons.all()
+        ],
     }
 
 
@@ -246,6 +284,42 @@ def build_form_errors(form: VenueForm) -> dict[str, list[str]]:
     for field, errors in form.errors.get_json_data().items():
         error_data[field] = [entry.get("message", "") for entry in errors]
     return error_data
+
+
+def build_addon_formset_errors(formset: BaseInlineFormSet) -> dict[str, list[str]]:
+    """Return structured errors for an add-on inline formset."""
+
+    error_data: dict[str, list[str]] = {}
+    for index, form in enumerate(formset.forms):
+        prefix = f"{formset.prefix}-{index}"
+        for field, errors in form.errors.get_json_data().items():
+            key = f"{prefix}-{field}"
+            error_data[key] = [entry.get("message", "") for entry in errors]
+        non_field_errors = list(form.non_field_errors())
+        if non_field_errors:
+            error_data[f"{prefix}-__all__"] = [str(message) for message in non_field_errors]
+    non_form_errors = list(formset.non_form_errors())
+    if non_form_errors:
+        error_data[formset.prefix] = [str(message) for message in non_form_errors]
+    return error_data
+
+
+def dict_to_querydict(data: dict[str, Any]) -> QueryDict:
+    """Convert a simple dictionary payload to a ``QueryDict``."""
+
+    querydict = QueryDict("", mutable=True)
+    for key, value in data.items():
+        if isinstance(value, list):
+            querydict.setlist(key, ["" if item is None else str(item) for item in value])
+        else:
+            querydict.setlist(key, ["" if value is None else str(value)])
+    return querydict
+
+
+def has_addon_payload(data: dict[str, Any]) -> bool:
+    """Return True if the payload contains add-on form data."""
+
+    return any(key.startswith("addons-") for key in data.keys())
 
 
 def is_ajax(request: HttpRequest) -> bool:
@@ -267,6 +341,7 @@ class AdminVenueApiView(AdminRequiredMixin, LoginRequiredMixin, View):
 
         venues = (
             Venue.objects.select_related("category")
+            .prefetch_related("addons")
             .order_by("name")
         )
         payload = [serialize_venue(venue) for venue in venues]
@@ -281,10 +356,27 @@ class AdminVenueApiView(AdminRequiredMixin, LoginRequiredMixin, View):
 
         data = self._extract_payload(request)
         form = VenueForm(data)
-        if form.is_valid():
+        addon_formset = (
+            build_addon_formset(data=dict_to_querydict(data), instance=form.instance)
+            if has_addon_payload(data)
+            else build_addon_formset(instance=form.instance)
+        )
+        form_valid = form.is_valid()
+        formset_valid = addon_formset.is_valid()
+        if form_valid and formset_valid:
             venue = form.save()
+            addon_formset.instance = venue
+            addon_formset.save()
+            venue = (
+                Venue.objects.select_related("category")
+                .prefetch_related("addons")
+                .get(pk=venue.pk)
+            )
             return JsonResponse({"success": True, "venue": serialize_venue(venue)})
-        return JsonResponse({"success": False, "errors": build_form_errors(form)}, status=400)
+        errors = build_form_errors(form) if not form_valid else {}
+        if not formset_valid:
+            errors.update(build_addon_formset_errors(addon_formset))
+        return JsonResponse({"success": False, "errors": errors}, status=400)
 
     def _extract_payload(self, request: HttpRequest) -> dict[str, Any]:
         if request.content_type and "application/json" in request.content_type:
@@ -306,7 +398,9 @@ class AdminVenueDetailApiView(AdminRequiredMixin, LoginRequiredMixin, View):
         return super().dispatch(request, *args, **kwargs)
 
     def get_object(self, pk: int) -> Venue:
-        return get_object_or_404(Venue.objects.select_related("category"), pk=pk)
+        return get_object_or_404(
+            Venue.objects.select_related("category").prefetch_related("addons"), pk=pk
+        )
 
     def get(self, request: HttpRequest, pk: int) -> JsonResponse:
         if not is_ajax(request):
@@ -342,11 +436,26 @@ class AdminVenueDetailApiView(AdminRequiredMixin, LoginRequiredMixin, View):
         venue = self.get_object(pk)
         data = self._extract_payload(request)
         form = VenueForm(data, instance=venue)
-        if form.is_valid():
+        addon_formset = (
+            build_addon_formset(data=dict_to_querydict(data), instance=venue)
+            if has_addon_payload(data)
+            else build_addon_formset(instance=venue)
+        )
+        form_valid = form.is_valid()
+        formset_valid = addon_formset.is_valid()
+        if form_valid and formset_valid:
             venue = form.save()
-            venue.refresh_from_db()
+            addon_formset.save()
+            venue = (
+                Venue.objects.select_related("category")
+                .prefetch_related("addons")
+                .get(pk=venue.pk)
+            )
             return JsonResponse({"success": True, "venue": serialize_venue(venue)})
-        return JsonResponse({"success": False, "errors": build_form_errors(form)}, status=400)
+        errors = build_form_errors(form) if not form_valid else {}
+        if not formset_valid:
+            errors.update(build_addon_formset_errors(addon_formset))
+        return JsonResponse({"success": False, "errors": errors}, status=400)
 
     def _extract_payload(self, request: HttpRequest) -> dict[str, Any]:
         if request.content_type and "application/json" in request.content_type:
