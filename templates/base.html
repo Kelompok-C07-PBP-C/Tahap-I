@@ -207,9 +207,20 @@
       id="page-transition"
       class="pointer-events-none fixed inset-0 z-50 flex items-center justify-center bg-slate-950/95 backdrop-blur-2xl transition-all duration-500 ease-out opacity-0 invisible"
     >
-      <div class="flex flex-col items-center gap-4 text-white">
-        <div class="h-16 w-16 animate-spin-slow rounded-full border-2 border-cyan-400/60 border-t-transparent"></div>
-        <p class="text-sm uppercase tracking-[0.6em] text-cyan-100/80">RagaSpace</p>
+      <div class="transition-overlay__layer" aria-hidden="true">
+        <span class="transition-overlay__panel transition-overlay__panel--primary"></span>
+        <span class="transition-overlay__panel transition-overlay__panel--accent"></span>
+        <span class="transition-overlay__panel transition-overlay__panel--pulse"></span>
+        <span class="transition-overlay__glow"></span>
+      </div>
+      <div class="transition-overlay__content flex flex-col items-center gap-4 text-white">
+        <div class="relative flex h-16 w-16 items-center justify-center">
+          <span class="absolute h-16 w-16 animate-spin-slow rounded-full border-2 border-cyan-400/40 border-t-transparent"></span>
+          <span class="absolute h-10 w-10 animate-ping rounded-full bg-cyan-400/20"></span>
+          <span class="relative h-4 w-4 rounded-full bg-cyan-300"></span>
+        </div>
+        <p class="text-xs font-semibold uppercase tracking-[0.6em] text-cyan-100/80">RagaSpace</p>
+        <p class="text-[10px] uppercase tracking-[0.32em] text-cyan-100/50">Loading experience</p>
       </div>
     </div>
   </body>
