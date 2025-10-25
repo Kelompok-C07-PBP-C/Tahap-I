@@ -21,8 +21,8 @@
     formElement.classList.toggle('opacity-50', isRemoved);
     formElement.classList.toggle('border-rose-300/40', isRemoved);
     if (removeButton) {
-      const removeLabel = removeButton.dataset.removeLabel || 'Hapus add-on';
-      const restoreLabel = removeButton.dataset.restoreLabel || 'Batalkan';
+      const removeLabel = removeButton.dataset.removeLabel || 'Remove add-on';
+      const restoreLabel = removeButton.dataset.restoreLabel || 'Undo removal';
       removeButton.textContent = isRemoved ? restoreLabel : removeLabel;
     }
   };
