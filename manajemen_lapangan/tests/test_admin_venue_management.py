@@ -205,6 +205,40 @@ class AdminVenueManagementTests(TestCase):
         data = response.json()
         self.assertTrue(data["success"])
         self.assertTrue(Venue.objects.filter(name="Galaxy Court").exists())
+        self.assertIn("addons", data["venue"])
+        self.assertEqual(data["venue"]["addons"], [])
+
+    def test_ajax_create_endpoint_can_create_addons(self):
+        self.client.force_login(self.admin)
+        payload = self._valid_payload(name="Galaxy Court Extras")
+        payload.update(
+            {
+                "addons-TOTAL_FORMS": "2",
+                "addons-INITIAL_FORMS": "0",
+                "addons-MIN_NUM_FORMS": "0",
+                "addons-MAX_NUM_FORMS": "1000",
+                "addons-0-name": "Coach",
+                "addons-0-description": "Personal trainer for the team",
+                "addons-0-price": "75000.00",
+                "addons-1-name": "Water Bottles",
+                "addons-1-description": "Refreshing drinks",
+                "addons-1-price": "15000.00",
+            }
+        )
+
+        response = self.client.post(
+            reverse("admin-venues-api"),
+            data=json.dumps(payload),
+            content_type="application/json",
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+
+        self.assertEqual(response.status_code, 200, response.content)
+        data = response.json()
+        self.assertTrue(data["success"])
+        venue = Venue.objects.get(name="Galaxy Court Extras")
+        addon_names = set(venue.addons.values_list("name", flat=True))
+        self.assertSetEqual(addon_names, {"Coach", "Water Bottles"})
 
     def test_ajax_update_endpoint_updates_fields(self):
         venue = Venue.objects.create(
@@ -236,6 +270,62 @@ class AdminVenueManagementTests(TestCase):
         self.assertEqual(response.status_code, 200, response.content)
         venue.refresh_from_db()
         self.assertEqual(venue.name, "Aurora Field Updated")
+
+    def test_ajax_update_endpoint_can_manage_addons(self):
+        venue = Venue.objects.create(
+            category=self.category,
+            name="Aurora Field",
+            slug="aurora-field",
+            description="Outdoor field",
+            location="North District",
+            city="Metropolis",
+            address="123 Aurora Lane",
+            price_per_hour="85000.00",
+            capacity=120,
+            facilities="lighting",
+            image_url="https://example.com/aurora.jpg",
+            available_start_time=time(7, 0),
+            available_end_time=time(21, 0),
+        )
+        existing_addon = AddOn.objects.create(
+            venue=venue,
+            name="Projector",
+            description="HD projector",
+            price="50000.00",
+        )
+
+        self.client.force_login(self.admin)
+        update_payload = self._valid_payload(name="Aurora Field", slug="aurora-field")
+        update_payload.update(
+            {
+                "addons-TOTAL_FORMS": "2",
+                "addons-INITIAL_FORMS": "1",
+                "addons-MIN_NUM_FORMS": "0",
+                "addons-MAX_NUM_FORMS": "1000",
+                "addons-0-id": str(existing_addon.pk),
+                "addons-0-venue": str(venue.pk),
+                "addons-0-name": "Projector HD",
+                "addons-0-description": "Updated HD projector",
+                "addons-0-price": "65000.00",
+                "addons-1-id": "",
+                "addons-1-venue": str(venue.pk),
+                "addons-1-name": "Scoreboard",
+                "addons-1-description": "Digital scoreboard",
+                "addons-1-price": "120000.00",
+            }
+        )
+
+        response = self.client.put(
+            reverse("admin-venue-detail-api", args=[venue.pk]),
+            data=json.dumps(update_payload),
+            content_type="application/json",
+            HTTP_X_REQUESTED_WITH="XMLHttpRequest",
+        )
+
+        self.assertEqual(response.status_code, 200, response.content)
+        venue.refresh_from_db()
+        addon_names = set(venue.addons.values_list("name", flat=True))
+        self.assertSetEqual(addon_names, {"Projector HD", "Scoreboard"})
 
     def test_ajax_delete_endpoint_removes_venue(self):
         venue = Venue.objects.create(
