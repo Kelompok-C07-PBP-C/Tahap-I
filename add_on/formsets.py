@@ -11,6 +11,22 @@ from .forms import AddOnForm
 from .models import AddOn
 
 
+class AddOnInlineFormSet(BaseInlineFormSet):
+    """Inline formset that hides the delete checkbox and exposes data hooks."""
+
+    def add_fields(self, form, index):  # type: ignore[override]
+        super().add_fields(form, index)
+        delete_field = form.fields.get("DELETE")
+        if delete_field is not None:
+            delete_field.widget.attrs.update(
+                {
+                    "class": "hidden",
+                    "data-addon-delete-input": "true",
+                    "style": "display: none;",
+                }
+            )
+
+
 def build_addon_formset(*, data: dict[str, Any] | None = None, instance: Venue | None = None) -> BaseInlineFormSet:
     """Return a configured inline formset for editing add-ons.
 
@@ -25,5 +41,6 @@ def build_addon_formset(*, data: dict[str, Any] | None = None, instance: Venue |
         form=AddOnForm,
         extra=3,
         can_delete=True,
+        formset=AddOnInlineFormSet,
     )
-    return formset_class(data=data or None, instance=instance)
+    return formset_class(data=data or None, instance=instance, prefix="addons")

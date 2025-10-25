@@ -103,7 +103,7 @@ class AdminVenueCreateView(AdminRequiredMixin, LoginRequiredMixin, View):
 
     def get(self, request: HttpRequest) -> HttpResponse:
         form = VenueForm()
-        formset = build_addon_formset(instance=Venue())
+        formset = build_addon_formset(instance=form.instance)
         return render(request, self.template_name, {"form": form, "formset": formset})
 
     def post(self, request: HttpRequest) -> HttpResponse:

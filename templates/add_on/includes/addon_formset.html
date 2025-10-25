@@ -1,33 +1,110 @@
-<div class="rounded-[2rem] border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
-  <h2 class="text-xl font-semibold text-white">Add-ons</h2>
-  <p class="mt-2 text-sm text-white/70">Optional upgrades will be shown on the booking page.</p>
+<div class="space-y-4 md:col-span-2" data-addon-formset>
+  <div class="flex flex-col gap-2">
+    <h2 class="text-lg font-semibold text-white">Tambahan sewa (Add-ons)</h2>
+    <p class="text-sm text-white/70">
+      Tambahkan layanan atau peralatan tambahan yang bisa dipilih penyewa saat melakukan pemesanan.
+    </p>
+  </div>
+
   {{ formset.management_form }}
   {% if formset.non_form_errors %}
-  <p class="mt-2 rounded-xl border border-rose-300/40 bg-rose-400/10 px-4 py-2 text-sm text-rose-200">{{ formset.non_form_errors|striptags }}</p>
+  <p class="rounded-xl border border-rose-400/30 bg-rose-400/10 px-4 py-2 text-sm text-rose-200">
+    {{ formset.non_form_errors|striptags }}
+  </p>
   {% endif %}
-  <div class="mt-4 space-y-4">
+
+  <div class="space-y-4" data-addon-forms>
     {% for addon_form in formset %}
-    <div class="grid gap-4 rounded-2xl border border-white/10 bg-white/10 p-4 md:grid-cols-3">
+    <div class="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-4" data-addon-form>
+      {% if addon_form.non_field_errors %}
+      <p class="rounded-xl border border-rose-400/30 bg-rose-400/10 px-4 py-2 text-sm text-rose-200">
+        {{ addon_form.non_field_errors|striptags }}
+      </p>
+      {% endif %}
+
       {% for hidden in addon_form.hidden_fields %}
       {{ hidden }}
       {% endfor %}
-      {% for field in addon_form.visible_fields %}
-      <div class="flex flex-col gap-2">
-        <label for="{{ field.id_for_label }}" class="text-sm font-medium text-white/70">{{ field.label }}</label>
-        {{ field }}
-        {% if field.errors %}
-        <p class="text-sm text-rose-300">{{ field.errors|striptags }}</p>
+
+      <div class="grid gap-4 md:grid-cols-3">
+        {% for field in addon_form.visible_fields %}
+        {% if field.name != 'DELETE' %}
+        <div class="flex flex-col gap-2">
+          <label for="{{ field.id_for_label }}" class="text-sm font-medium text-white/70">{{ field.label }}</label>
+          {{ field }}
+          {% if field.help_text %}
+          <p class="text-xs text-white/50">{{ field.help_text }}</p>
+          {% endif %}
+          {% if field.errors %}
+          <p class="text-sm text-rose-300">{{ field.errors|striptags }}</p>
+          {% endif %}
+        </div>
         {% endif %}
+        {% endfor %}
       </div>
-      {% endfor %}
+
       {% if addon_form.can_delete %}
-      <div class="flex items-center justify-end">
-        <label class="flex items-center gap-2 text-sm text-rose-200">
-          {{ addon_form.delete }} Remove
-        </label>
+      {{ addon_form.DELETE }}
+      <div class="flex justify-end">
+        <button
+          type="button"
+          class="rounded-xl border border-rose-400/30 px-4 py-2 text-sm font-semibold text-rose-200 transition hover:bg-rose-400/20"
+          data-addon-remove
+          data-remove-label="Hapus add-on"
+          data-restore-label="Batalkan"
+        >
+          Hapus add-on
+        </button>
       </div>
       {% endif %}
     </div>
     {% endfor %}
   </div>
+
+  <div class="flex flex-col gap-2 rounded-2xl border border-dashed border-white/15 p-4 text-sm text-white/70">
+    <p>Biarkan baris kosong jika tidak digunakan. Add-on yang dihapus tidak akan tampil di halaman pemesanan.</p>
+    <button
+      type="button"
+      class="self-start rounded-xl border border-white/20 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
+      data-addon-add
+    >
+      + Tambah baris add-on
+    </button>
+  </div>
+
+  <template data-addon-empty-form>
+    {% with addon_form=formset.empty_form %}
+    <div class="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-4" data-addon-form>
+      {% for hidden in addon_form.hidden_fields %}
+      {{ hidden }}
+      {% endfor %}
+
+      <div class="grid gap-4 md:grid-cols-3">
+        {% for field in addon_form.visible_fields %}
+        {% if field.name != 'DELETE' %}
+        <div class="flex flex-col gap-2">
+          <label for="{{ field.id_for_label }}" class="text-sm font-medium text-white/70">{{ field.label }}</label>
+          {{ field }}
+        </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+
+      {% if addon_form.can_delete %}
+      {{ addon_form.DELETE }}
+      <div class="flex justify-end">
+        <button
+          type="button"
+          class="rounded-xl border border-rose-400/30 px-4 py-2 text-sm font-semibold text-rose-200 transition hover:bg-rose-400/20"
+          data-addon-remove
+          data-remove-label="Hapus add-on"
+          data-restore-label="Batalkan"
+        >
+          Hapus add-on
+        </button>
+      </div>
+      {% endif %}
+    </div>
+    {% endwith %}
+  </template>
 </div>
