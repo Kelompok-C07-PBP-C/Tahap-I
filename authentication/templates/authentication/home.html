@@ -458,29 +458,256 @@
     <div class="mx-auto flex w-full max-w-6xl flex-col items-center gap-10">
       <h2 class="text-3xl font-semibold text-white drop-shadow-[0_8px_30px_rgba(14,165,233,0.4)]">What She said about RagaSpace?</h2>
       <div class="w-full overflow-hidden rounded-[3rem] bg-gradient-to-br from-white/10 via-white/5 to-cyan-500/10 p-[1px] shadow-2xl shadow-slate-950/50 backdrop-blur-2xl">
-        <div class="flex flex-col gap-8 rounded-[3rem] bg-slate-950/70 px-8 py-10 sm:px-12 lg:flex-row lg:items-center lg:gap-12">
+        <div
+          id="testimonial-card"
+          class="flex flex-col gap-8 rounded-[3rem] bg-slate-950/70 px-8 py-10 sm:px-12 lg:flex-row lg:items-center lg:gap-12"
+        >
           <div class="flex justify-center lg:w-[40%]">
+            {% if testimonials %}
             <img
-              src="https://blogger.googleusercontent.com/img/a/AVvXsEha0jebkzt4VdaSYEd7LkT-ti2-zrf2MC5h6VjkSQNIf8x_6MgiJU6Qe3F7qF5F7mxXFXzTkSJoYhrf_YBy0rMEM-Hm8lg7iD063VW9TUvYaIhLVW5w_F5yUkZOfyPwG_gKp8ZEBKyyNLHDHrXXRuc5iEyTL4gUUIbdKHnenH50xaaPT6YmERUXZtneZlM"
-              alt="Happy athlete testimonial"
+              id="testimonial-image"
+              src="{{ testimonials.0.image }}"
+              alt="Foto testimoni {{ testimonials.0.name }}"
               class="h-64 w-64 rounded-[3rem] object-cover shadow-xl shadow-cyan-500/30"
             />
+            {% endif %}
           </div>
           <div class="flex-1 space-y-6 text-white/90">
             <div>
-              <p class="text-2xl font-semibold text-white">Rindu Aurellia</p>
-              <p class="text-sm uppercase tracking-[0.35em] text-cyan-200/80">Anak Padi</p>
+              <p id="testimonial-name" class="text-2xl font-semibold text-white">{{ testimonials.0.name }}</p>
+              <p id="testimonial-role" class="text-sm uppercase tracking-[0.35em] text-cyan-200/80">{{ testimonials.0.role }}</p>
             </div>
-            <p class="leading-relaxed text-white/80">
-              Jujur, sebagai koordinator tim futsal 'Anak Padi', dulu saya yang paling stres setiap mau ngatur jadwal main. Prosesnya manual sekali: harus cari rekomendasi lapangan di Google, telepon atau WhatsApp adminnya satu-satu, lalu menunggu balasan mereka yang seringkali lama. Belum lagi masalah jadwal yang nggak update. Sering sekali kami sudah semangat mau main, ternyata lapangannya double book."
-              </p>
-            <p class="leading-relaxed text-white/80">
-              Sejak menemukan RagaSpace, semua masalah itu selesai. Aplikasinya benar-benar game-changer buat kami. Saya bisa lihat semua jadwal lapangan yang tersedia di sekitar kami secara real-time. Nggak perlu lagi tanya admin. Fotonya lengkap, informasinya jelas, dari fasilitas sampai harga. Tinggal pilih jam, bayar, dan langsung dapat konfirmasi instan. Sekarang, 'Anak Padi' bisa fokus main, urusan booking serahkan saja ke RagaSpace!"
-            </p>
+            <div id="testimonial-paragraphs" class="space-y-4">
+              {% for paragraph in testimonials.0.paragraphs %}
+              <p class="leading-relaxed text-white/80">{{ paragraph }}</p>
+              {% endfor %}
+            </div>
+            <div class="flex items-center justify-between pt-4">
+              <div class="flex gap-2">
+                {% for testimonial in testimonials %}
+                <span class="h-2 w-8 rounded-full bg-white/20 transition-colors duration-300{% if forloop.first %} bg-cyan-400/80{% endif %}" data-indicator></span>
+                {% endfor %}
+              </div>
+              <div class="flex gap-3">
+                <button id="testimonial-prev" type="button" class="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/5 text-white transition hover:border-cyan-400/70 hover:text-cyan-300" aria-label="Review sebelumnya">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                  </svg>
+                </button>
+                <button id="testimonial-next" type="button" class="flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/5 text-white transition hover:border-cyan-400/70 hover:text-cyan-300" aria-label="Review selanjutnya">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                  </svg>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>
+{% if testimonials %}
+{{ testimonials|json_script:"testimonials-data" }}
+<style>
+  #testimonial-card {
+    position: relative;
+  }
+
+  .testimonial-animate-out-left {
+    animation: testimonial-slide-out-left 0.45s ease forwards;
+  }
+
+  .testimonial-animate-out-right {
+    animation: testimonial-slide-out-right 0.45s ease forwards;
+  }
+
+  .testimonial-animate-in-left {
+    animation: testimonial-slide-in-left 0.45s ease forwards;
+  }
+
+  .testimonial-animate-in-right {
+    animation: testimonial-slide-in-right 0.45s ease forwards;
+  }
+
+  @keyframes testimonial-slide-out-left {
+    from {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(-3rem);
+    }
+  }
+
+  @keyframes testimonial-slide-out-right {
+    from {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(3rem);
+    }
+  }
+
+  @keyframes testimonial-slide-in-left {
+    from {
+      opacity: 0;
+      transform: translateX(-3rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes testimonial-slide-in-right {
+    from {
+      opacity: 0;
+      transform: translateX(3rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+</style>
+<script>
+  (function () {
+    const dataElement = document.getElementById("testimonials-data");
+    if (!dataElement) {
+      return;
+    }
+
+    const testimonials = JSON.parse(dataElement.textContent);
+    if (!Array.isArray(testimonials) || testimonials.length === 0) {
+      return;
+    }
+
+    const imageEl = document.getElementById("testimonial-image");
+    const nameEl = document.getElementById("testimonial-name");
+    const roleEl = document.getElementById("testimonial-role");
+    const paragraphsEl = document.getElementById("testimonial-paragraphs");
+    const cardEl = document.getElementById("testimonial-card");
+    const indicators = Array.from(document.querySelectorAll('[data-indicator]'));
+    const prevButton = document.getElementById("testimonial-prev");
+    const nextButton = document.getElementById("testimonial-next");
+
+    let currentIndex = 0;
+    let intervalId = null;
+    let isAnimating = false;
+    const intervalDuration = 2000;
+
+    const updateIndicators = (index) => {
+      indicators.forEach((indicator, indicatorIndex) => {
+        indicator.classList.toggle("bg-cyan-400/80", indicatorIndex === index);
+        indicator.classList.toggle("bg-white/20", indicatorIndex !== index);
+      });
+    };
+
+    const renderTestimonial = (index) => {
+      const testimonial = testimonials[index];
+      if (!testimonial) {
+        return;
+      }
+
+      if (imageEl) {
+        imageEl.src = testimonial.image;
+        imageEl.alt = `Foto testimoni ${testimonial.name}`;
+      }
+      nameEl.textContent = testimonial.name;
+      roleEl.textContent = testimonial.role;
+
+      paragraphsEl.innerHTML = "";
+      (testimonial.paragraphs || []).forEach((paragraph) => {
+        const paragraphEl = document.createElement("p");
+        paragraphEl.className = "leading-relaxed text-white/80";
+        paragraphEl.textContent = paragraph;
+        paragraphsEl.appendChild(paragraphEl);
+      });
+
+      updateIndicators(index);
+    };
+
+    const animateToIndex = (nextIndex, direction) => {
+      if (nextIndex === currentIndex || isAnimating) {
+        return;
+      }
+
+      if (!cardEl) {
+        currentIndex = nextIndex;
+        renderTestimonial(currentIndex);
+        return;
+      }
+
+      isAnimating = true;
+      const exitClass = direction === 1 ? "testimonial-animate-out-left" : "testimonial-animate-out-right";
+      const enterClass = direction === 1 ? "testimonial-animate-in-right" : "testimonial-animate-in-left";
+
+      const handleExitEnd = () => {
+        cardEl.classList.remove(exitClass);
+        cardEl.removeEventListener("animationend", handleExitEnd);
+
+        currentIndex = nextIndex;
+        renderTestimonial(currentIndex);
+
+        cardEl.classList.add(enterClass);
+        cardEl.addEventListener(
+          "animationend",
+          () => {
+            cardEl.classList.remove(enterClass);
+            isAnimating = false;
+          },
+          { once: true }
+        );
+      };
+
+      cardEl.classList.remove(
+        "testimonial-animate-in-left",
+        "testimonial-animate-in-right",
+        "testimonial-animate-out-left",
+        "testimonial-animate-out-right"
+      );
+      cardEl.classList.add(exitClass);
+      cardEl.addEventListener("animationend", handleExitEnd, { once: true });
+    };
+
+    const showNext = () => {
+      const nextIndex = (currentIndex + 1) % testimonials.length;
+      animateToIndex(nextIndex, 1);
+    };
+
+    const showPrevious = () => {
+      const nextIndex = (currentIndex - 1 + testimonials.length) % testimonials.length;
+      animateToIndex(nextIndex, -1);
+    };
+
+    const restartInterval = () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+      intervalId = setInterval(showNext, intervalDuration);
+    };
+
+    if (prevButton) {
+      prevButton.addEventListener("click", () => {
+        showPrevious();
+        restartInterval();
+      });
+    }
+
+    if (nextButton) {
+      nextButton.addEventListener("click", () => {
+        showNext();
+        restartInterval();
+      });
+    }
+
+    renderTestimonial(currentIndex);
+    restartInterval();
+  })();
+</script>
+{% endif %}
 {% endblock %}
