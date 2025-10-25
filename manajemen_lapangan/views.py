@@ -86,12 +86,7 @@ class AdminVenueListView(AdminRequiredMixin, LoginRequiredMixin, ListView):
             return redirect("admin-venues")
 
         form = self.form_class(request.POST)
-        has_addon_data = any(key.startswith("addons-") for key in request.POST.keys())
-        formset = (
-            build_addon_formset(data=request.POST, instance=form.instance)
-            if has_addon_data
-            else build_addon_formset(instance=form.instance)
-        )
+        formset = build_addon_formset(data=request.POST, instance=form.instance)
         if form.is_valid() and formset.is_valid():
             try:
                 venue = form.save()
@@ -131,12 +126,7 @@ class AdminVenueCreateView(AdminRequiredMixin, LoginRequiredMixin, View):
             return redirect(self.success_url)
 
         form = VenueForm(request.POST)
-        has_addon_data = any(key.startswith("addons-") for key in request.POST.keys())
-        formset = (
-            build_addon_formset(data=request.POST, instance=form.instance)
-            if has_addon_data
-            else build_addon_formset(instance=form.instance)
-        )
+        formset = build_addon_formset(data=request.POST, instance=form.instance)
         if form.is_valid() and formset.is_valid():
             try:
                 venue = form.save()
@@ -170,12 +160,7 @@ class AdminVenueUpdateView(AdminRequiredMixin, LoginRequiredMixin, View):
     def post(self, request: HttpRequest, pk: int) -> HttpResponse:
         venue = self.get_object(pk)
         form = VenueForm(request.POST, instance=venue)
-        has_addon_data = any(key.startswith("addons-") for key in request.POST.keys())
-        formset = (
-            build_addon_formset(data=request.POST, instance=venue)
-            if has_addon_data
-            else build_addon_formset(instance=venue)
-        )
+        formset = build_addon_formset(data=request.POST, instance=venue)
         if form.is_valid() and formset.is_valid():
             try:
                 venue = form.save()
@@ -356,10 +341,8 @@ class AdminVenueApiView(AdminRequiredMixin, LoginRequiredMixin, View):
 
         data = self._extract_payload(request)
         form = VenueForm(data)
-        addon_formset = (
-            build_addon_formset(data=dict_to_querydict(data), instance=form.instance)
-            if has_addon_payload(data)
-            else build_addon_formset(instance=form.instance)
+        addon_formset = build_addon_formset(
+            data=dict_to_querydict(data), instance=form.instance
         )
         form_valid = form.is_valid()
         formset_valid = addon_formset.is_valid()
@@ -436,10 +419,8 @@ class AdminVenueDetailApiView(AdminRequiredMixin, LoginRequiredMixin, View):
         venue = self.get_object(pk)
         data = self._extract_payload(request)
         form = VenueForm(data, instance=venue)
-        addon_formset = (
-            build_addon_formset(data=dict_to_querydict(data), instance=venue)
-            if has_addon_payload(data)
-            else build_addon_formset(instance=venue)
+        addon_formset = build_addon_formset(
+            data=dict_to_querydict(data), instance=venue
         )
         form_valid = form.is_valid()
         formset_valid = addon_formset.is_valid()
