@@ -8,7 +8,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.db.models import Count
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views import View
@@ -23,12 +23,37 @@ from .forms import LoginForm, RegistrationForm
 from .mixins import AdminRequiredMixin, EnsureCsrfCookieMixin
 
 
+
 class AuthLoginView(LoginView):
     template_name = "authentication/login.html"
     authentication_form = LoginForm
 
     def get_success_url(self) -> str:
         return reverse("home")
+
+    def _wants_json(self) -> bool:
+        request = self.request
+        return request.headers.get("x-requested-with") == "XMLHttpRequest" or "application/json" in request.headers.get("Accept", "")
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        if self._wants_json():
+            return JsonResponse({"success": True, "redirect_url": response["Location"]})
+        return response
+
+    def form_invalid(self, form):
+        if self._wants_json():
+            error_data = {
+                field: [entry.get("message", "") for entry in messages]
+                for field, messages in form.errors.get_json_data().items()
+            }
+            payload = {
+                "success": False,
+                "non_field_errors": error_data.pop("__all__", []),
+                "errors": error_data,
+            }
+            return JsonResponse(payload, status=400)
+        return super().form_invalid(form)
 
 
 class AuthLogoutView(LoginRequiredMixin, View):

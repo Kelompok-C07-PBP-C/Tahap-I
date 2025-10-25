@@ -16,7 +16,7 @@ class VenueDetailViewTests(TestCase):
             email="viewer@example.com",
             password="Secret123",
         )
-        self.category = Category.objects.create(name="Futsal")
+        self.category = Category.objects.get(slug="futsal")
         self.venue = Venue.objects.create(
             category=self.category,
             name="Elite Futsal Hall",

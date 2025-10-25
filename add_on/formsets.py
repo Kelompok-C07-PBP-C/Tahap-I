@@ -5,6 +5,7 @@ from typing import Any
 
 from django import forms
 from django.forms import BaseInlineFormSet, inlineformset_factory
+from django.http import QueryDict
 
 from manajemen_lapangan.models import Venue
 
@@ -48,4 +49,21 @@ def build_addon_formset(*, data: dict[str, Any] | None = None, instance: Venue |
         can_delete=True,
         formset=AddOnInlineFormSet,
     )
-    return formset_class(data=data or None, instance=instance, prefix="addons")
+    formset_data = None
+    if data is not None:
+        if isinstance(data, QueryDict):
+            formset_data = data.copy()
+            formset_data._mutable = True
+        else:
+            formset_data = QueryDict("", mutable=True)
+            for key, value in data.items():
+                if isinstance(value, (list, tuple)):
+                    formset_data.setlist(key, ["" if item is None else str(item) for item in value])
+                else:
+                    formset_data.setlist(key, ["" if value is None else str(value)])
+        if not any(key.startswith("addons-") for key in formset_data.keys()):
+            formset_data["addons-TOTAL_FORMS"] = "0"
+            formset_data["addons-INITIAL_FORMS"] = "0"
+            formset_data["addons-MIN_NUM_FORMS"] = "0"
+            formset_data["addons-MAX_NUM_FORMS"] = "1000"
+    return formset_class(data=formset_data, instance=instance, prefix="addons")

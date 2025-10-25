@@ -1,5 +1,5 @@
-from django.test import TestCase
 from __future__ import annotations
+from django.test import TestCase
 from datetime import time
 from decimal import Decimal
 
@@ -20,7 +20,7 @@ class WishlistViewTests(TestCase):
             username="tester",
             password="Test123!",
         )
-        self.category = Category.objects.create(name="Futsal", slug="futsal")
+        self.category = Category.objects.get(slug="futsal")
         self.venue = Venue.objects.create(
             category=self.category,
             name="Raga Space",
@@ -90,7 +90,10 @@ class ReviewModelTests(TestCase):
             username="reviewer",
             password="Review123!",
         )
-        self.category = Category.objects.create(name="Basket", slug="basket")
+        slug_suffix = getattr(self, "_testMethodName", "case").lower()
+        self.category = Category.objects.create(
+            name=f"Basket {slug_suffix}", slug=f"basket-{slug_suffix}"
+        )
         self.venue = Venue.objects.create(
             category=self.category,
             name="Arena Basket",
