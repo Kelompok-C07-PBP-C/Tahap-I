@@ -16,25 +16,9 @@
   justify-content: center;
   align-items: center;
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
 }
-#first{
-  height: calc(100vh + 6rem);
-  background: url('/static/image/f.png'),
-    linear-gradient(
-      to bottom,
-      rgba(217, 237, 146, 0.6),
-      /* #D9ED92 with opacity */ rgba(118, 200, 147, 0.6),
-      /* #76C893 */ rgba(52, 166, 164, 0.6),
-      /* #34A0A4 */ rgba(26, 117, 159, 0.6),
-      /* #1A759F */ rgba(24, 78, 119, 0.6) /* #184E77 */
-    );
-    background-repeat: no-repeat;
-  background-size: cover;
-  background-blend-mode: overlay;
-  position: relative;
-  z-index: 1;
-}
+
 body {
   flex-direction: column;
   background-color: black;
@@ -135,7 +119,8 @@ body {
   background-color:#0d1410 ;
   width: 100vw;
   height: 6rem;
-  position: absolute;
+  position: relative;
+  overflow: visible;
   bottom: 0;
   clip-path: ellipse(51% 49% at 50% 99%);
 }
