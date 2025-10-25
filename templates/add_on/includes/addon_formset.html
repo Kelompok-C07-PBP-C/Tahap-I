@@ -49,7 +49,7 @@
         {% endfor %}
       </div>
       {% if addon_form.can_delete %}
-      {{ addon_form.delete.as_widget(attrs={'class': 'hidden', 'data-addon-delete-input': 'true'}) }}
+      {{ addon_form.DELETE }}
       <div class="flex justify-end">
         <button
           type="button"
@@ -89,7 +89,7 @@
         {% endfor %}
       </div>
       {% if addon_form.can_delete %}
-      {{ addon_form.delete.as_widget(attrs={'class': 'hidden', 'data-addon-delete-input': 'true'}) }}
+      {{ addon_form.DELETE }}
       <div class="flex justify-end">
         <button
           type="button"
