@@ -1,12 +1,14 @@
+{% load addon_extras %}
 <h3 class="mb-2 text-sm font-semibold text-white">Enhance your booking</h3>
-{% if field|length %}
-<div class="space-y-2">
+{% if field and field|length %}
+<div class="space-y-3">
   {% for checkbox in field %}
+  {% with addon=addon_lookup|get_item:checkbox.data.value %}
   <label class="addon-option">
     <input
       type="checkbox"
       name="{{ field.name }}"
-      value="{{ checkbox.choice_value }}"
+      value="{{ checkbox.data.value }}"
       id="{{ checkbox.id_for_label }}"
       class="{{ checkbox.attrs.class|default:'addon-option__input' }}"
       {% if checkbox.is_checked %}checked{% endif %}
@@ -22,11 +24,20 @@
           />
         </svg>
       </span>
-      <span class="leading-snug">
-        <span class="font-semibold text-white">{{ checkbox.choice_label }}</span>
-      </span>
+      <div class="addon-option__body">
+        <div class="addon-option__header">
+          <span class="addon-option__title">{{ addon.name|default:checkbox.choice_label }}</span>
+          {% if addon %}
+          <span class="addon-option__price">Rp {{ addon.price_display }}</span>
+          {% endif %}
+        </div>
+        {% if addon and addon.description %}
+        <span class="addon-option__description">{{ addon.description }}</span>
+        {% endif %}
+      </div>
     </div>
   </label>
+  {% endwith %}
   {% endfor %}
 </div>
 {% else %}
