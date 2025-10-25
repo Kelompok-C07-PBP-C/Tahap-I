@@ -85,7 +85,13 @@
           {% elif booking.status == 'confirmed' %}
           
           <span class="inline-flex items-center rounded-2xl border border-white/20 bg-white/10 px-4 py-2 text-sm text-white/70">You're all set! We'll remind you before your event.</span>
-           <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-rose-500 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-rose-500/40 transition hover:bg-rose-400">Cancel booking</button>
+           <button
+            type="button"
+            data-modal-target="cancel-booking-{{ booking.pk }}"
+            class="inline-flex items-center justify-center rounded-2xl border border-white/20 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
+            data-booking-cancel-trigger
+            data-booking-id="{{ booking.pk }}"
+          >Cancel booking</button>
           {% endif %}
 
         </div>

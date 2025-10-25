@@ -359,7 +359,8 @@ const prepareCancelBookingForm = (form) => {
       showToast(message, { level: 'success' });
       closeContainingModal(form);
     } catch (error) {
-      showToast('Could not cancel this booking. Please try again.', { level: 'error' });
+      location.reload();
+      console.log(error);
     } finally {
       form.dataset.submitting = 'false';
       if (submitButton) {
