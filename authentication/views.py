@@ -92,36 +92,45 @@ class HomeView(EnsureCsrfCookieMixin, TemplateView):
                         ],
                     },
                     {
-                        "name": "Tania Putri",
+                        "name": "Tirta Siahaan",
                         "role": "Pelatih Basket SMA Bima",
-                        "image": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=400&q=80",
+                        "image": "https://media.licdn.com/dms/image/v2/D4D03AQFor0aXg96udw/profile-displayphoto-scale_200_200/B4DZlQXhWGGQAY-/0/1757989968230?e=2147483647&v=beta&t=UM9XUoFuSC0-yfgjVC8ASzxQ-XrizT4Ru3hFCg9N6A0",
                         "paragraphs": [
                             "RagaSpace bikin koordinasi latihan jadi jauh lebih gampang. Jadwalnya jelas dan bisa langsung saya bagi ke semua anak asuh lewat satu tautan.",
                             "Sebelumnya saya sering batalin latihan mendadak karena lapangan double booking. Sekarang semua terkontrol dengan notifikasi otomatisnya.",
                         ],
                     },
                     {
-                        "name": "Nadya Aulia",
+                        "name": "Shafa Aurelia",
                         "role": "Founder Komunitas Yoga Senja",
-                        "image": "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=400&q=80",
+                        "image": "https://media.licdn.com/dms/image/v2/D4E03AQHvn66GQSiAXA/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1724491188800?e=1762992000&v=beta&t=OI7oxBqbH9YG8_ZxuzZsfoFfFa8QdH2i2fHIOhMVVjA",
                         "paragraphs": [
                             "Komunitas kami sering pindah venue, dan itu biasanya makan waktu untuk survei satu per satu. Lewat RagaSpace, saya bisa bandingkan fasilitas dengan cepat sebelum booking.",
                             "Pembayarannya praktis, ada invoice resmi, dan tim venue juga responsif karena sudah terintegrasi di sistem.",
                         ],
                     },
                     {
-                        "name": "Raisa Dewi",
+                        "name": "Bilqis Nisrina",
                         "role": "Marketing Manager Event Lokal",
-                        "image": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80",
+                        "image": "https://media.licdn.com/dms/image/v2/D5603AQELb2yGe_q0JQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1724513244165?e=1762992000&v=beta&t=oGa9zAMXOcfxUd-hO3N2lBfYPh9OUZ54lklyGbagTik",
                         "paragraphs": [
                             "Kami sering gelar event komunitas, dan butuh venue yang bisa di-book jauh hari. RagaSpace kasih visibilitas penuh soal ketersediaan dan harga.",
                             "Tim supportnya juga proaktif, bantu negosiasi kebutuhan tambahan seperti sound system dan dekorasi.",
                         ],
                     },
                     {
-                        "name": "Monica Anggraeni",
+                        "name": "RPM Dimaz",
                         "role": "Manajer Operasional Klub Badminton Orion",
-                        "image": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80",
+                        "image": "https://media.licdn.com/dms/image/v2/D4E03AQHOOsQevd2tfA/profile-displayphoto-crop_800_800/B4EZh.F_LjGoAM-/0/1754462158131?e=1762992000&v=beta&t=M5UyV43yFFtaWP5q8NRyznSVA4WHuN1K5FcKtQMsnP4",
+                        "paragraphs": [
+                            "Dulu kami kesulitan memonitor jam sewa di semua lapangan. Sekarang, jadwal terpusat dan anggota klub bisa booking sesuai slot yang kami buka.",
+                            "Laporan transaksi bulanannya rapi, jadi mudah untuk evaluasi performa lapangan dan promo membership.",
+                        ],
+                    },
+                    {
+                        "name": "Haekal Dinova",
+                        "role": "Manajer Operasional Klub Badminton Orion",
+                        "image": "https://media.licdn.com/dms/image/v2/D5603AQHMK1Sfeqx7TQ/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1724483982997?e=1762992000&v=beta&t=1-NFzYQQLxZbqPJP-UVUaAcNqYJUl1w1vlJEYGgeoZs",
                         "paragraphs": [
                             "Dulu kami kesulitan memonitor jam sewa di semua lapangan. Sekarang, jadwal terpusat dan anggota klub bisa booking sesuai slot yang kami buka.",
                             "Laporan transaksi bulanannya rapi, jadi mudah untuk evaluasi performa lapangan dan promo membership.",
