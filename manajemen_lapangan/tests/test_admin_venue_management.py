@@ -66,7 +66,7 @@ class AdminVenueManagementTests(TestCase):
         payload = self._valid_payload(name="Arena Addons")
         payload.update(
             {
-                "addons-TOTAL_FORMS": "3",
+                "addons-TOTAL_FORMS": "2",
                 "addons-INITIAL_FORMS": "0",
                 "addons-MIN_NUM_FORMS": "0",
                 "addons-MAX_NUM_FORMS": "1000",
@@ -76,9 +76,6 @@ class AdminVenueManagementTests(TestCase):
                 "addons-1-name": "Bola futsal",
                 "addons-1-description": "",  # optional description
                 "addons-1-price": "50000.00",
-                "addons-2-name": "",
-                "addons-2-description": "",
-                "addons-2-price": "",
             }
         )
 

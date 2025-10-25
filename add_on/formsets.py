@@ -23,7 +23,11 @@ def build_addon_formset(*, data: dict[str, Any] | None = None, instance: Venue |
         Venue,
         AddOn,
         form=AddOnForm,
-        extra=3,
+        # ``extra`` is set to zero so that no empty add-on forms are rendered by
+        # default. Administrators can still add forms dynamically via the "Add
+        # add-on" button, keeping the interface uncluttered until they choose to
+        # create an add-on.
+        extra=0,
         can_delete=True,
     )
     return formset_class(data=data or None, instance=instance, prefix="addons")
