@@ -63,6 +63,7 @@
 {% endblock %}
 {% block title %}Booking approvals • RagaSpace{% endblock %}
 {% block content %}
+<div style="transform: scale(2.0);" class="absolute inset-0 bg-slate-950/70 backdrop-blur-sm" data-modal-close></div>
 <section class="space-y-8">
   <header class="rounded-[2.5rem] border border-white/10 bg-white/5 p-8 shadow-xl shadow-slate-950/40 backdrop-blur-2xl">
     <h1 class="text-3xl font-semibold text-white">Booking approvals</h1>
@@ -101,7 +102,7 @@
       aria-labelledby="booking-{{ booking.pk }}-title"
       tabindex="-1"
     >
-      <div class="absolute inset-0 bg-slate-950/70 backdrop-blur-sm" data-modal-close></div>
+      <div style="transform: scale(2.0);" class="absolute inset-0 bg-slate-950/70 backdrop-blur-sm" data-modal-close></div>
       <div class="relative mx-auto mt-24 w-full max-w-xl rounded-3xl border border-white/10 bg-slate-900/95 p-6 shadow-2xl shadow-slate-950/60">
         <div class="flex items-center justify-between">
           <h3 id="booking-{{ booking.pk }}-title" class="text-xl font-semibold text-white">Review booking request</h3>
