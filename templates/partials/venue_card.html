@@ -1,6 +1,6 @@
 <article class="card-tilt group relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-5 shadow-xl shadow-slate-950/40 backdrop-blur-xl transition hover:bg-white/10" data-animate>
   <div class="relative">
-    <img src="{{ venue.image_url }}" alt="{{ venue.name }}" class="h-48 w-full rounded-2xl object-cover" />
+    <img src="{{ venue.image_url }}" alt="{{ venue.name }}" class="h-40 w-full rounded-2xl object-cover sm:h-48 lg:h-40" />
     <form
       method="post"
       action="{% url 'wishlist-toggle' venue.id %}"
