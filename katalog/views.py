@@ -204,4 +204,10 @@ class VenueDetailView(EnsureCsrfCookieMixin, LoginRequiredMixin, DetailView):
             return redirect("venue-detail", slug=self.object.slug)
         
         except Exception as e:
-            print(e)
+            import traceback
+            print("=" * 50)
+            print("ERROR DETAIL:")
+            print(traceback.format_exc())
+            print("=" * 50)
+            messages.error(request, f"An error occurred: {str(e)}")
+            return redirect("venue-detail", slug=self.object.slug) 
