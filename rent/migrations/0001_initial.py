@@ -76,10 +76,7 @@ class Migration(migrations.Migration):
                 ("method", models.CharField(choices=[("qris", "QRIS"), ("gopay", "GoPay")], max_length=20)),
                 ("status", models.CharField(choices=[("waiting", "Waiting for confirmation"), ("confirmed", "Confirmed"), ("completed", "Completed")], default="waiting", max_length=20)),
                 ("total_amount", models.DecimalField(decimal_places=2, max_digits=10)),
-                (
-                    "deposit_amount",
-                    models.DecimalField(decimal_places=2, default=Decimal("10000"), max_digits=10),
-                ),
+                
                 ("reference_code", models.CharField(max_length=100, unique=True)),
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("updated_at", models.DateTimeField(auto_now=True)),

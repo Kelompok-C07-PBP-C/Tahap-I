@@ -486,7 +486,7 @@ class Command(BaseCommand):
                 "method": "qris",
                 "status": "confirmed",
                 "total_amount": booking.total_cost,
-                "deposit_amount": Decimal("10000"),
+                
                 "reference_code": "VS-DEMO-0001",
             },
         )

@@ -119,7 +119,7 @@ def _serialize_booking(booking: Booking) -> Dict[str, Any]:
             "method": p.method,
             "status": p.status,
             "total_amount": str(p.total_amount),
-            "deposit_amount": str(p.deposit_amount),
+            
             "reference_code": p.reference_code,
             "created_at": _dt(p.created_at),
             "updated_at": _dt(p.updated_at),

@@ -89,7 +89,7 @@ class Booking(models.Model):
                 "method": "qris",
                 "status": "waiting",
                 "total_amount": self.total_cost,
-                "deposit_amount": Decimal("10000"),
+                
                 "reference_code": uuid4().hex[:12].upper(),
             },
         )
@@ -138,7 +138,7 @@ class Payment(models.Model):
     method = models.CharField(max_length=20, choices=METHOD_CHOICES)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="waiting")
     total_amount = models.DecimalField(max_digits=12, decimal_places=2)
-    deposit_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal("10000"))
+
     reference_code = models.CharField(max_length=100, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
