@@ -30,7 +30,7 @@
     document.body.appendChild(opener);
     opener.click();
     opener.remove();
-    document.body.style.overflow = 'hidden';
+    
   };
 
   const normaliseErrors = (errors) => {
