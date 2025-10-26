@@ -360,6 +360,7 @@ const prepareCancelBookingForm = (form) => {
       closeContainingModal(form);
     } catch (error) {
       console.log(error);
+      location.reload();
     } finally {
       form.dataset.submitting = 'false';
       if (submitButton) {
