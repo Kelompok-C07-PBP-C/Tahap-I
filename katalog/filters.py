@@ -65,9 +65,9 @@ class VenueFilter(django_filters.FilterSet):
         # adding an extra blank option when preparing the list of cities.
 
         if "city" in self.filters:
-            self.filters["city"].field.choices = city_choices
+            self.filters["city"].field.choices = [("", "All cities")] + city_choices
         if "city" in self.form.fields:
-            self.form.fields["city"].choices = city_choices
+            self.form.fields["city"].choices = [("", "All cities")] + city_choices
 
         order_expression = Case(
             *[When(slug=slug, then=position) for position, slug in enumerate(CATEGORY_SLUG_SEQUENCE)],
