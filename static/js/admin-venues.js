@@ -21,6 +21,7 @@
     const modal = document.getElementById(modalId);
     if (!modal) {
       return;
+    
     }
     const opener = document.createElement('button');
     opener.type = 'button';
@@ -29,6 +30,7 @@
     document.body.appendChild(opener);
     opener.click();
     opener.remove();
+    document.body.style.overflow = 'hidden';
   };
 
   const normaliseErrors = (errors) => {
