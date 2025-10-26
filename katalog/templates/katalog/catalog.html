@@ -97,6 +97,8 @@
   </div>
   {% if is_paginated %}
   <div class="flex justify-center gap-2">
+    {% with request.GET.urlencode as query_string %} 
+
     {% if page_obj.has_previous %}
     <a href="?page={{ page_obj.previous_page_number }}" class="interactive-glow rounded-full border border-white/20 px-4 py-2 text-sm text-white/70 transition hover:bg-white/10" data-ripple>Previous</a>
     {% endif %}
@@ -104,6 +106,7 @@
     {% if page_obj.has_next %}
     <a href="?page={{ page_obj.next_page_number }}" class="interactive-glow rounded-full border border-white/20 px-4 py-2 text-sm text-white/70 transition hover:bg-white/10" data-ripple>Next</a>
     {% endif %}
+    {% endwith %}
   </div>
   {% endif %}
 </section>
