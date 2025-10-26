@@ -138,6 +138,7 @@ class Payment(models.Model):
     method = models.CharField(max_length=20, choices=METHOD_CHOICES)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="waiting")
     total_amount = models.DecimalField(max_digits=12, decimal_places=2)
+   
 
     reference_code = models.CharField(max_length=100, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
