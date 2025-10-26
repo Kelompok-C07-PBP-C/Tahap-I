@@ -493,7 +493,7 @@
       background: rgba(16, 16, 16, 0.35);
       border: 1px solid var(--stroke);
       border-radius: 16px;
-      padding: 16px 16px 16px 20px;
+      padding: 16px 80px 20px 20px;
 
     }
 
@@ -522,8 +522,9 @@
       display: flex;
       gap: 10px;
       position: absolute;
-      right: 10px;
-      bottom: -20px
+      right: 16px;
+      bottom: 16px;
+      justify-content: flex-end
     }
 
     .nav-arrows button {
@@ -535,6 +536,18 @@
       display: grid;
       place-items: center;
       cursor: pointer
+    }
+
+    @media (max-width:600px) {
+      .quote {
+        padding: 20px;
+      }
+
+      .nav-arrows {
+        position: static;
+        margin-top: 16px;
+        justify-content: center;
+      }
     }
 
     /* Footer */
