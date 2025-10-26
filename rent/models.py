@@ -19,6 +19,7 @@ class Booking(models.Model):
     STATUS_CONFIRMED = "confirmed"
     STATUS_COMPLETED = "completed"
     STATUS_CANCELLED = "cancelled"
+    STATUS_REJECTED = "rejected"
 
     STATUS_CHOICES = [
         (STATUS_PENDING, "Pending approval"),
@@ -26,6 +27,7 @@ class Booking(models.Model):
         (STATUS_CONFIRMED, "Confirmed"),
         (STATUS_COMPLETED, "Completed"),
         (STATUS_CANCELLED, "Cancelled"),
+        (STATUS_REJECTED, "Rejected"),
     ]
 
     ACTIVE_STATUSES = (STATUS_PENDING, STATUS_ACTIVE, STATUS_CONFIRMED)
