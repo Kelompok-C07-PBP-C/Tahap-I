@@ -1334,4 +1334,12 @@ body::after {
   .sports-marquee__item {
     transition: none !important;
   }
+
+}
+
+@media (max-width: 768px) {
+  [data-animate]{
+    opacity : 1 !important; transform: none !important;filter:none !important;
+  }
+  
 }
