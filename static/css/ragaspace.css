@@ -1114,8 +1114,8 @@ body::after {
   }
 
   /* Fix form elements */
-  .rounded-[2.75rem] {
-    border-radius: 2rem;
+  .rounded-large {
+    border-radius: 2.75rem;
   }
 
   /* Fix text sizes for mobile readability */
