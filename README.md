@@ -114,7 +114,7 @@ Role atau Peran Pengguna
 
 Deployment & Desain
 
-* *Tautan Deployment PWS*: haekal-alexander-tkpbp.pbp.cs.ui.ac.id
+* *Tautan Deployment PWS*: tirta-rendy-ragaspace.pbp.cs.ui.ac.id
 * *Link Design (Figma/Prototype)*: https://www.figma.com/team_invite/redeem/9TxGhFh8rbXzeBD78ePZxm (view only)
 
 ---
