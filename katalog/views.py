@@ -35,6 +35,7 @@ class CatalogView(EnsureCsrfCookieMixin, LoginRequiredMixin, ListView):
         queryset = Venue.objects.select_related("category").prefetch_related("addons")
         self.filterset = VenueFilter(self.request.GET, queryset=queryset)
         return self.filterset.qs
+    
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -178,25 +179,29 @@ class VenueDetailView(EnsureCsrfCookieMixin, LoginRequiredMixin, DetailView):
         else:
             messages.error(request, "Unable to save review. Please check the form.")
         return redirect("venue-detail", slug=self.object.slug)
-
+    
     def handle_booking(self, request: HttpRequest) -> HttpResponse:
-        if request.user.is_staff:
-            messages.error(
-                request,
-                "Administrators cannot create bookings. Please use a regular user account.",
-            )
+        try:
+            if request.user.is_staff:
+                messages.error(
+                    request,
+                    "Administrators cannot create bookings. Please use a regular user account.",
+                )
+                return redirect("venue-detail", slug=self.object.slug)
+            form = BookingForm(request.POST, venue=self.object)
+            if form.is_valid():
+                booking: Booking = form.save(commit=False)
+                booking.user = request.user
+                booking.venue = self.object
+                booking.save()
+                form.save_m2m()
+                messages.success(
+                    request,
+                    "Your booking request was submitted and is awaiting admin approval.",
+                )
+                return redirect("booked-places")
+            messages.error(request, "Unable to create booking. Please check availability details.")
             return redirect("venue-detail", slug=self.object.slug)
-        form = BookingForm(request.POST, venue=self.object)
-        if form.is_valid():
-            booking: Booking = form.save(commit=False)
-            booking.user = request.user
-            booking.venue = self.object
-            booking.save()
-            form.save_m2m()
-            messages.success(
-                request,
-                "Your booking request was submitted and is awaiting admin approval.",
-            )
-            return redirect("booked-places")
-        messages.error(request, "Unable to create booking. Please check availability details.")
-        return redirect("venue-detail", slug=self.object.slug)
+        
+        except Exception as e:
+            print(e)
