@@ -359,7 +359,7 @@ const prepareCancelBookingForm = (form) => {
       showToast(message, { level: 'success' });
       closeContainingModal(form);
     } catch (error) {
-      location.reload();
+      
       console.log(error);
     } finally {
       form.dataset.submitting = 'false';
